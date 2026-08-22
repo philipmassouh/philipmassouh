@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Philip's Spots</title>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+        <link rel="stylesheet" href="style.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    </head>
+    <body>
+        <div id="map"></div>
+        <div id="table-view"></div>
+        <div id="map-controls" aria-label="Map controls">
+            <button type="button" class="map-control-chip" id="toggle-table">Table</button>
+            <button type="button" class="map-control-chip" id="toggle-tooltips">Names</button>
+            <div class="map-filter" role="group" aria-label="Map filter">
+                <button type="button" class="map-filter-btn" id="filter-been">Been</button>
+                <button type="button" class="map-filter-btn" id="filter-try">Try</button>
+                <button type="button" class="map-filter-btn" id="filter-both">Both</button>
+            </div>
+        </div>
+        <div id="modal"></div>
+        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+        <script src="utils.js"></script>
+        <script src="main.js"></script>
+    </body>
+</html>

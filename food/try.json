@@ -1,0 +1,506 @@
+[
+  {
+    "Name": "A Cut Above Butcher Shop",
+    "Addresses": "2453 Santa Monica Blvd, Santa Monica, CA 90404",
+    "Site": "https://www.acabutchershop.com/",
+    "Notes": null,
+    "lat": 34.0323265,
+    "lng": -118.4753445
+  },
+  {
+    "Name": "Accomplice Bar",
+    "Addresses": "3809 Grand View Blvd, Los Angeles, CA 90066",
+    "Site": "https://www.instagram.com/accomplice_bar",
+    "Notes": null,
+    "lat": 34.004562,
+    "lng": -118.4310327
+  },
+  {
+    "Name": "Ban Ban Burger",
+    "Addresses": "1644 Sawtelle Blvd, Los Angeles, CA 90025",
+    "Site": "https://banbanburger.com",
+    "Notes": "Thai fusion burgers.",
+    "lat": 34.0461474,
+    "lng": -118.4479493
+  },
+  {
+    "Name": "Borit Gogae",
+    "Addresses": "3464 W 8th St, Los Angeles, CA 90005",
+    "Site": "https://www.yelp.com/biz/borit-gogae-los-angeles-2",
+    "Notes": null,
+    "lat": 34.0576195,
+    "lng": -118.305515
+  },
+  {
+    "Name": "Cafe Bolivar",
+    "Addresses": "1741 Ocean Park Blvd, Santa Monica, CA 90405",
+    "Site": "http://www.cafebolivar.com/",
+    "Notes": "Get arepas.",
+    "lat": 34.0128118,
+    "lng": -118.4663582
+  },
+  {
+    "Name": "Carousel Restaurant",
+    "Addresses": "304 N Brand Blvd, Glendale, CA 91203",
+    "Site": "https://www.carouselrestaurant.com",
+    "Notes": "Lebanese and Armenian. Hollywood location has fewer options.",
+    "lat": 34.1502189,
+    "lng": -118.2548115
+  },
+  {
+    "Name": "Easy Street Burgers",
+    "Addresses": "4143 Lankershim Blvd, Studio City, CA 91602",
+    "Site": "https://easystreetburgers.com",
+    "Notes": "Highly recommended by TikTok eboy food rizzlers.",
+    "lat": 34.1451512,
+    "lng": -118.3627638
+  },
+  {
+    "Name": "El Ruso",
+    "Addresses": "2081 Hillhurst Ave, Los Angeles, CA 90027",
+    "Site": null,
+    "Notes": "Mexican stand.",
+    "lat": 34.1098325,
+    "lng": -118.287797
+  },
+  {
+    "Name": "Fia",
+    "Addresses": "2454 Wilshire Blvd, Santa Monica, CA 90403",
+    "Site": "https://www.fiarestaurant.com/",
+    "Notes": "Italian.",
+    "lat": 34.0350068,
+    "lng": -118.4784803
+  },
+  {
+    "Name": "FIG",
+    "Addresses": "101 Wilshire Blvd, Santa Monica, CA 90401",
+    "Site": "https://www.figsantamonica.com/",
+    "Notes": "Happy Hour.",
+    "lat": 34.0180222,
+    "lng": -118.5016131
+  },
+  {
+    "Name": "Gjusta",
+    "Addresses": "320 Sunset Ave, Venice, CA 90291",
+    "Site": "https://gjusta.com/",
+    "Notes": "Bakery and deli.",
+    "lat": 33.995296,
+    "lng": -118.474579
+  },
+  {
+    "Name": "Goldburger",
+    "Addresses": "1820 N Vermont Ave, Los Angeles, CA 90027",
+    "Site": "https://www.goldburgerla.com/",
+    "Notes": "TikTok rizzlers like this place.",
+    "lat": 34.1042838,
+    "lng": -118.2916282
+  },
+  {
+    "Name": "Great White Venice",
+    "Addresses": "1604 Pacific Ave, Venice, CA 90291",
+    "Site": "https://www.greatwhite.cafe/locations",
+    "Notes": "All-day cafe.",
+    "lat": 33.9876989,
+    "lng": -118.4721044
+  },
+  {
+    "Name": "Guelaguetza",
+    "Addresses": "3014 W Olympic Blvd, Los Angeles, CA 90006",
+    "Site": "https://www.ilovemole.com/",
+    "Notes": "Get the pina colada and mole.",
+    "lat": 34.0525629,
+    "lng": -118.3009586
+  },
+  {
+    "Name": "Hayat's Kitchen",
+    "Addresses": "11009 Burbank Blvd Ste 117, North Hollywood, CA 91601",
+    "Site": "https://hayats.kitchen",
+    "Notes": "Lebanese.",
+    "lat": 34.1723602,
+    "lng": -118.370528
+  },
+  {
+    "Name": "Humble Potato",
+    "Addresses": "12608 Washington Blvd #B, Los Angeles, CA 90066",
+    "Site": "https://humblepotato.com/culver-city/",
+    "Notes": "Tom V rec.",
+    "lat": 33.9967218,
+    "lng": -118.4325683
+  },
+  {
+    "Name": "KazuNori Santa Monica",
+    "Addresses": "120 Broadway Unit 104, Santa Monica, CA 90401",
+    "Site": "https://www.handrollbar.com/locations/santa-monica/",
+    "Notes": "Rec. Erdis. Hand rolls.",
+    "lat": 34.0131113,
+    "lng": -118.4957991
+  },
+  {
+    "Name": "La Puglia",
+    "Addresses": "1621 Wilshire Blvd, Santa Monica, CA 90403",
+    "Site": "https://lapuglia.us/",
+    "Notes": "Italian food. Jazz Tuesdays.",
+    "lat": 34.028835,
+    "lng": -118.486165
+  },
+  {
+    "Name": "Langer's Deli",
+    "Addresses": "704 S Alvarado St, Los Angeles, CA 90057",
+    "Site": "https://www.langersdeli.com",
+    "Notes": null,
+    "lat": 34.0561783,
+    "lng": -118.2767993
+  },
+  {
+    "Name": "Leo's Tacos Truck",
+    "Addresses": "1515 S La Brea Ave, Los Angeles, CA 90019",
+    "Site": "https://www.leostacostruck.com/locations",
+    "Notes": "Taco truck.",
+    "lat": 34.046205,
+    "lng": -118.3457754
+  },
+  {
+    "Name": "Lunetta",
+    "Addresses": "2420 Pico Blvd, Santa Monica, CA 90405",
+    "Site": "https://www.lunettasm.com/restaurant_menus/",
+    "Notes": null,
+    "lat": 34.0224245,
+    "lng": -118.4635538
+  },
+  {
+    "Name": "Majordomo",
+    "Addresses": "1725 Naud St, Los Angeles, CA 90012",
+    "Site": "https://www.majordomo.la",
+    "Notes": null,
+    "lat": 34.0690965,
+    "lng": -118.2261527
+  },
+  {
+    "Name": "Mon Ami",
+    "Addresses": "1541 Ocean Ave, Santa Monica, CA 90401",
+    "Site": "https://www.monamism.com/",
+    "Notes": null,
+    "lat": 34.0118329,
+    "lng": -118.4950722
+  },
+  {
+    "Name": "Noma Sushi",
+    "Addresses": "2031 Wilshire Blvd, Santa Monica, CA 90403",
+    "Site": "https://www.nomasushi.com/menu-1",
+    "Notes": null,
+    "lat": 34.0323141,
+    "lng": -118.482685
+  },
+  {
+    "Name": "Nong La Cafe",
+    "Addresses": "2055 Sawtelle Blvd, Los Angeles, CA 90025",
+    "Site": "https://www.nonglacafe.com/",
+    "Notes": null,
+    "lat": 34.0396373,
+    "lng": -118.442726
+  },
+  {
+    "Name": "Pijja Palace",
+    "Addresses": "2711 W Sunset Blvd, Los Angeles, CA 90026",
+    "Site": "https://www.pijjapalace.com",
+    "Notes": null,
+    "lat": 34.081065,
+    "lng": -118.2704108
+  },
+  {
+    "Name": "Ramen Nagi",
+    "Addresses": "10250 Santa Monica Blvd Ste 2850, Los Angeles, CA 90067",
+    "Site": "https://www.westfield.com/united-states/centurycity/restaurants-detail/ramen-nagi/75843",
+    "Notes": "John M rec.",
+    "lat": 34.0592637,
+    "lng": -118.4196579
+  },
+  {
+    "Name": "Ray's Barbecue",
+    "Addresses": "6038 Santa Fe Ave, Huntington Park, CA 90255",
+    "Site": "https://www.123brisket.com/",
+    "Notes": "The place where the OG owner tragedy happened.",
+    "lat": 33.9866831,
+    "lng": -118.2298957
+  },
+  {
+    "Name": "Skaf's Grill",
+    "Addresses": "6008 Laurel Canyon Blvd, North Hollywood, CA 91606",
+    "Site": "https://www.yelp.com/biz/skafs-grill-north-hollywood",
+    "Notes": "Lebanese.",
+    "lat": 34.179812,
+    "lng": -118.3960495
+  },
+  {
+    "Name": "SUGARFISH Santa Monica",
+    "Addresses": "1345 2nd St, Santa Monica, CA 90401",
+    "Site": "https://sugarfishsushi.com/locations/santa-monica/",
+    "Notes": "Rec. Erdis.",
+    "lat": 34.015386,
+    "lng": -118.4972129
+  },
+  {
+    "Name": "Sunnin",
+    "Addresses": "1776 Westwood Blvd, Los Angeles, CA 90024",
+    "Site": "https://sunnin.com",
+    "Notes": "Lebanese.",
+    "lat": 34.0506114,
+    "lng": -118.4373075
+  },
+  {
+    "Name": "Sushi Enya",
+    "Addresses": "343 1st St, Los Angeles, CA 90012",
+    "Site": "https://www.sushienya.com",
+    "Notes": "Omakase.",
+    "lat": 34.0497033,
+    "lng": -118.2396506
+  },
+  {
+    "Name": "Teleferic Barcelona",
+    "Addresses": "11930 San Vicente Blvd, Los Angeles, CA 90049",
+    "Site": "https://www.telefericbarcelona.com",
+    "Notes": "Spanish food. Recommended by Max K.",
+    "lat": 34.052285,
+    "lng": -118.4712044
+  },
+  {
+    "Name": "Taverna at The Mar Vista",
+    "Addresses": "12249 Venice Blvd, Los Angeles, CA 90066",
+    "Site": "https://www.themarvista.com/",
+    "Notes": "Greek.",
+    "lat": 34.0044103,
+    "lng": -118.4317403
+  },
+  {
+    "Name": "Tev's Family Kitchen",
+    "Addresses": "1905 W 48th St, Los Angeles, CA 90062",
+    "Site": "https://www.instagram.com/tevs.kitchen/?hl=en",
+    "Notes": "Soul food.",
+    "lat": 34.0002335,
+    "lng": -118.314141
+  },
+  {
+    "Name": "The Anchor",
+    "Addresses": "235 Main St, Venice, CA 90291",
+    "Site": "https://theanchorvenice.com/",
+    "Notes": "Get the lobster roll.",
+    "lat": 33.9970947,
+    "lng": -118.4789772
+  },
+  {
+    "Name": "The Cheese Store of Beverly Hills",
+    "Addresses": "9705 S Santa Monica Blvd, Beverly Hills, CA 90210",
+    "Site": "https://cheesestore.com",
+    "Notes": "Sandwiches. Get The Female Butcher.",
+    "lat": 34.068517,
+    "lng": -118.4076325
+  },
+  {
+    "Name": "The Galley",
+    "Addresses": "2442 Main St, Santa Monica, CA 90405",
+    "Site": "https://www.thegalleyrestaurant.net/",
+    "Notes": "Steakhouse.",
+    "lat": 34.00368,
+    "lng": -118.4853729
+  },
+  {
+    "Name": "Wake and Late",
+    "Addresses": "105 E 6th St, Los Angeles, CA 90014",
+    "Site": "https://www.wakeandlate.com",
+    "Notes": "Rec. Doyle.",
+    "lat": 34.045184,
+    "lng": -118.2495433
+  },
+  {
+    "Name": "Whisky a Go Go",
+    "Addresses": "8901 Sunset Blvd, West Hollywood, CA 90069",
+    "Site": "https://whiskyagogo.com/calendar/",
+    "Notes": "Whiskey bar.",
+    "lat": 34.090724,
+    "lng": -118.38566
+  },
+  {
+    "Name": "Xuntos",
+    "Addresses": "516 Santa Monica Blvd, Santa Monica, CA 90401",
+    "Site": "https://www.barxuntos.com/",
+    "Notes": null,
+    "lat": 34.0174391,
+    "lng": -118.4937028
+  },
+  {
+    "Name": "Ye Olde King's Head",
+    "Addresses": "116 Santa Monica Blvd, Santa Monica, CA 90401",
+    "Site": "https://www.yeoldekingshead.com/",
+    "Notes": "Fish and chips.",
+    "lat": 34.01456,
+    "lng": -118.4972077
+  },
+  {
+    "Name": "Crudo e Nudo",
+    "Addresses": "2724 Main St, Santa Monica, CA 90405",
+    "Site": "https://www.crudoenudo.com/menu",
+    "Notes": "Potentially irritating operation.",
+    "lat": 34.0003308,
+    "lng": -118.4821996
+  },
+  {
+    "Name": "Sunny Blue",
+    "Addresses": "2728 Main St, Santa Monica, CA 90405",
+    "Site": "https://www.sunnyblueinc.com/",
+    "Notes": null,
+    "lat": 34.0002896,
+    "lng": -118.4820915
+  },
+  {
+    "Name": "Dan Modern Chinese",
+    "Addresses": "2049 Sawtelle Blvd, Los Angeles, CA 90025",
+    "Site": "https://danmodernchinese.com/pages/sawtelle",
+    "Notes": null,
+    "lat": 34.0397262,
+    "lng": -118.44279
+  },
+  {
+    "Name": "Zaatar Factory",
+    "Addresses": "2909 N Glenoaks Blvd, Burbank, CA 91504",
+    "Site": null,
+    "Notes": "Has halawet jibneh.",
+    "lat": 34.2039544,
+    "lng": -118.3358409
+  },
+  {
+    "Name": "Egg Tuck",
+    "Addresses": "2528 S Figueroa St, Los Angeles, CA 90007",
+    "Site": "https://locations.eggtuck.com/ll/us/ca/los-angeles/2528-s-figueroa-st/",
+    "Notes": "FIG / Figueroa location. Coming soon.",
+    "lat": 34.0285821,
+    "lng": -118.2756172
+  },
+  {
+    "Name": "Maydan",
+    "Addresses": "4301 W Jefferson Blvd, Los Angeles, CA 90016",
+    "Site": "https://www.meetatmaydan.com/los-angeles",
+    "Notes": null,
+    "lat": 34.025634,
+    "lng": -118.343014
+  },
+  {
+    "Name": "The Hummus Factory",
+    "Addresses": "1570-L Rosecrans Ave, Manhattan Beach, CA 90266",
+    "Site": null,
+    "Notes": null,
+    "lat": 33.9005975,
+    "lng": -118.38539
+  },
+  {
+    "Name": "Miya Miya",
+    "Addresses": "12101 W Olympic Blvd, Los Angeles, CA 90064",
+    "Site": null,
+    "Notes": null,
+    "lat": 34.032431,
+    "lng": -118.453886
+  },
+  {
+    "Name": "Ammatoli",
+    "Addresses": "285 E 3rd St, Long Beach, CA 90802",
+    "Site": "https://www.ammatoli.com/",
+    "Notes": null,
+    "lat": 33.7707073,
+    "lng": -118.1897859
+  },
+  {
+    "Name": "Maroush",
+    "Addresses": "4905 Santa Monica Blvd, Los Angeles, CA 90029",
+    "Site": null,
+    "Notes": null,
+    "lat": 34.0909298,
+    "lng": -118.2962515
+  },
+  {
+    "Name": "Moo's Craft Barbecue",
+    "Addresses": "2118 N Broadway, Los Angeles, CA 90031",
+    "Site": "https://mooscraftbarbecue.com/",
+    "Notes": null,
+    "lat": 34.0732167,
+    "lng": -118.2185772
+  },
+  {
+    "Name": "Saby's Coffee & Kitchen",
+    "Addresses": "12900 Venice Blvd, Los Angeles, CA 90066",
+    "Site": "https://cafesabys.com/",
+    "Notes": "Jacob said get burrito.",
+    "lat": 33.999494,
+    "lng": -118.441204
+  },
+  {
+    "Name": "UOVO Marina del Rey",
+    "Addresses": "4635 Admiralty Way #105, Marina Del Rey, CA 90292",
+    "Site": "https://uovo.la/locations/location-marina/",
+    "Notes": "Pasta place. Kael Adair says it is the best pasta in LA and even Italian food haters should go.",
+    "lat": 33.983087,
+    "lng": -118.442919
+  },
+  {
+    "Name": "Townhouse Venice",
+    "Addresses": "52 Windward Ave, Venice, CA 90291",
+    "Site": "https://www.townhousevenice.com/music",
+    "Notes": "The Del Monte Speakeasy (downstairs); live music.",
+    "lat": 33.9872485,
+    "lng": -118.4726526
+  },
+  {
+    "Name": "Osteria Mozza",
+    "Addresses": "6602 Melrose Ave, Los Angeles, CA 90038",
+    "Site": "https://www.osteriamozza.com/",
+    "Notes": "Recommended by John Madigan, otherwise wouldn't go.",
+    "lat": 34.0833739,
+    "lng": -118.3387469
+  },
+  {
+    "Name": "Zebulon",
+    "Addresses": "2478 Fletcher Dr, Los Angeles, CA 90039",
+    "Site": "https://zebulon.la/",
+    "Notes": "Live music venue. Recommended by John Madigan.",
+    "lat": 34.1071951,
+    "lng": -118.2547392
+  },
+  {
+    "Name": "Lunasia Dim Sum",
+    "Addresses": "2575 Pacific Coast Hwy, Torrance, CA 90505",
+    "Site": "https://www.lunasiadimsum.com/",
+    "Notes": null,
+    "lat": 33.7911744,
+    "lng": -118.331744
+  },
+  {
+    "Name": "Fishing with Dynamite",
+    "Addresses": "1148 Manhattan Ave, Manhattan Beach, CA 90266",
+    "Site": "https://eatfwd.com/",
+    "Notes": null,
+    "lat": 33.8853787,
+    "lng": -118.4108571
+  },
+  {
+    "Name": "The Apple Pan",
+    "Addresses": "10801 W Pico Blvd, Los Angeles, CA 90064",
+    "Site": "https://theapplepan.com/",
+    "Notes": null,
+    "lat": 34.0407099,
+    "lng": -118.4278297
+  },
+  {
+    "Name": "Musso & Frank Grill",
+    "Addresses": "6667 Hollywood Blvd, Hollywood, CA 90028",
+    "Site": "https://mussoandfrank.com/",
+    "Notes": "Recommended by John Madigan.",
+    "lat": 34.1017556,
+    "lng": -118.3352976
+  },
+  {
+    "Name": "Big Dean's Ocean Front Cafe",
+    "Addresses": "1615 Ocean Front Walk, Santa Monica, CA 90401",
+    "Site": "https://bigdeansoceanfrontcafe.com/",
+    "Notes": null,
+    "lat": 34.0102984,
+    "lng": -118.4955622
+  }
+]
