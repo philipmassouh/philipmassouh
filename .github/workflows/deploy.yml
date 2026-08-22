@@ -16,5 +16,15 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -H philipmassouh.com >> ~/.ssh/known_hosts
 
-      - name: Pull latest code
-        run: ssh pm@philipmassouh.com "cd /var/www/philipmassouh.com/html && git pull --ff"
+      # The served dir /var/www/philipmassouh.com/html is not itself a git repo
+      # (and pm cannot recreate it). Instead we keep a working clone in pm's home
+      # and sync the built pieces into place.
+      - name: Pull and deploy
+        run: |
+          ssh pm@philipmassouh.com '
+            set -e
+            WWW=/var/www/philipmassouh.com/html
+            git -C ~/site pull --ff-only
+            rsync -a --delete --exclude src --exclude build.py ~/site/tornado/ "$WWW/tornado/"
+            cp ~/site/index.html "$WWW/index.html"
+          '
