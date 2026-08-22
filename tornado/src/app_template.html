@@ -1,0 +1,788 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HRRR Tornado Viewer</title>
+<style>
+  :root {
+    --bg: #101318;
+    --panel: #1a1f27;
+    --panel-edge: #2a3140;
+    --text: #dde3ec;
+    --muted: #8b94a3;
+    --accent: #ffb347;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font: 13px/1.45 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    padding: 8px 14px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--panel-edge);
+  }
+  header h1 {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 6px 0 0;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+  header h1 span { color: var(--accent); }
+  .ctl { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+  .ctl label { color: var(--muted); font-size: 12px; }
+  select, button {
+    background: #232a35;
+    color: var(--text);
+    border: 1px solid var(--panel-edge);
+    border-radius: 6px;
+    padding: 4px 8px;
+    font: inherit;
+    cursor: pointer;
+  }
+  select:hover, button:hover { border-color: #3c4558; }
+  button.playing { background: var(--accent); color: #14100a; border-color: var(--accent); font-weight: 600; }
+  input[type=range] { width: 180px; accent-color: var(--accent); }
+  #fhrLabel { min-width: 34px; text-align: center; font-variant-numeric: tabular-nums; font-weight: 600; }
+  #status { color: var(--muted); font-size: 12px; margin-left: auto; white-space: nowrap; }
+  #status.err { color: #ff7b72; }
+  main { position: relative; flex: 1; min-height: 0; }
+  #map { position: absolute; inset: 0; width: 100%; height: 100%; cursor: grab; touch-action: none; }
+  #map.panning { cursor: grabbing; }
+  .overlay {
+    position: absolute;
+    background: rgba(16, 19, 24, 0.82);
+    border: 1px solid var(--panel-edge);
+    border-radius: 8px;
+    padding: 8px 10px;
+    pointer-events: none;
+    backdrop-filter: blur(3px);
+  }
+  #readout { top: 10px; right: 10px; text-align: right; font-variant-numeric: tabular-nums; }
+  #readout .val { font-size: 16px; font-weight: 700; }
+  #readout .pos { color: var(--muted); font-size: 11px; }
+  #legendBox { bottom: 10px; left: 10px; }
+  #legendTitle { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+  #legend { display: block; }
+  #validTime { top: 10px; left: 10px; font-size: 12px; }
+  #validTime b { color: var(--accent); }
+  #hint { bottom: 10px; right: 10px; color: var(--muted); font-size: 11px; }
+  #guidePanel {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: min(880px, calc(100% - 20px));
+    max-height: calc(100% - 20px);
+    overflow: auto;
+    background: rgba(16, 19, 24, 0.94);
+    border: 1px solid var(--panel-edge);
+    border-radius: 10px;
+    padding: 14px 16px;
+    backdrop-filter: blur(4px);
+    z-index: 5;
+  }
+  #guidePanel h2 { margin: 0 0 4px; font-size: 14px; }
+  #guidePanel .note { color: var(--muted); font-size: 12px; margin: 0 0 10px; }
+  #guidePanel .note b { color: var(--text); }
+  #guidePanel table { border-collapse: collapse; width: 100%; font-size: 12px; }
+  #guidePanel th, #guidePanel td {
+    text-align: left;
+    vertical-align: top;
+    padding: 7px 10px;
+    border-top: 1px solid var(--panel-edge);
+  }
+  #guidePanel th { color: var(--muted); font-weight: 600; border-top: none; white-space: nowrap; }
+  #guidePanel td:first-child { white-space: nowrap; font-weight: 600; }
+  #guidePanel tr.sel td { background: rgba(255, 179, 71, 0.08); }
+  #guidePanel tr.sel td:first-child { color: var(--accent); }
+  #guidePanel tbody tr { cursor: pointer; }
+  #guidePanel tbody tr:hover td { background: rgba(255, 255, 255, 0.04); }
+  #guidePanel .thr { color: var(--muted); }
+  #guidePanel .thr b { color: var(--accent); font-weight: 600; }
+  #guideClose {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    border: none;
+    background: none;
+    color: var(--muted);
+    font-size: 16px;
+    padding: 2px 6px;
+  }
+  #guideClose:hover { color: var(--text); }
+</style>
+</head>
+<body>
+<header>
+  <h1>HRRR <span>Tornado</span> Viewer</h1>
+  <div class="ctl">
+    <label for="field">Field</label>
+    <select id="field"></select>
+  </div>
+  <div class="ctl">
+    <label for="run">Run</label>
+    <select id="run"></select>
+  </div>
+  <div class="ctl">
+    <label for="fhr">F-hr</label>
+    <input type="range" id="fhr" min="0" max="18" step="1" value="1">
+    <span id="fhrLabel">f01</span>
+    <button id="play" title="Animate">&#9654;</button>
+  </div>
+  <button id="guideBtn" title="What do these variables mean?">Guide</button>
+  <div id="status">starting&hellip;</div>
+</header>
+<main>
+  <canvas id="map"></canvas>
+  <div class="overlay" id="validTime"></div>
+  <div class="overlay" id="readout" hidden>
+    <div class="val"></div>
+    <div class="pos"></div>
+  </div>
+  <div class="overlay" id="legendBox">
+    <div id="legendTitle"></div>
+    <canvas id="legend" width="260" height="34"></canvas>
+  </div>
+  <div class="overlay" id="hint">drag to pan &middot; scroll to zoom &middot; double-click to reset</div>
+  <div id="guidePanel" hidden>
+    <button id="guideClose" title="Close">&#10005;</button>
+    <h2>Reading the variables</h2>
+    <p class="note">
+      Two kinds of field here. <b>Simulated-storm fields</b> (UH, reflectivity) come from storms
+      the model itself produces &mdash; treat them as "the HRRR made a rotating storm here", not a
+      literal tornado forecast; position can be off by tens of miles. <b>Environment fields</b>
+      (SRH, CAPE) describe the ingredients available to any storm that forms. The classic tornado
+      setup is high UH tracks overlapping large 0&ndash;1&nbsp;km SRH and adequate CAPE.
+      Click a row to display that field.
+    </p>
+    <table>
+      <thead>
+        <tr><th>Field</th><th>What it is</th><th>Why it matters for tornadoes</th><th>Values to watch</th></tr>
+      </thead>
+      <tbody>
+        <tr data-field="uh25">
+          <td>UH 2&ndash;5 km</td>
+          <td>Updraft helicity: updraft speed &times; spin, integrated 2&ndash;5&nbsp;km up. The past-hour maximum, so storm motion leaves "tracks".</td>
+          <td>The model's mesocyclone detector &mdash; a supercell's rotating mid-level updraft lights up here. Long, intense tracks = persistent supercells.</td>
+          <td class="thr"><b>&gt;25</b> rotating storm &middot; <b>&gt;75</b> strong supercell &middot; <b>&gt;150</b> intense, tornado-capable</td>
+        </tr>
+        <tr data-field="uh02">
+          <td>UH 0&ndash;2 km</td>
+          <td>Same quantity but for the lowest 2&nbsp;km of the storm.</td>
+          <td>Rotation near the ground is the more direct tornado signal &mdash; mid-level mesocyclones are common, low-level ones much less so.</td>
+          <td class="thr"><b>&gt;10</b> notable &middot; <b>&gt;30</b> strong low-level rotation &middot; <b>&gt;75</b> high-end</td>
+        </tr>
+        <tr data-field="refc">
+          <td>Reflectivity</td>
+          <td>Simulated radar: the strongest echo in each column, as a radar would see it.</td>
+          <td>Shows storm mode &mdash; discrete cells vs. squall lines. Discrete supercells (isolated strong cores) are the most tornado-prone mode.</td>
+          <td class="thr"><b>&gt;35</b> dBZ thunderstorms &middot; <b>&gt;50</b> strong cores &middot; hook/kidney shapes = supercell structure</td>
+        </tr>
+        <tr data-field="srh1">
+          <td>SRH 0&ndash;1 km</td>
+          <td>Storm-relative helicity: how much spin the wind profile in the lowest 1&nbsp;km feeds into a moving storm.</td>
+          <td>The key environmental ingredient for tornadoes specifically &mdash; large low-level SRH is what lets a supercell tighten rotation to the surface.</td>
+          <td class="thr"><b>&gt;100</b> supportive &middot; <b>&gt;200</b> favorable for significant tornadoes &middot; <b>&gt;300</b> high-end</td>
+        </tr>
+        <tr data-field="srh3">
+          <td>SRH 0&ndash;3 km</td>
+          <td>Same, over the lowest 3&nbsp;km.</td>
+          <td>Governs whether storms rotate at all &mdash; supercell potential. Necessary but not sufficient for tornadoes.</td>
+          <td class="thr"><b>&gt;150</b> supercells possible &middot; <b>&gt;300</b> strongly favorable</td>
+        </tr>
+        <tr data-field="cape">
+          <td>SBCAPE</td>
+          <td>Surface-based CAPE: buoyant energy for air rising from the ground &mdash; the fuel.</td>
+          <td>Storms need instability to form and sustain updrafts; tornado setups need surface-based (not "elevated") instability. Modest CAPE is enough if SRH is large.</td>
+          <td class="thr"><b>&gt;500</b> enough with strong shear &middot; <b>&gt;1500</b> moderate &middot; <b>&gt;3000</b> very unstable</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+<script>
+/*__GRIB2__*/
+</script>
+<script>
+"use strict";
+// Delta-encoded (x100) US state outlines, [ [dx0,dy0,dx1,dy1,...], ... ]
+const STATE_LINES_ENC = /*__STATES__*/;
+
+const BUCKET = "https://noaa-hrrr-bdp-pds.s3.amazonaws.com";
+
+const FIELDS = {
+  uh25: {
+    label: "Updraft Helicity 2–5 km (hourly max)",
+    short: "UH 2–5 km",
+    match: ":MXUPHL:5000-2000 m above ground:",
+    units: "m²/s²",
+    stops: [
+      [10, 255, 255, 180, 0], [25, 255, 232, 80, 190], [50, 255, 150, 20, 230],
+      [75, 255, 60, 0, 255], [100, 255, 0, 120, 255], [150, 205, 40, 255, 255],
+      [200, 255, 255, 255, 255],
+    ],
+  },
+  uh02: {
+    label: "Updraft Helicity 0–2 km (hourly max)",
+    short: "UH 0–2 km",
+    match: ":MXUPHL:2000-0 m above ground:",
+    units: "m²/s²",
+    stops: [
+      [5, 255, 255, 180, 0], [15, 255, 232, 80, 190], [30, 255, 150, 20, 230],
+      [50, 255, 60, 0, 255], [75, 255, 0, 120, 255], [100, 205, 40, 255, 255],
+      [150, 255, 255, 255, 255],
+    ],
+  },
+  refc: {
+    label: "Composite Reflectivity",
+    short: "Reflectivity",
+    match: ":REFC:entire atmosphere:",
+    units: "dBZ",
+    stops: [
+      [5, 4, 233, 231, 0], [10, 4, 233, 231, 200], [15, 1, 100, 250, 220],
+      [20, 2, 220, 30, 235], [25, 1, 180, 10, 245], [30, 0, 130, 0, 255],
+      [35, 253, 248, 2, 255], [40, 229, 188, 0, 255], [45, 253, 149, 0, 255],
+      [50, 253, 0, 0, 255], [55, 200, 0, 0, 255], [60, 160, 0, 0, 255],
+      [65, 248, 0, 253, 255], [70, 170, 90, 210, 255], [75, 255, 255, 255, 255],
+    ],
+  },
+  srh1: {
+    label: "Storm-Relative Helicity 0–1 km",
+    short: "SRH 0–1 km",
+    match: ":HLCY:1000-0 m above ground:",
+    units: "m²/s²",
+    stops: [
+      [50, 60, 110, 200, 0], [100, 60, 140, 230, 170], [200, 0, 200, 140, 220],
+      [300, 240, 230, 60, 255], [400, 255, 140, 0, 255], [500, 255, 40, 0, 255],
+      [650, 255, 0, 170, 255], [800, 255, 255, 255, 255],
+    ],
+  },
+  srh3: {
+    label: "Storm-Relative Helicity 0–3 km",
+    short: "SRH 0–3 km",
+    match: ":HLCY:3000-0 m above ground:",
+    units: "m²/s²",
+    stops: [
+      [50, 60, 110, 200, 0], [150, 60, 140, 230, 170], [250, 0, 200, 140, 220],
+      [400, 240, 230, 60, 255], [550, 255, 140, 0, 255], [700, 255, 40, 0, 255],
+      [850, 255, 0, 170, 255], [1000, 255, 255, 255, 255],
+    ],
+  },
+  cape: {
+    label: "Surface-Based CAPE",
+    short: "SBCAPE",
+    match: ":CAPE:surface:",
+    units: "J/kg",
+    stops: [
+      [100, 40, 90, 180, 0], [500, 60, 140, 230, 170], [1000, 0, 200, 140, 220],
+      [2000, 240, 230, 60, 255], [3000, 255, 140, 0, 255], [4000, 255, 40, 0, 255],
+      [5000, 255, 0, 170, 255], [6000, 255, 255, 255, 255],
+    ],
+  },
+};
+
+// ---------- Lambert conformal projection (sphere, NCEP HRRR navigation) ----------
+const EARTH_R = 6371229;
+function makeProjection(grid) {
+  const d2r = Math.PI / 180;
+  const lat1 = grid.latin1 * d2r;
+  const n = Math.sin(lat1);
+  const F = Math.cos(lat1) * Math.pow(Math.tan(Math.PI / 4 + lat1 / 2), n) / n;
+  const rho = (lat) => EARTH_R * F / Math.pow(Math.tan(Math.PI / 4 + lat / 2), n);
+  const rho0 = rho(grid.lad * d2r);
+  const lov = grid.lov > 180 ? grid.lov - 360 : grid.lov;
+  const fwd = (lon, lat) => { // degrees -> metres
+    let dl = lon - lov;
+    if (dl > 180) dl -= 360;
+    if (dl < -180) dl += 360;
+    const r = rho(lat * d2r);
+    const th = n * dl * d2r;
+    return [r * Math.sin(th), rho0 - r * Math.cos(th)];
+  };
+  const [x0, y0] = fwd(grid.lo1, grid.la1);
+  const dx = grid.dx * 1000, dy = grid.dy * 1000; // decoder stores km
+  return {
+    toGrid(lon, lat) { // -> fractional grid indices (i east, j north-from-south)
+      const [x, y] = fwd(lon, lat);
+      return [(x - x0) / dx, (y - y0) / dy];
+    },
+    toLonLat(i, j) {
+      const x = x0 + i * dx, y = y0 + j * dy;
+      const r = Math.hypot(x, rho0 - y);
+      const th = Math.atan2(x, rho0 - y);
+      let lon = lov + (th / n) / d2r;
+      if (lon > 180) lon -= 360;
+      const lat = (2 * Math.atan(Math.pow(EARTH_R * F / r, 1 / n)) - Math.PI / 2) / d2r;
+      return [lon, lat];
+    },
+  };
+}
+
+// ---------- colormap ----------
+function makeColorLUT(stops, vmin, vmax, size) {
+  const lut = new Uint8ClampedArray(size * 4);
+  for (let k = 0; k < size; k++) {
+    const v = vmin + (k / (size - 1)) * (vmax - vmin);
+    let s = 0;
+    while (s < stops.length - 1 && v > stops[s + 1][0]) s++;
+    const a = stops[s], b = stops[Math.min(s + 1, stops.length - 1)];
+    const t = b[0] === a[0] ? 0 : Math.min(1, Math.max(0, (v - a[0]) / (b[0] - a[0])));
+    lut[k * 4] = a[1] + t * (b[1] - a[1]);
+    lut[k * 4 + 1] = a[2] + t * (b[2] - a[2]);
+    lut[k * 4 + 2] = a[3] + t * (b[3] - a[3]);
+    lut[k * 4 + 3] = a[4] + t * (b[4] - a[4]);
+  }
+  return lut;
+}
+
+// ---------- HRRR file access ----------
+function pad2(n) { return String(n).padStart(2, "0"); }
+function runPath(run) {
+  return `hrrr.${run.date}/conus/hrrr.t${pad2(run.hour)}z.wrfsfcf${pad2(run.fhr)}.grib2`;
+}
+const idxCache = new Map();
+async function getIdx(run) {
+  const url = `${BUCKET}/${runPath(run)}.idx`;
+  if (idxCache.has(url)) return idxCache.get(url);
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`idx HTTP ${r.status}`);
+  const lines = (await r.text()).trim().split("\n").map((ln) => {
+    const parts = ln.split(":");
+    return { offset: Number(parts[1]), key: ":" + parts.slice(3).join(":") };
+  });
+  idxCache.set(url, lines);
+  return lines;
+}
+
+const fieldCache = new Map(); // key -> {grid, data}
+const FIELD_CACHE_MAX = 24;
+async function loadField(run, fieldId) {
+  const key = `${run.date}/${run.hour}/${run.fhr}/${fieldId}`;
+  if (fieldCache.has(key)) {
+    const v = fieldCache.get(key);
+    fieldCache.delete(key); fieldCache.set(key, v); // LRU refresh
+    return v;
+  }
+  const idx = await getIdx(run);
+  const match = FIELDS[fieldId].match;
+  const i = idx.findIndex((ln) => ln.key.startsWith(match));
+  if (i < 0) throw new Error(`${fieldId} not in file`);
+  const start = idx[i].offset;
+  const end = i + 1 < idx.length ? idx[i + 1].offset - 1 : "";
+  const r = await fetch(`${BUCKET}/${runPath(run)}`, { headers: { Range: `bytes=${start}-${end}` } });
+  if (!r.ok) throw new Error(`grib HTTP ${r.status}`);
+  const decoded = decodeGrib2(await r.arrayBuffer());
+  fieldCache.set(key, decoded);
+  while (fieldCache.size > FIELD_CACHE_MAX) {
+    fieldCache.delete(fieldCache.keys().next().value);
+  }
+  return decoded;
+}
+
+async function findRuns() {
+  // Probe back from the current UTC hour for the newest run whose f01 exists.
+  const now = new Date();
+  const probes = [];
+  for (let back = 0; back < 30; back++) {
+    const t = new Date(now.getTime() - back * 3600e3);
+    probes.push({
+      date: `${t.getUTCFullYear()}${pad2(t.getUTCMonth() + 1)}${pad2(t.getUTCDate())}`,
+      hour: t.getUTCHours(),
+    });
+  }
+  let newest = -1;
+  for (let i = 0; i < probes.length; i++) {
+    const p = { ...probes[i], fhr: 1 };
+    try {
+      // Plain GET (not HEAD): the bucket's CORS policy only covers GET, and
+      // the idx is ~10 KB. getIdx caches it, so the probe doubles as the fetch.
+      await getIdx(p);
+      newest = i;
+      break;
+    } catch (e) { /* keep probing */ }
+  }
+  if (newest < 0) throw new Error("No recent HRRR runs found");
+  return probes.slice(newest); // newest first, back ~24 runs
+}
+
+// ---------- app state ----------
+const ui = {
+  field: document.getElementById("field"),
+  run: document.getElementById("run"),
+  fhr: document.getElementById("fhr"),
+  fhrLabel: document.getElementById("fhrLabel"),
+  play: document.getElementById("play"),
+  status: document.getElementById("status"),
+  map: document.getElementById("map"),
+  readout: document.getElementById("readout"),
+  legend: document.getElementById("legend"),
+  legendTitle: document.getElementById("legendTitle"),
+  validTime: document.getElementById("validTime"),
+};
+const state = {
+  runs: [],
+  run: null,       // {date, hour}
+  fhr: 1,
+  fieldId: "uh25",
+  current: null,   // {grid, data}
+  proj: null,
+  view: { scale: 1, tx: 0, ty: 0 }, // grid px -> screen px
+  playing: false,
+  playTimer: null,
+  loadSeq: 0,
+  stateLines: null, // projected polylines in canvas grid coords
+};
+
+const ctx = ui.map.getContext("2d");
+const fieldCanvas = document.createElement("canvas");
+
+function decodeStateLines() {
+  const out = [];
+  for (const enc of STATE_LINES_ENC) {
+    const line = new Float64Array(enc.length);
+    let x = 0, y = 0;
+    for (let k = 0; k < enc.length; k += 2) {
+      x += enc[k]; y += enc[k + 1];
+      line[k] = x / 100; line[k + 1] = y / 100;
+    }
+    out.push(line);
+  }
+  return out;
+}
+const STATE_LONLAT = decodeStateLines();
+
+function projectStateLines() {
+  const { nx, ny } = state.current.grid;
+  state.stateLines = STATE_LONLAT.map((line) => {
+    const out = new Float64Array(line.length);
+    for (let k = 0; k < line.length; k += 2) {
+      const [gx, gy] = state.proj.toGrid(line[k], line[k + 1]);
+      out[k] = gx + 0.5;
+      out[k + 1] = (ny - 1) - gy + 0.5; // north-up canvas
+    }
+    return out;
+  });
+}
+
+function maxFhr(run) { return run.hour % 6 === 0 ? 48 : 18; }
+
+function renderFieldToCanvas() {
+  const { grid, data } = state.current;
+  const f = FIELDS[state.fieldId];
+  const { nx, ny } = grid;
+  fieldCanvas.width = nx; fieldCanvas.height = ny;
+  const fctx = fieldCanvas.getContext("2d");
+  const img = fctx.createImageData(nx, ny);
+  const px = img.data;
+  const vmin = f.stops[0][0], vmax = f.stops[f.stops.length - 1][0];
+  const LUTN = 1024;
+  const lut = makeColorLUT(f.stops, vmin, vmax, LUTN);
+  const scale = (LUTN - 1) / (vmax - vmin);
+  for (let j = 0; j < ny; j++) {
+    const srcRow = j * nx;            // row 0 = south
+    const dstRow = (ny - 1 - j) * nx; // canvas row 0 = north
+    for (let i = 0; i < nx; i++) {
+      const v = data[srcRow + i];
+      if (!(v >= vmin)) continue; // below range or NaN -> transparent
+      let k = ((v - vmin) * scale) | 0;
+      if (k >= LUTN) k = LUTN - 1;
+      const o = (dstRow + i) * 4, l = k * 4;
+      px[o] = lut[l]; px[o + 1] = lut[l + 1]; px[o + 2] = lut[l + 2]; px[o + 3] = lut[l + 3];
+    }
+  }
+  fctx.putImageData(img, 0, 0);
+}
+
+function fitView() {
+  const { nx, ny } = state.current.grid;
+  const w = ui.map.width, h = ui.map.height;
+  const s = Math.min(w / nx, h / ny) * 0.97;
+  state.view = { scale: s, tx: (w - nx * s) / 2, ty: (h - ny * s) / 2 };
+}
+
+function draw() {
+  const w = ui.map.width, h = ui.map.height;
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.fillStyle = "#101318";
+  ctx.fillRect(0, 0, w, h);
+  if (!state.current) return;
+  const { scale, tx, ty } = state.view;
+  const { nx, ny } = state.current.grid;
+  ctx.setTransform(scale, 0, 0, scale, tx, ty);
+  // ocean/land backing under the data
+  ctx.fillStyle = "#1a2029";
+  ctx.fillRect(0, 0, nx, ny);
+  ctx.imageSmoothingEnabled = scale < 1.5;
+  ctx.drawImage(fieldCanvas, 0, 0);
+  // state outlines
+  ctx.lineWidth = Math.max(0.6, 1.1 * (window.devicePixelRatio || 1)) / scale;
+  ctx.strokeStyle = "rgba(200, 212, 228, 0.55)";
+  ctx.lineJoin = "round";
+  for (const line of state.stateLines) {
+    ctx.beginPath();
+    ctx.moveTo(line[0], line[1]);
+    for (let k = 2; k < line.length; k += 2) ctx.lineTo(line[k], line[k + 1]);
+    ctx.stroke();
+  }
+  // domain border
+  ctx.strokeStyle = "rgba(120, 132, 150, 0.6)";
+  ctx.lineWidth = 1.5 / scale;
+  ctx.strokeRect(0, 0, nx, ny);
+}
+
+function drawLegend() {
+  const f = FIELDS[state.fieldId];
+  ui.legendTitle.textContent = `${f.label} (${f.units})`;
+  const c = ui.legend, lctx = c.getContext("2d");
+  const w = c.width, barH = 14, pad = 4;
+  lctx.clearRect(0, 0, w, c.height);
+  const vmin = f.stops[0][0], vmax = f.stops[f.stops.length - 1][0];
+  const lut = makeColorLUT(f.stops, vmin, vmax, w - 2 * pad);
+  for (let x = 0; x < w - 2 * pad; x++) {
+    lctx.fillStyle = `rgba(${lut[x * 4]},${lut[x * 4 + 1]},${lut[x * 4 + 2]},${lut[x * 4 + 3] / 255})`;
+    lctx.fillRect(pad + x, 0, 1, barH);
+  }
+  lctx.strokeStyle = "rgba(255,255,255,0.25)";
+  lctx.strokeRect(pad + 0.5, 0.5, w - 2 * pad - 1, barH - 1);
+  lctx.fillStyle = "#aeb6c2";
+  lctx.font = "10px sans-serif";
+  lctx.textAlign = "center";
+  for (const s of f.stops) {
+    const x = pad + ((s[0] - vmin) / (vmax - vmin)) * (w - 2 * pad);
+    lctx.fillText(String(s[0]), Math.min(Math.max(x, 8), w - 10), barH + 12);
+  }
+}
+
+function setStatus(msg, isErr) {
+  ui.status.textContent = msg;
+  ui.status.classList.toggle("err", !!isErr);
+}
+
+function validTimeText() {
+  const { date, hour } = state.run;
+  const runMs = Date.UTC(+date.slice(0, 4), +date.slice(4, 6) - 1, +date.slice(6, 8), hour);
+  const valid = new Date(runMs + state.fhr * 3600e3);
+  const utc = valid.toISOString().slice(0, 16).replace("T", " ") + "Z";
+  const local = valid.toLocaleString(undefined, {
+    weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit",
+  });
+  return `<b>${FIELDS[state.fieldId].short}</b> &middot; ${date.slice(0,4)}-${date.slice(4,6)}-${date.slice(6,8)} ${pad2(hour)}Z run, f${pad2(state.fhr)}<br>valid ${utc} &middot; ${local} local`;
+}
+
+async function refresh() {
+  const seq = ++state.loadSeq;
+  const run = { ...state.run, fhr: state.fhr };
+  setStatus(`loading ${FIELDS[state.fieldId].short} f${pad2(state.fhr)}…`);
+  try {
+    const decoded = await loadField(run, state.fieldId);
+    if (seq !== state.loadSeq) return;
+    const firstLoad = !state.current;
+    state.current = decoded;
+    if (!state.proj) {
+      state.proj = makeProjection(decoded.grid);
+      projectStateLines();
+    }
+    renderFieldToCanvas();
+    if (firstLoad) fitView();
+    draw();
+    drawLegend();
+    ui.validTime.innerHTML = validTimeText();
+    setStatus("ready");
+    prefetchNext();
+  } catch (e) {
+    if (seq !== state.loadSeq) return;
+    setStatus(`failed: ${e.message}`, true);
+  }
+}
+
+function prefetchNext() {
+  const next = state.fhr + 1;
+  if (next > maxFhr(state.run)) return;
+  loadField({ ...state.run, fhr: next }, state.fieldId).catch(() => {});
+}
+
+// ---------- interactions ----------
+function resize() {
+  const dpr = window.devicePixelRatio || 1;
+  const r = ui.map.getBoundingClientRect();
+  const hadCurrent = !!state.current;
+  const oldW = ui.map.width;
+  ui.map.width = Math.round(r.width * dpr);
+  ui.map.height = Math.round(r.height * dpr);
+  if (hadCurrent) {
+    if (oldW) {
+      const f = ui.map.width / oldW;
+      state.view.scale *= f; state.view.tx *= f; state.view.ty *= f;
+    } else {
+      fitView();
+    }
+    draw();
+  }
+}
+window.addEventListener("resize", resize);
+
+ui.map.addEventListener("wheel", (e) => {
+  e.preventDefault();
+  if (!state.current) return;
+  const dpr = window.devicePixelRatio || 1;
+  const mx = e.offsetX * dpr, my = e.offsetY * dpr;
+  const factor = Math.exp(-e.deltaY * 0.0015);
+  const v = state.view;
+  const ns = Math.min(Math.max(v.scale * factor, 0.05), 40);
+  v.tx = mx - (mx - v.tx) * (ns / v.scale);
+  v.ty = my - (my - v.ty) * (ns / v.scale);
+  v.scale = ns;
+  draw();
+}, { passive: false });
+
+let pan = null;
+ui.map.addEventListener("pointerdown", (e) => {
+  pan = { x: e.clientX, y: e.clientY, tx: state.view.tx, ty: state.view.ty };
+  ui.map.setPointerCapture(e.pointerId);
+  ui.map.classList.add("panning");
+});
+ui.map.addEventListener("pointerup", () => { pan = null; ui.map.classList.remove("panning"); });
+ui.map.addEventListener("pointermove", (e) => {
+  const dpr = window.devicePixelRatio || 1;
+  if (pan) {
+    state.view.tx = pan.tx + (e.clientX - pan.x) * dpr;
+    state.view.ty = pan.ty + (e.clientY - pan.y) * dpr;
+    draw();
+  }
+  updateReadout(e.offsetX * dpr, e.offsetY * dpr);
+});
+ui.map.addEventListener("pointerleave", () => { ui.readout.hidden = true; });
+ui.map.addEventListener("dblclick", () => { if (state.current) { fitView(); draw(); } });
+
+function updateReadout(sx, sy) {
+  if (!state.current) return;
+  const { scale, tx, ty } = state.view;
+  const { nx, ny } = state.current.grid;
+  const cx = (sx - tx) / scale, cy = (sy - ty) / scale;
+  const i = Math.floor(cx), j = Math.floor((ny - 1) - cy + 0.5);
+  if (i < 0 || i >= nx || j < 0 || j >= ny) { ui.readout.hidden = true; return; }
+  const v = state.current.data[j * nx + i];
+  const [lon, lat] = state.proj.toLonLat(i, j);
+  const f = FIELDS[state.fieldId];
+  ui.readout.hidden = false;
+  ui.readout.querySelector(".val").textContent =
+    Number.isFinite(v) ? `${v.toFixed(1)} ${f.units}` : "—";
+  ui.readout.querySelector(".pos").textContent =
+    `${lat.toFixed(2)}°N, ${(-lon).toFixed(2)}°W`;
+}
+
+// ---------- controls ----------
+for (const [id, f] of Object.entries(FIELDS)) {
+  const o = document.createElement("option");
+  o.value = id; o.textContent = f.label;
+  ui.field.appendChild(o);
+}
+ui.field.value = state.fieldId;
+function setField(id) {
+  state.fieldId = id;
+  ui.field.value = id;
+  updateGuideHighlight();
+  drawLegend();
+  refresh();
+}
+ui.field.addEventListener("change", () => setField(ui.field.value));
+
+// ---------- variable guide ----------
+const guidePanel = document.getElementById("guidePanel");
+function updateGuideHighlight() {
+  for (const tr of guidePanel.querySelectorAll("tbody tr")) {
+    tr.classList.toggle("sel", tr.dataset.field === state.fieldId);
+  }
+}
+document.getElementById("guideBtn").addEventListener("click", () => {
+  guidePanel.hidden = !guidePanel.hidden;
+  if (!guidePanel.hidden) updateGuideHighlight();
+});
+document.getElementById("guideClose").addEventListener("click", () => { guidePanel.hidden = true; });
+window.addEventListener("keydown", (e) => { if (e.key === "Escape") guidePanel.hidden = true; });
+for (const tr of guidePanel.querySelectorAll("tbody tr")) {
+  tr.addEventListener("click", () => setField(tr.dataset.field));
+}
+
+function setRunOptions() {
+  ui.run.innerHTML = "";
+  for (const r of state.runs) {
+    const o = document.createElement("option");
+    o.value = `${r.date}:${r.hour}`;
+    o.textContent = `${r.date.slice(4, 6)}/${r.date.slice(6, 8)} ${pad2(r.hour)}Z${r === state.runs[0] ? " (latest)" : ""}`;
+    ui.run.appendChild(o);
+  }
+}
+ui.run.addEventListener("change", () => {
+  const [date, hour] = ui.run.value.split(":");
+  state.run = { date, hour: +hour };
+  clampFhr();
+  refresh();
+});
+
+function clampFhr() {
+  const mx = maxFhr(state.run);
+  ui.fhr.max = mx;
+  if (state.fhr > mx) state.fhr = mx;
+  ui.fhr.value = state.fhr;
+  ui.fhrLabel.textContent = "f" + pad2(state.fhr);
+}
+ui.fhr.addEventListener("input", () => {
+  state.fhr = +ui.fhr.value;
+  ui.fhrLabel.textContent = "f" + pad2(state.fhr);
+  refresh();
+});
+
+function stopPlay() {
+  state.playing = false;
+  clearTimeout(state.playTimer);
+  ui.play.classList.remove("playing");
+  ui.play.innerHTML = "&#9654;";
+}
+ui.play.addEventListener("click", () => {
+  if (state.playing) { stopPlay(); return; }
+  state.playing = true;
+  ui.play.classList.add("playing");
+  ui.play.innerHTML = "&#10074;&#10074;";
+  const step = async () => {
+    if (!state.playing) return;
+    state.fhr = state.fhr >= maxFhr(state.run) ? 0 : state.fhr + 1;
+    ui.fhr.value = state.fhr;
+    ui.fhrLabel.textContent = "f" + pad2(state.fhr);
+    await refresh();
+    state.playTimer = setTimeout(step, 450);
+  };
+  step();
+});
+
+// ---------- boot ----------
+(async function boot() {
+  resize();
+  drawLegend();
+  setStatus("finding latest HRRR run…");
+  try {
+    state.runs = await findRuns();
+  } catch (e) {
+    setStatus(e.message, true);
+    return;
+  }
+  state.run = state.runs[0];
+  setRunOptions();
+  clampFhr();
+  refresh();
+})();
+</script>
+</body>
+</html>
