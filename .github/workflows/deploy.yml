@@ -26,5 +26,6 @@ jobs:
             WWW=/var/www/philipmassouh.com/html
             git -C ~/site pull --ff-only
             rsync -a --delete --exclude src --exclude build.py ~/site/tornado/ "$WWW/tornado/"
+            rsync -a --delete --exclude .git ~/site/food/ "$WWW/food/"
             cp ~/site/index.html "$WWW/index.html"
           '
