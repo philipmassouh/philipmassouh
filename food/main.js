@@ -25,18 +25,21 @@ async function loadRestaurants() {
     validRestaurants = restaurants.filter(hasCoordinates);
     validTrySpots = trySpots.filter(hasCoordinates);
 
-    const map = L.map("map").setView([33.9977671, -118.4748076], 10);
+    const map = L.map("map", {
+        minZoom: 1,
+        maxZoom: 20,
+        maxBounds: [[-85.051129, -Infinity], [85.051129, Infinity]],
+        maxBoundsViscosity: 1,
+    }).setView([33.9977671, -118.4748076], 10);
     leafletMap = map;
     const restaurantLayer = L.layerGroup().addTo(map);
     const tryLayer = L.layerGroup();
 
-    L.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-        {
-            attribution:
-                '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        },
-    ).addTo(map);
+    L.maplibreGL({
+        style: "https://tiles.openfreemap.org/styles/positron",
+        attribution:
+            '<a href="https://openfreemap.org/">OpenFreeMap</a> &copy; <a href="https://www.openmaptiles.org/">OpenMapTiles</a> Data from <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    }).addTo(map);
 
     const controls = document.getElementById("map-controls");
     L.DomEvent.disableClickPropagation(controls);
