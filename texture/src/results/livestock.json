@@ -1,0 +1,58 @@
+{"stores": [{
+  "store": "Livestock",
+  "store_url": "https://www.deadstock.ca",
+  "status": "ok",
+  "note": "Site prices only in CAD (Shopify currency CAD, no USD market). Converted at 1 CAD = 0.7071 USD (frankfurter.app ECB rate, 2026-09-25). Catalog is heavily sneaker/streetwear; picks lean on its workwear and in-house collab side. Palmes trousers in stock in size 52 only; Padmore & Barnes Weaver in sizes 5-8 only.",
+  "vibe": "Vancouver sneaker-and-streetwear institution that mixes hype footwear with a solid bench of workwear (Carhartt WIP, Gramicci) and quiet in-house collabs like its crepe-soled Padmore & Barnes shoes.",
+  "price_range": "$40–$250",
+  "items": [
+    {
+      "store": "Livestock",
+      "item_name": "Carhartt WIP Detroit Jacket - Dark Navy / Black",
+      "brand": "Carhartt WIP",
+      "price_usd": 258.09,
+      "sale_price_usd_or_null": null,
+      "price_note": "CAD $365.00 at 0.7071 USD/CAD",
+      "fabric_and_weight": "100% cotton Dearborn Canvas, 11.3 oz; striped blanket lining in body, nylon taffeta sleeves, contrasting corduroy collar",
+      "fit": "not stated",
+      "product_url": "https://www.deadstock.ca/products/carhartt-wip-detroit-jacket-dark-navy-black",
+      "image_url": "https://cdn.shopify.com/s/files/1/0616/3517/files/I015264-0DI01_carhartt_wip_detroit_jacket_dark_navy__black_1.jpg?v=1787387334&width=800"
+    },
+    {
+      "store": "Livestock",
+      "item_name": "Carhartt WIP Simple Pant Corduroy - Black",
+      "brand": "Carhartt WIP",
+      "price_usd": 159.10,
+      "sale_price_usd_or_null": null,
+      "price_note": "CAD $225.00 at 0.7071 USD/CAD",
+      "fabric_and_weight": "100% cotton Coventry corduroy, 8 wale, 9.7 oz",
+      "fit": "relaxed straight, regular waist",
+      "product_url": "https://www.deadstock.ca/products/carhartt-wip-simple-pant-corduroy-black",
+      "image_url": "https://cdn.shopify.com/s/files/1/0616/3517/files/I027217-8902_carhartt_wip_simple_pant_corduroy__black_2.jpg?v=1788501930&width=800"
+    },
+    {
+      "store": "Livestock",
+      "item_name": "Palmes Lucien Herringbone Trousers - Black",
+      "brand": "Palmes",
+      "price_usd": 212.13,
+      "sale_price_usd_or_null": 84.85,
+      "price_note": "CAD $300.00 regular, on sale CAD $120.00, at 0.7071 USD/CAD",
+      "fabric_and_weight": "100% cotton herringbone; weight not stated; made in Portugal",
+      "fit": "straight leg, elasticated drawcord waist",
+      "product_url": "https://www.deadstock.ca/products/palmes-lucien-herringbone-trousers",
+      "image_url": "https://cdn.shopify.com/s/files/1/0616/3517/files/P60-0022-999_palmes_lucien_herringbone_trousers_A.jpg?v=1757759542&width=800"
+    },
+    {
+      "store": "Livestock",
+      "item_name": "Livestock x Padmore & Barnes Weaver - Grey",
+      "brand": "Padmore & Barnes",
+      "price_usd": 183.85,
+      "sale_price_usd_or_null": 70.71,
+      "price_note": "CAD $260.00 regular, on sale CAD $100.00, at 0.7071 USD/CAD",
+      "fabric_and_weight": "Premium suede upper, square-cut laces, plantation crepe sole (store-exclusive collab)",
+      "fit": "not stated",
+      "product_url": "https://www.deadstock.ca/products/padmore-and-barnes-x-livestock-weavers-grey-the-willow-m387",
+      "image_url": "https://cdn.shopify.com/s/files/1/0616/3517/files/WEAVER_padmore_and_barnes_x_livestock_weavers_grey_1.jpg?v=1704449209&width=800"
+    }
+  ]
+}]}

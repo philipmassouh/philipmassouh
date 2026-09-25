@@ -1,0 +1,58 @@
+{"stores": [{
+  "store": "SSENSE",
+  "store_url": "https://www.ssense.com/en-us/men",
+  "status": "ok",
+  "note": "ssense.com is behind a Cloudflare challenge (curl/WebFetch get 403, and the browser pane shows a CAPTCHA, which was not attempted). Pages were read through Exa's live renderer instead: listing/search pages for USD prices and product pages for fabric, SKU and live status (discontinued products redirect to the designer page; these four resolve and none shows 'Sold Out'). Per-size stock did not render, so 'in stock' rests on each item being live and priced in current listings on 2026-09-25. Several better matches (Merz b. Schwanen BLADE02 waffle sweater $325, Studio Nicholson Riso corduroy straight trousers $435, RRL herringbone utility trousers $345, Polo RL moleskin utility overshirt $213) are listed and priced, but their product URLs could not be found, so they were left out. Three of the four picks are on sale; sale prices come from live listings.",
+  "vibe": "A huge, gallery-like luxury and indie-designer marketplace where avant-garde runway labels sit next to a deep bench of quiet heritage and workwear brands (RRL, A.P.C., Merz b. Schwanen, Lady White Co.) that are easy to miss if you only look at the hype.",
+  "price_range": "$150–$1,500",
+  "items": [
+    {
+      "store": "SSENSE",
+      "item_name": "Brown Dan Chino Trousers",
+      "brand": "A.P.C.",
+      "price_usd": 345,
+      "sale_price_usd_or_null": 293,
+      "price_note": null,
+      "fabric_and_weight": "Organic cotton moleskin, 100% cotton (weight not stated); made in Tunisia",
+      "fit": "Straight-leg, loose-fit, mid-rise (per SSENSE)",
+      "product_url": "https://www.ssense.com/en-us/men/product/apc/brown-dan-chino-trousers/18863531",
+      "image_url": "https://img.ssensemedia.com/images/b_white,g_center,f_auto,q_auto:best,w_800/261252M191022_1/apc-brown-dan-chino-trousers.jpg"
+    },
+    {
+      "store": "SSENSE",
+      "item_name": "Brown Felted Wool Long Sleeve Overshirt",
+      "brand": "Polo Ralph Lauren",
+      "price_usd": 400,
+      "sale_price_usd_or_null": 168,
+      "price_note": null,
+      "fabric_and_weight": "Wool melton, 65% wool / 35% recycled polyester (weight not stated)",
+      "fit": "not stated",
+      "product_url": "https://www.ssense.com/en-us/men/product/polo-ralph-lauren/brown-felted-wool-long-sleeve-overshirt/18644471",
+      "image_url": "https://img.ssensemedia.com/images/b_white,g_center,f_auto,q_auto:best,w_800/261213M192025_1/polo-ralph-lauren-brown-felted-wool-long-sleeve-overshirt.jpg"
+    },
+    {
+      "store": "SSENSE",
+      "item_name": "Khaki 6100056 Organic Cotton Waffle Fleece Sweatshirt",
+      "brand": "Stone Island",
+      "price_usd": 405,
+      "sale_price_usd_or_null": 332,
+      "price_note": null,
+      "fabric_and_weight": "Heavyweight waffle-knit organic cotton, 100% cotton (exact weight not stated)",
+      "fit": "not stated",
+      "product_url": "https://www.ssense.com/en-us/men/product/stone-island/khaki-6100056-organic-cotton-waffle-fleece-sweatshirt/18792281",
+      "image_url": "https://img.ssensemedia.com/images/b_white,g_center,f_auto,q_auto:best,w_800/261828M202028_1/stone-island-khaki-6100056-organic-cotton-waffle-fleece-sweatshirt.jpg"
+    },
+    {
+      "store": "SSENSE",
+      "item_name": "Gray Moonstar Edition Tokio Low Sneakers",
+      "brand": "Lady White Co. x Moonstar",
+      "price_usd": 310,
+      "sale_price_usd_or_null": 205,
+      "price_note": null,
+      "fabric_and_weight": "Brushed cotton moleskin upper, canvas lining, crepe rubber sole; made in Japan",
+      "fit": "Low-top lace-up sneaker (sizing not stated)",
+      "product_url": "https://www.ssense.com/en-us/men/product/lady-white-co/gray-moonstar-edition-tokio-low-sneakers/19087311",
+      "image_url": "https://img.ssensemedia.com/images/b_white,g_center,f_auto,q_auto:best,w_800/261840M237001_1/lady-white-co-gray-moonstar-edition-tokio-low-sneakers.jpg"
+    }
+  ]
+}]}

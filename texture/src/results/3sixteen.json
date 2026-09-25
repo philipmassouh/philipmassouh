@@ -1,0 +1,58 @@
+{"stores": [{
+  "store": "3sixteen",
+  "store_url": "https://www.3sixteen.com",
+  "status": "ok",
+  "note": "Stock and prices verified via Shopify products/<handle>.js on 2026-09-25; prices in USD (US store). Club Jacket is on sale. Fit is not stated explicitly on the jacket, flannel, or crewneck pages.",
+  "vibe": "NYC heritage-workwear label pairing custom Japanese selvedge denim and heavyweight Made-in-Canada fleece with vintage-inspired work jackets and shirts in characterful, texture-forward fabrics.",
+  "price_range": "$60–$495",
+  "items": [
+    {
+      "store": "3sixteen",
+      "item_name": "Club Jacket ~ Wheat Boucle",
+      "brand": "3sixteen",
+      "price_usd": 430,
+      "sale_price_usd_or_null": 320,
+      "price_note": null,
+      "fabric_and_weight": "Wool boucle shell: 76% wool / 15% nylon / 7% alpaca / 2% angora; 100% cotton high-thread-count lining; weight not stated",
+      "fit": "not stated (straight bottom hem, zip-front car-club jacket)",
+      "product_url": "https://www.3sixteen.com/products/club-jacket-wheat-boucle",
+      "image_url": "https://cdn.shopify.com/s/files/1/0028/6132/files/3S-01JAN25-FW25-CLUB-JACKET-WHEAT-BOUCLE-FRONT_CROPPED_A_ONBODY.jpg?v=1757947250&width=800"
+    },
+    {
+      "store": "3sixteen",
+      "item_name": "Crosscut Flannel ~ Brown/Ecru",
+      "brand": "3sixteen",
+      "price_usd": 285,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "100% cotton Japanese flannel, loose weave with coarse yarn for a textured, dry hand; garment washed; weight not stated",
+      "fit": "not stated",
+      "product_url": "https://www.3sixteen.com/products/crosscut-flannel-brown-ecru",
+      "image_url": "https://cdn.shopify.com/s/files/1/0028/6132/files/3S-12DEC25_FW26_CROSSCUT_SHIRT_BROWN_TWEED_FRONT_CROPPED_A_ONBODY.jpg?v=1789765189&width=800"
+    },
+    {
+      "store": "3sixteen",
+      "item_name": "RS-105x ~ Relaxed Straight - Indigo Selvedge",
+      "brand": "3sixteen",
+      "price_usd": 270,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "15.75oz raw indigo selvedge denim, 100% cotton, 3x1 weave with visible cross-hatch, woven by Nihon Menpu (Okayama); sanforized",
+      "fit": "relaxed straight (higher rise, roomy thigh, wider leg opening; 'by no means a baggy fit')",
+      "product_url": "https://www.3sixteen.com/products/rs-105x-relaxed-straight-indigo-selvedge",
+      "image_url": "https://cdn.shopify.com/s/files/1/0028/6132/files/3S-08AUG26_JEANS_RS105X_FRONT_CROPPED_ONBODY.jpg?v=1788880693&width=800"
+    },
+    {
+      "store": "3sixteen",
+      "item_name": "Heavyweight Crewneck ~ Oatmeal",
+      "brand": "3sixteen",
+      "price_usd": 175,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "500gsm custom-knit fleece, brushed interior, 99% cotton / 1% polyester; made in Canada",
+      "fit": "not stated",
+      "product_url": "https://www.3sixteen.com/products/heavyweight-crewneck-oatmeal",
+      "image_url": "https://cdn.shopify.com/s/files/1/0028/6132/files/3S-01JAN26_FLEECE-HEAVYWEIGHT-CREWNECK-OATMEAL-FRONT_CROPPED_B_ONBODY.jpg?v=1771622104&width=800"
+    }
+  ]
+}]}

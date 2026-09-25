@@ -1,0 +1,106 @@
+{"stores": [
+{
+  "store": "Arpenteur",
+  "store_url": "https://www.arpenteur.fr",
+  "status": "ok",
+  "note": "arpenteur.com fails TLS handshake (unreachable); the brand's own Shopify store is www.arpenteur.fr, used here. Prices are the site's official USD market prices (?currency=USD; page states 'Taxes and duties included', DDP to US), which run ~28% above EUR list. Most knitwear/outerwear is over $500 USD (e.g. Source brushed merino-cashmere crewneck $505, Track P wool tweed trousers $695), so picks are limited. Sidewalk sneaker's description cites 1980s skate references but it is a Japanese vulcanized suede gym shoe.",
+  "vibe": "Quiet French utilitarian menswear — Japanese-made denim, dense merino knits and collaborations with Paraboot and Moonstar in a muted black/charcoal/midnight palette.",
+  "price_range": "$175–$1,300",
+  "items": [
+    {
+      "store": "Arpenteur",
+      "item_name": "4 Pocket (Regular) — Indigo",
+      "brand": "Arpenteur",
+      "price_usd": 480,
+      "sale_price_usd_or_null": null,
+      "price_note": "Official USD price on arpenteur.fr (duties included); EUR list price €375",
+      "fabric_and_weight": "100% cotton twill Japanese denim, washed to raise a fuzzy nap; weight not stated; made in Japan",
+      "fit": "Regular cut, mid-rise, straight seamless leg (no side seam)",
+      "product_url": "https://www.arpenteur.fr/products/4-pocket-regular-indigo",
+      "image_url": "https://cdn.shopify.com/s/files/1/1011/3515/5587/files/4PO_REG_IND_1_c1be6ede-fb28-4b39-a05d-404aba5688db.jpg?v=1788859782"
+    },
+    {
+      "store": "Arpenteur",
+      "item_name": "Sidewalk (Moonstar) — Brownie Suede",
+      "brand": "Arpenteur x Moonstar",
+      "price_usd": 410,
+      "sale_price_usd_or_null": null,
+      "price_note": "Official USD price on arpenteur.fr (duties included); EUR list price €320",
+      "fabric_and_weight": "Japanese-sourced suede upper, cotton canvas lining, vulcanized sole, waxed cotton laces; made in Japan",
+      "fit": "Mid-top gym shoe; sized in cm (25–30cm in stock)",
+      "product_url": "https://www.arpenteur.fr/products/sidewalk-brownie-suede",
+      "image_url": "https://cdn.shopify.com/s/files/1/1011/3515/5587/files/Arpenteur_Moonstar_SideWalk_BrownieSuede_1_c4b53021-75bf-4373-bb09-e3786036f6c4.jpg?v=1777380115"
+    },
+    {
+      "store": "Arpenteur",
+      "item_name": "Fantôme transformable beanie/balaclava — Heather Grey",
+      "brand": "Arpenteur",
+      "price_usd": 315,
+      "sale_price_usd_or_null": null,
+      "price_note": "Official USD price on arpenteur.fr (duties included); EUR list price €245",
+      "fabric_and_weight": "Details list 100% cashmere rib knit (description says merino wool and cashmere); seamless; made in France",
+      "fit": "One size, rib-knit stretch",
+      "product_url": "https://www.arpenteur.fr/products/fantome-heather-grey",
+      "image_url": "https://cdn.shopify.com/s/files/1/1011/3515/5587/files/FANTOME_CHARC_1_6a0e5958-3c6d-4aaa-9382-e9e5fcdf2e7a.jpg?v=1788869674"
+    }
+  ]
+},
+{
+  "store": "De Bonne Facture",
+  "store_url": "https://debonnefacture.fr",
+  "status": "ok",
+  "note": "Prices are the site's official USD market prices (?currency=USD), notably higher than EUR list (~1.3–1.45x). Most jackets, coats and wool trousers exceed $500 USD (e.g. wide-wale corduroy balloon trousers $565, bouclé crewneck $520), so picks skew to knits, drill trousers, shirts and slippers.",
+  "vibe": "Atelier-made French wardrobe staples inspired by vintage workwear and tailoring — heavy drills, brushed wools, tweeds and flannels in earthy browns and olives, each piece credited to its maker.",
+  "price_range": "$165–$2,700",
+  "items": [
+    {
+      "store": "De Bonne Facture",
+      "item_name": "Shaggy Sheep Jumper — Soft Brushed Wool, Heathered Bark Brown",
+      "brand": "De Bonne Facture",
+      "price_usd": 324,
+      "sale_price_usd_or_null": null,
+      "price_note": "Official USD price on debonnefacture.fr; EUR list price €245",
+      "fabric_and_weight": "100% mulesing-free New Zealand merino wool, brushed shaggy finish; weight not stated; knitted in Bergamo, Italy",
+      "fit": "Comfortable (per site); fully fashioned crew neck",
+      "product_url": "https://debonnefacture.fr/products/shaggy-sheep-jumper-soft-brushed-wool-heathered-bark-brown-fw26-drop-1",
+      "image_url": "https://cdn.shopify.com/s/files/1/0097/1184/5439/files/De-Bonne-Facture---Autumn-Winter-2026---Edition-27---1_7c7969df-046d-48d1-be66-a68ad982db0b.jpg?v=1784895917"
+    },
+    {
+      "store": "De Bonne Facture",
+      "item_name": "Balloon Trousers — Heavy Cotton Drill, Bark Brown",
+      "brand": "De Bonne Facture",
+      "price_usd": 420,
+      "sale_price_usd_or_null": null,
+      "price_note": "Official USD price on debonnefacture.fr; EUR list price €295",
+      "fabric_and_weight": "Heavy cotton drill, 100% cotton (US cotton, woven in Turkey); weight not stated; made in Bagnolet, France",
+      "fit": "Comfortable 'balloon' fit, ample — vintage French carpenter trouser shape",
+      "product_url": "https://debonnefacture.fr/products/balloon-trousers-heavy-cotton-drill-bark-brown-fw26-drop-1",
+      "image_url": "https://cdn.shopify.com/s/files/1/0097/1184/5439/files/De-Bonne-Facture---Autumn-Winter-2026---Edition-27---1.jpg?v=1783586385"
+    },
+    {
+      "store": "De Bonne Facture",
+      "item_name": "Artist Shirt — Cotton & Hemp Gabardine, White",
+      "brand": "De Bonne Facture",
+      "price_usd": 450,
+      "sale_price_usd_or_null": null,
+      "price_note": "Official USD price on debonnefacture.fr; EUR list price €295",
+      "fabric_and_weight": "78% cotton, 22% hemp gabardine, woven in Japan; weight not stated; made in Portugal",
+      "fit": "Comfortable (per site); two flap chest pockets, elongated French collar",
+      "product_url": "https://debonnefacture.fr/products/artist-shirt-cotton-hemp-gabardine-white-fw26-drop-1",
+      "image_url": "https://cdn.shopify.com/s/files/1/0097/1184/5439/files/De-Bonne-Facture---Autumn-Winter-2026---Edition-27---1_cb9d3d99-1163-49bf-8935-99972f71b06d.jpg?v=1784895390"
+    },
+    {
+      "store": "De Bonne Facture",
+      "item_name": "Slippers Made by Steve Mono — Dark Brown",
+      "brand": "De Bonne Facture x Steve Mono",
+      "price_usd": 385,
+      "sale_price_usd_or_null": null,
+      "price_note": "Official USD price on debonnefacture.fr; EUR list price €290",
+      "fabric_and_weight": "Vegetable-tanned Tuscan calfskin upper, calfskin insole, crepe rubber sole; hand-painted stitching; made in Cáceres, Spain",
+      "fit": "True to size, leather relaxes (EU 40, 41, 44 in stock)",
+      "product_url": "https://debonnefacture.fr/products/slippers-made-by-steve-mono-vegetable-tanned-calfskin-leather-dark-brown-ss26-drop4",
+      "image_url": "https://cdn.shopify.com/s/files/1/0097/1184/5439/files/DE-BON_1_c25d9309-0088-4197-brown-a96d-7fd469821572.jpg?v=1775576697"
+    }
+  ]
+}
+]}

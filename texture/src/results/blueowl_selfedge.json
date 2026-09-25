@@ -1,0 +1,120 @@
+{
+  "stores": [
+    {
+      "store": "Blue Owl",
+      "store_url": "https://blueowl.us",
+      "status": "ok",
+      "note": "Stock verified via Shopify products/<handle>.js on 2026-09-25. Huge Japanese-denim catalog (~170 in-stock jeans); Portuguese Flannel and UES are deep here.",
+      "vibe": "A Seattle heritage-denim den stacked with Japanese selvedge (Samurai, Pure Blue Japan, Momotaro, UES) plus loopwheel sweats, heavy flannels and workwear, serious about fabric and fades.",
+      "price_range": "$150–$500",
+      "items": [
+        {
+          "store": "Blue Owl",
+          "sale_price_usd_or_null": null,
+          "price_note": null,
+          "item_name": "\"Indigo x Sumi\" 16oz Rinsed Double Nep Selvedge Denim - Relaxed Tapered Fit",
+          "brand": "Pure Blue Japan",
+          "price_usd": 495,
+          "fabric_and_weight": "16oz Japanese Double Nep selvedge denim, indigo rope-dyed warp x sumi-ink black weft, loose-weave heavy slub, 100% cotton",
+          "fit": "Relaxed tapered (019): extra room in the top block, strong taper from the knee",
+          "product_url": "https://blueowl.us/products/indigo-x-sumi-16oz-rinsed-double-nep-selvedge-denim-relaxed-tapered-fit",
+          "image_url": "https://cdn.shopify.com/s/files/1/0796/5485/files/2026_08_Product_PureBlueJapan_DNP-019-IDSM16ozDoubleNepJeansRelaxedTaperedWash_394.jpg?v=1786402030&width=800"
+        },
+        {
+          "store": "Blue Owl",
+          "sale_price_usd_or_null": null,
+          "price_note": null,
+          "item_name": "Labura Herringbone Wool Chore Coat in Brown",
+          "brand": "Portuguese Flannel",
+          "price_usd": 385,
+          "fabric_and_weight": "Herringbone-weave wool, 100% virgin wool (weight not stated)",
+          "fit": "Regular fit (described as a roomy silhouette with a straight hem)",
+          "product_url": "https://blueowl.us/products/labura-herringbone-wool-chore-coat-in-brown",
+          "image_url": "https://cdn.shopify.com/s/files/1/0796/5485/files/2025_08_Product_PortugueseFlannel_LaburaHerringboneWoolChoreCoatinBrown_340.jpg?v=1754598060&width=800"
+        },
+        {
+          "store": "Blue Owl",
+          "sale_price_usd_or_null": null,
+          "price_note": null,
+          "item_name": "Slubby Flannel Shirt in Green",
+          "brand": "UES",
+          "price_usd": 265,
+          "fabric_and_weight": "8.8oz slub selvedge flannel with a brushed interior, woven on a Schoenherr shuttle loom, 100% cotton",
+          "fit": "not stated",
+          "product_url": "https://blueowl.us/products/slubby-flannel-shirt-in-green",
+          "image_url": "https://cdn.shopify.com/s/files/1/0796/5485/files/2026_08_Product_UES_SlubbyFlannelShirtinGreen_1.jpg?v=1786038272&width=800"
+        },
+        {
+          "store": "Blue Owl",
+          "sale_price_usd_or_null": null,
+          "price_note": null,
+          "item_name": "10oz Loopwheel Crewneck Sweatshirt in Grey",
+          "brand": "The Real McCoy's",
+          "price_usd": 265,
+          "fabric_and_weight": "10oz brushed loopback French terry knit on Tsuriami-ki loopwheel machines, 100% cotton",
+          "fit": "Vintage fit",
+          "product_url": "https://blueowl.us/products/10oz-loopwheel-crewneck-sweatshirt-in-grey",
+          "image_url": "https://cdn.shopify.com/s/files/1/0796/5485/files/2026_09_Product_TheRealMcCoy_s_10ozLoopwheelCrewneckSweatshirtinGrey_1.jpg?v=1789322349&width=800"
+        }
+      ]
+    },
+    {
+      "store": "Self Edge",
+      "store_url": "https://www.selfedge.com",
+      "status": "ok",
+      "note": "Self Edge runs on OpenCart, not Shopify. Stock was checked from the per-size counts on each product page (e.g. '4+ left in stock'). The page-level 'In Stock' label shows even when every size is sold out, so it can't be trusted. Product URLs use the site's index.php?route=product/product&product_id= form.",
+      "vibe": "A cult Japanese-repro and heavy-denim specialist (Iron Heart, Flat Head, Studio D'Artisan, Boncoura, Samurai) with lots of store exclusives, where the fabric is the point: slub, nep, loopwheel, horsehide.",
+      "price_range": "$200–$600",
+      "items": [
+        {
+          "store": "Self Edge",
+          "sale_price_usd_or_null": null,
+          "price_note": null,
+          "item_name": "Boncoura CPO Shirt - Dark Navy Moleskin",
+          "brand": "Boncoura",
+          "price_usd": 455,
+          "fabric_and_weight": "Boncoura original high-density Japanese-milled cotton moleskin, brushed low-pile surface, 100% cotton (weight not stated)",
+          "fit": "not stated",
+          "product_url": "https://www.selfedge.com/index.php?route=product/product&product_id=3899",
+          "image_url": "https://images.selfedge.com/cache/catalog/20250809/Boncoura-CPO-Shirt-Dark-Navy-Moleskin-001-680x1025.jpg"
+        },
+        {
+          "store": "Self Edge",
+          "sale_price_usd_or_null": null,
+          "price_note": null,
+          "item_name": "Seuvas Herringbone Trucker Jacket - Logwood Dyed",
+          "brand": "Seuvas",
+          "price_usd": 430,
+          "fabric_and_weight": "23oz cotton herringbone canvas (Australian & USA cotton), woven in Kurashiki, garment-dyed in logwood",
+          "fit": "not stated",
+          "product_url": "https://www.selfedge.com/index.php?route=product/product&product_id=3941",
+          "image_url": "https://images.selfedge.com/cache/catalog/20251003/Seuvas-Herringbone-Trucker-Jacket-Logwood-Dyed-001-680x1025.jpg"
+        },
+        {
+          "store": "Self Edge",
+          "sale_price_usd_or_null": null,
+          "price_note": null,
+          "item_name": "Studio D'Artisan SD-1001 15oz Slubby GL3 Denim Jeans - Classic Straight Leg",
+          "brand": "Studio D'Artisan",
+          "price_usd": 365,
+          "fabric_and_weight": "15oz slubby Japanese selvedge indigo denim, unsanforized (but rinsed), slub yarn cotton",
+          "fit": "Classic straight leg",
+          "product_url": "https://www.selfedge.com/index.php?route=product/product&product_id=3808",
+          "image_url": "https://images.selfedge.com/cache/catalog/20250404/Studio-DArtisan-SD-1001-15oz-Slubby-GL3-Denim-jeans-Classic-Straight-Leg-001-680x1025.jpg"
+        },
+        {
+          "store": "Self Edge",
+          "sale_price_usd_or_null": null,
+          "price_note": null,
+          "item_name": "Pure Blue Japan Tweed Check Flannel",
+          "brand": "Pure Blue Japan",
+          "price_usd": 300,
+          "fabric_and_weight": "PBJ-developed flannel of twisted multi-colored yarns with a tweed-like look, 100% cotton (weight not stated)",
+          "fit": "not stated",
+          "product_url": "https://www.selfedge.com/index.php?route=product/product&product_id=3760",
+          "image_url": "https://images.selfedge.com/cache/catalog/20250224/Pure-Blue-Japan-Tweed-Check-Flannel-001-680x1025.jpg"
+        }
+      ]
+    }
+  ]
+}

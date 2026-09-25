@@ -1,0 +1,118 @@
+{"stores": [
+{
+  "store": "Standard & Strange",
+  "store_url": "https://standardandstrange.com",
+  "status": "ok",
+  "note": "Stock checked via Shopify product .js on 2026-09-25. Ripple Cord jacket and Dawson flannel are on sale (compare-at price shown on site). Price range is roughly the 10th-90th percentile of in-stock items; boots (Viberg, Clinch) mostly sit above $500.",
+  "vibe": "Heritage workwear and Japanese repro shop: raw denim, loopwheel sweats, Japanese and Californian indie labels, with an eye for odd, textural fabrics.",
+  "price_range": "$95–$900",
+  "items": [
+    {
+      "store": "Standard & Strange",
+      "item_name": "Ripple Cord Aim Jacket - Deep Sea Navy",
+      "brand": "Black Sign",
+      "price_usd": 450,
+      "sale_price_usd_or_null": 390,
+      "price_note": null,
+      "fabric_and_weight": "100% cotton 8-wale corduroy with diagonal beige stripe detail, medium weight (oz not stated); made in Japan",
+      "fit": "relaxed fit, collarless hunting jacket with padded shooting shoulder, bi-swing back, half belt",
+      "product_url": "https://standardandstrange.com/products/ripple-cord-aim-jacket-deep-sea-navy",
+      "image_url": "https://cdn.shopify.com/s/files/1/0352/5633/files/BlackSign-RippleCordAimJacket-DeepSeaNavy-Flat-75.jpg?v=1768942227&width=800"
+    },
+    {
+      "store": "Standard & Strange",
+      "item_name": "Dawson Heavy Flannel Shirt - Brown / Olive / Turquoise / Ecru",
+      "brand": "Indigofera",
+      "price_usd": 329,
+      "sale_price_usd_or_null": 299,
+      "price_note": null,
+      "fabric_and_weight": "100% cotton unbrushed plaid flannel with corduroy-lined collar and cuffs (weight not stated); made in Portugal",
+      "fit": "relaxed fit western shirt with trim torso (per store)",
+      "product_url": "https://standardandstrange.com/products/dawson-heavy-flannel-shirt-brown-olive-turquoise-ecru",
+      "image_url": "https://cdn.shopify.com/s/files/1/0352/5633/files/Indigofera-DawsonHeavyFlannelShirt-Brown-Olive-Turquoise-Ecru-Flat-09.jpg?v=1768942038&width=800"
+    },
+    {
+      "store": "Standard & Strange",
+      "item_name": "10 oz Loopwheel Crewneck Sweatshirt - Olive",
+      "brand": "The Real McCoy's",
+      "price_usd": 210,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "10oz 100% cotton loopwheel fleece knit in Wakayama, brushed interior; made in Japan",
+      "fit": "true to size, snug vintage-style fit",
+      "product_url": "https://standardandstrange.com/products/10-oz-loopwheel-crewneck-sweatshirt-olive",
+      "image_url": "https://cdn.shopify.com/s/files/1/0352/5633/files/TheRealMcCoy_s-10ozLoopwheelCrewneckSweatshirt-Olive-Flat-49.jpg?v=1769531125&width=800"
+    },
+    {
+      "store": "Standard & Strange",
+      "item_name": "Ortega Pant - French Corduroy",
+      "brand": "Freenote",
+      "price_usd": 320,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "100% cotton custom thick, plush French-workwear-inspired corduroy, raw/unwashed (oz not stated); made in USA",
+      "fit": "high rise, full thigh, relaxed straight leg (carpenter pant); runs large",
+      "product_url": "https://standardandstrange.com/products/ortega-pant-french-corduroy",
+      "image_url": "https://cdn.shopify.com/s/files/1/0352/5633/files/Freenote-OrtegaPant-FrenchCorduroy-Flat-39.jpg?v=1778893285&width=800"
+    }
+  ]
+},
+{
+  "store": "Division Road",
+  "store_url": "https://divisionroadinc.com",
+  "status": "ok",
+  "note": "Stock checked via Shopify product .js on 2026-09-25. Freenote Benson tweed (limited to 30) and Goral Mellor High (limited to 25) are Division Road exclusives. Benson only has L-XXXL left. Price range is roughly the 10th-90th percentile of in-stock items; many boots run above $500.",
+  "vibe": "Well-curated heritage menswear: Japanese heavyweight denim, Iron Heart and Freenote workwear, European knitwear and handmade boots, often in DR-exclusive fabrics.",
+  "price_range": "$185–$930",
+  "items": [
+    {
+      "store": "Division Road",
+      "item_name": "888S-SLB - High Rise Relaxed Tapered - 16oz Slubby Selvedge Indigo",
+      "brand": "Iron Heart",
+      "price_usd": 350,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "16oz Japanese low-tension irregular slubby selvedge denim, 100% cotton, sanforized, once washed; made in Japan",
+      "fit": "high rise relaxed tapered (roomy seat, broad thigh, tapered leg)",
+      "product_url": "https://divisionroadinc.com/products/iron-heart-888s-slb-high-rise-relaxed-tapered-16oz-slubby-selvedge-indigo",
+      "image_url": "https://cdn.shopify.com/s/files/1/1405/5278/files/DivisionRoad_IronHeart_008_acd05081-3d29-4895-80c4-6d809300672b.jpg?v=1787076625&width=800"
+    },
+    {
+      "store": "Division Road",
+      "item_name": "Robust Crewneck - Terra Magma Brown",
+      "brand": "S.N.S. Herning",
+      "price_usd": 425,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "100% merino wool, 5-gauge multi-patterned knit, medium weight; made in Italy",
+      "fit": "classic fit",
+      "product_url": "https://divisionroadinc.com/products/s-n-s-herning-robust-crewneck-terra-magma-brown",
+      "image_url": "https://cdn.shopify.com/s/files/1/1405/5278/files/DivisionRoad_S.N.S.Herning_0081_3fa86c61-bf63-4d6f-a293-5d71293e882d.jpg?v=1789750285&width=800"
+    },
+    {
+      "store": "Division Road",
+      "item_name": "Benson - Abraham Moon Shetland Estate Tweed - Olive Check",
+      "brand": "Freenote Cloth",
+      "price_usd": 435,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "14oz Abraham Moon Shetland Estate tweed, 100% British Shetland wool, cotton/rayon lined yoke and sleeves; made in USA",
+      "fit": "classic fit shirt-jacket",
+      "product_url": "https://divisionroadinc.com/products/freenote-cloth-benson-abraham-moon-shetland-estate-tweed-olive-check",
+      "image_url": "https://cdn.shopify.com/s/files/1/1405/5278/files/DivisionRoad_FreenoteCloth_010_1_f3447365-c2e0-4e2e-9a59-a6e7ed4f1284.jpg?v=1755880354&width=800"
+    },
+    {
+      "store": "Division Road",
+      "item_name": "Mellor High - G1 - TPS 70 Shore - Badalassi Noce Nofin",
+      "brand": "Goral",
+      "price_usd": 485,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "Badalassi Carlo Noce Nofin vachetta leather upper, leather lined, Blake welted, black TPS sole; handmade in England",
+      "fit": "6-inch high-top boot on G1 Toledo last; UK sizing, take a half size down from Red Wing/Alden",
+      "product_url": "https://divisionroadinc.com/products/goral-mellor-high-g1-tps-70-shore-badalassi-noce-nofin",
+      "image_url": "https://cdn.shopify.com/s/files/1/1405/5278/files/DivisionRoad_Goral_007.jpg?v=1783980391&width=800"
+    }
+  ]
+}
+]}

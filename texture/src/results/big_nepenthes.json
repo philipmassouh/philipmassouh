@@ -1,0 +1,120 @@
+{
+  "stores": [
+    {
+      "store": "Blue in Green",
+      "store_url": "https://blueingreensoho.com",
+      "status": "ok",
+      "note": "Denim-heavy Japanese workwear shop. Double Nep jeans had only size 36 in stock when checked (sizes 38+ list at $475).",
+      "vibe": "A SoHo institution for Japanese selvedge denim and heritage workwear (Pure Blue Japan, Kapital, Fullcount, Samurai) that also carries store-exclusive fits and artisan-made one-offs.",
+      "price_range": "$80–$600",
+      "items": [
+        {
+          "store": "Blue in Green",
+          "item_name": "DNP-003-IDSM 16oz Double Nep Jeans Regular Straight",
+          "brand": "Pure Blue Japan",
+          "price_usd": 438,
+          "sale_price_usd_or_null": null,
+          "price_note": null,
+          "fabric_and_weight": "16oz Japanese selvedge double-nep denim (nep yarns in warp and weft), indigo warp x sumi-ink weft, 100% cotton; herringbone twill pocket lining",
+          "fit": "regular straight",
+          "product_url": "https://blueingreensoho.com/products/dnp-003-idsm-16oz-double-nep-jeans-regular-straight",
+          "image_url": "https://cdn.shopify.com/s/files/1/0789/4323/files/IMG_0003-Edit_5751a11b-05f2-4ab2-ac37-337165a5b8b2.jpg?v=1786053851&width=800"
+        },
+        {
+          "store": "Blue in Green",
+          "item_name": "Yume Jacket : HBT - Olive",
+          "brand": "Edwin Arthur's",
+          "price_usd": 465,
+          "sale_price_usd_or_null": null,
+          "price_note": null,
+          "fabric_and_weight": "Hard-twisted organic cotton herringbone twill, rayon twill pocket bags; weight not stated",
+          "fit": "vintage workwear cut, roomy through body and shoulders, slightly longer body and sleeves",
+          "product_url": "https://blueingreensoho.com/products/yume-jacket-hbt-olive",
+          "image_url": "https://cdn.shopify.com/s/files/1/0789/4323/files/ea-_0001s_0005_Layer14.jpg?v=1789860624&width=800"
+        },
+        {
+          "store": "Blue in Green",
+          "item_name": "Shirt Jacket (Blue in Green Fit) - Natural",
+          "brand": "Original Madras Trading Co.",
+          "price_usd": 286,
+          "sale_price_usd_or_null": null,
+          "price_note": null,
+          "fabric_and_weight": "Handloomed herringbone twill, 100% Indian cotton, corozo buttons; weight not stated",
+          "fit": "standard fit (Blue in Green exclusive pattern)",
+          "product_url": "https://blueingreensoho.com/products/shirt-jacket-blue-in-green-fit-natural-1",
+          "image_url": "https://cdn.shopify.com/s/files/1/0789/4323/files/IMG_1012-Edit_9253e847-4cb7-426d-af28-ad2c74f26352.jpg?v=1788533195&width=800"
+        },
+        {
+          "store": "Blue in Green",
+          "item_name": "Peace High Boots Men - Moka Suede",
+          "brand": "Chamula",
+          "price_usd": 330,
+          "sale_price_usd_or_null": null,
+          "price_note": null,
+          "fabric_and_weight": "Soft-tanned cow suede upper and insole, hand-beaded toe embroidery, handmade in Canada",
+          "fit": "not stated (high moccasin boot)",
+          "product_url": "https://blueingreensoho.com/products/peace-high-boots-men-moka-suede",
+          "image_url": "https://cdn.shopify.com/s/files/1/0789/4323/files/IMG_0384_3e9331fb-dddf-4e51-bdd0-668f803cb4ad.jpg?v=1787883282&width=800"
+        }
+      ]
+    },
+    {
+      "store": "Nepenthes New York",
+      "store_url": "https://nepenthesny.com",
+      "status": "ok",
+      "note": "nepenthesny.com is a WordPress editorial site with no shop; its shop links go to nepenthesamerica.com (Nepenthes' own US webstore serving NY/LA), so items and prices come from there (USD). Product pages for EG shirt and Workaday jacket list only fiber content, no weight.",
+      "vibe": "The Garment District home of Engineered Garments and Needles: Americana, military and ivy staples reworked with odd patterns, pocket-heavy details and a lot of flannel, corduroy and moleskin.",
+      "price_range": "$80–$580",
+      "items": [
+        {
+          "store": "Nepenthes New York",
+          "item_name": "Work Shirt - Khaki Cotton Heavy Shadow Plaid Flannel",
+          "brand": "Engineered Garments",
+          "price_usd": 432,
+          "sale_price_usd_or_null": null,
+          "price_note": null,
+          "fabric_and_weight": "Heavy shadow plaid flannel, 100% cotton; weight not stated; made in USA",
+          "fit": "not stated (EG work shirt)",
+          "product_url": "https://nepenthesamerica.com/products/work-shirt-khaki-cotton-heavy-shadow-plaid-flannel",
+          "image_url": "https://cdn.shopify.com/s/files/1/0074/0062/0103/files/WORKSHIRTZT253-1.jpg?v=1783887870&width=800"
+        },
+        {
+          "store": "Nepenthes New York",
+          "item_name": "Officer Pant - Dk. Brown Cotton 4.5W Corduroy",
+          "brand": "Engineered Garments",
+          "price_usd": 408,
+          "sale_price_usd_or_null": null,
+          "price_note": null,
+          "fabric_and_weight": "4.5-wale corduroy with a pronounced rib, thick full-bodied cloth, 100% cotton",
+          "fit": "slightly wide, tapered",
+          "product_url": "https://nepenthesamerica.com/products/officer-pant-dk-brown-cotton-4-5w-corduroy",
+          "image_url": "https://cdn.shopify.com/s/files/1/0074/0062/0103/files/OFFICERPANTSD0068-1.jpg?v=1788715459&width=800"
+        },
+        {
+          "store": "Nepenthes New York",
+          "item_name": "Utility Jacket - Camel Cotton Moleskin",
+          "brand": "EG Workaday (Engineered Garments)",
+          "price_usd": 444,
+          "sale_price_usd_or_null": null,
+          "price_note": null,
+          "fabric_and_weight": "Cotton moleskin, 100% cotton; weight not stated; made in USA",
+          "fit": "not stated",
+          "product_url": "https://nepenthesamerica.com/products/eg-workaday-utility-jacket-camel-cotton-moleskin",
+          "image_url": "https://cdn.shopify.com/s/files/1/0074/0062/0103/files/UTILITYJACKETSD058-1.jpg?v=1761944934&width=800"
+        },
+        {
+          "store": "Nepenthes New York",
+          "item_name": "Tassel Bit Unlined Slip-on - Roughout - Taupe",
+          "brand": "Needles",
+          "price_usd": 386,
+          "sale_price_usd_or_null": null,
+          "price_note": null,
+          "fabric_and_weight": "Rough-out cowhide leather upper, unlined; made in Portugal",
+          "fit": "not stated (EU sizing)",
+          "product_url": "https://nepenthesamerica.com/products/tassel-bit-unlined-slip-on-roughout-taupe",
+          "image_url": "https://cdn.shopify.com/s/files/1/0074/0062/0103/files/NS325A-0.fix.jpg?v=1787639804&width=800"
+        }
+      ]
+    }
+  ]
+}

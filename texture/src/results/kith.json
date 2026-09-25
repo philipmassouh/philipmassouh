@@ -1,0 +1,58 @@
+{"stores": [{
+  "store": "Kith",
+  "store_url": "https://kith.com",
+  "status": "ok",
+  "note": "Most in-house Kith knits/tweeds are synthetic-heavy blends (acrylic/poly with some wool); fabric details are as stated on product pages. Paraboot Malo has limited sizes left (US 8, 9.5, 10.5, 11).",
+  "vibe": "Polished NYC streetwear-meets-prep emporium where in-house seasonal collections of tweeds, bouclé and garment-dyed denim sit alongside heritage footwear like Paraboot and Clarks, plus a big sneaker wall.",
+  "price_range": "$65–$500",
+  "items": [
+    {
+      "store": "Kith",
+      "item_name": "Kith Patchwork Tweed Johnson Shirt - Saddle",
+      "brand": "Kith",
+      "price_usd": 345,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "Patchwork tweed, 45% acrylic / 30% cotton / 21% wool / 4% nylon; crochet trim at yoke; weight not stated",
+      "fit": "Relaxed silhouette, standard fit, true to size",
+      "product_url": "https://kith.com/products/khma030082-201",
+      "image_url": "https://cdn.shopify.com/s/files/1/0094/2252/files/KHMA030082-201-Detail.jpg?v=1787687611&width=800"
+    },
+    {
+      "store": "Kith",
+      "item_name": "Kith Herringbone Denim Galen Jeans - Mineral",
+      "brand": "Kith",
+      "price_usd": 210,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "Herringbone denim, 100% cotton, garment-dyed and washed; weight not stated",
+      "fit": "Tapered, mid-rise, standard fit; curved side seams with darts at the leg cuffs",
+      "product_url": "https://kith.com/products/khma060082-2024",
+      "image_url": "https://cdn.shopify.com/s/files/1/0094/2252/files/KHMA060082-2024-Detail.jpg?v=1787687688&width=800"
+    },
+    {
+      "store": "Kith",
+      "item_name": "Kith Boucle Ulysses Sweater - Nocturnal",
+      "brand": "Kith",
+      "price_usd": 220,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "Bouclé knit, 58% acrylic / 30% polyester / 10% wool / 2% spandex; striped artwork on front and sleeves; weight not stated",
+      "fit": "Roomy silhouette, standard fit, true to size",
+      "product_url": "https://kith.com/products/khma030157-413",
+      "image_url": "https://cdn.shopify.com/s/files/1/0094/2252/files/KHMA030157-413-Detail.jpg?v=1787687404&width=800"
+    },
+    {
+      "store": "Kith",
+      "item_name": "Paraboot Malo - Marron / Vel Cognac",
+      "brand": "Paraboot",
+      "price_usd": 410,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "Suede upper, Blake stitching, leather rope laces, rubber outsole",
+      "fit": "not stated",
+      "product_url": "https://kith.com/products/pb95827",
+      "image_url": "https://cdn.shopify.com/s/files/1/0094/2252/files/PB95827Malo_RaidMarronVeloursCognac_0731.jpg?v=1778688146&width=800"
+    }
+  ]
+}]}

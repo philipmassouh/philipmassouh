@@ -1,0 +1,58 @@
+{"stores": [{
+  "store": "Goodhood",
+  "store_url": "https://goodhoodstore.com",
+  "status": "ok",
+  "note": "USD prices taken from Goodhood's own US storefront (goodhoodstore.com/en-us/, currency USD); GBP equivalents noted per item. Catalogue skews streetwear (Stussy, Nike, Aries), so picks lean on the tailoring/workwear/knit side of the mix. Wallabee sizes are UK.",
+  "vibe": "East London concept store mixing streetwear, Scandi/Japanese contemporary labels and homeware, with a playful, colour-forward edge alongside quieter tailoring and workwear.",
+  "price_range": "$70–$450",
+  "items": [
+    {
+      "store": "Goodhood",
+      "item_name": "Sunflower Bridge Cord Trouser - Light Grey",
+      "brand": "Sunflower",
+      "price_usd": 355,
+      "sale_price_usd_or_null": null,
+      "price_note": "USD from Goodhood US storefront; UK price £255",
+      "fabric_and_weight": "100% cotton fine-wale corduroy; weight not stated; made in Portugal",
+      "fit": "Regular fit, straight leg, pleated front",
+      "product_url": "https://goodhoodstore.com/products/sunflower-bridge-cord-trouser-light-grey",
+      "image_url": "https://cdn.shopify.com/s/files/1/0321/4373/6963/files/sunflower-beridge-cordd-trouser---light-grey_9891f4d3-bd22-4f1f-b64b-fd95b0b18e18.jpg?v=1789031285&width=800"
+    },
+    {
+      "store": "Goodhood",
+      "item_name": "Earth People Halstead Painters Jacket - Washed Indigo",
+      "brand": "Earth People",
+      "price_usd": 180,
+      "sale_price_usd_or_null": null,
+      "price_note": "USD from Goodhood US storefront; UK price £130",
+      "fabric_and_weight": "13.75oz 2x1 twill denim, 100% cotton, washed indigo; made in India",
+      "fit": "not stated (classic painter's jacket silhouette)",
+      "product_url": "https://goodhoodstore.com/products/earth-people-halstead-painters-jacket-washed-indigo",
+      "image_url": "https://cdn.shopify.com/s/files/1/0321/4373/6963/files/Earth_People_Halstead_Painters_Jacket_-_Washed_Indigo_698750c5-3db3-44d7-9a11-566076d363b8.jpg?v=1790002051&width=800"
+    },
+    {
+      "store": "Goodhood",
+      "item_name": "Sunflower Yak Sweater - Dark Oat",
+      "brand": "Sunflower",
+      "price_usd": 335,
+      "sale_price_usd_or_null": null,
+      "price_note": "USD from Goodhood US storefront; UK price £240",
+      "fabric_and_weight": "5gg brushed rib knit; 31% yak, 31% alpaca, 16% merino wool, 22% polyamide",
+      "fit": "Relaxed crew neck, slight dropped shoulder",
+      "product_url": "https://goodhoodstore.com/products/sunflower-yak-sweater-dark-oat",
+      "image_url": "https://cdn.shopify.com/s/files/1/0321/4373/6963/files/sunflower_yak_sweater_-_dark_oat_8cc81ca4-4e41-403d-863e-a6ccb73c4c9a.jpg?v=1788874598&width=800"
+    },
+    {
+      "store": "Goodhood",
+      "item_name": "Clarks Originals Wallabee - Dark Brown Suede",
+      "brand": "Clarks Originals",
+      "price_usd": 140,
+      "sale_price_usd_or_null": null,
+      "price_note": "USD from Goodhood US storefront; UK price £99",
+      "fabric_and_weight": "100% suede leather upper, moccasin construction, crepe sole",
+      "fit": "not stated (classic Wallabee moccasin)",
+      "product_url": "https://goodhoodstore.com/products/clarks-originals-wallabee-dark-brown-suede",
+      "image_url": "https://cdn.shopify.com/s/files/1/0321/4373/6963/files/ClarksOriginalsWallabee-DarkBrownSuede1_b25d9377-6f02-4b92-8262-34fe720f6790.jpg?v=1776771072&width=800"
+    }
+  ]
+}]}
