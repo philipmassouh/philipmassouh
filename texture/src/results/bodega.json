@@ -1,0 +1,58 @@
+{"stores": [{
+  "store": "Bodega",
+  "store_url": "https://bdgastore.com",
+  "status": "ok",
+  "note": "Catalog is heavily sneakers (Nike/Jordan/New Balance etc.) and graphic tees; textured/substantial pieces are a small slice, mostly from Randy's Garments, Kapital, Estudio Niksen and Grown&Sewn. Most Kapital denim is baggy/flare/semi-slim so skipped. Alpaca vest page states no composition beyond the name. Stock checked via products/<handle>.js on 2026-09-25; sizes are thin (e.g. jean only 32 and 36 left).",
+  "vibe": "Boston's hidden-behind-a-convenience-store sneaker boutique mixing hype footwear and graphic tees with a well-chosen rack of Japanese, Korean and NYC-made workwear-leaning labels.",
+  "price_range": "$40–$490",
+  "items": [
+    {
+      "store": "Bodega",
+      "item_name": "5-Pocket Jean (Indigo)",
+      "brand": "Randy's Garments",
+      "price_usd": 218,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "14.5oz 100% cotton raw left-hand twill denim woven by Mount Vernon Mills; flat-felled seams, double-face waistband; cut & sewn in NYC",
+      "fit": "Roomier cut in seat and thigh (straight 5-pocket)",
+      "product_url": "https://bdgastore.com/products/5-pocket-jean",
+      "image_url": "https://cdn.shopify.com/s/files/1/0049/9112/files/40390202-2026-03-05T141958.922.png?v=1772749421&width=800"
+    },
+    {
+      "store": "Bodega",
+      "item_name": "3-Pocket Work Shirt (Black)",
+      "brand": "Randy's Garments",
+      "price_usd": 168,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "7oz 100% cotton chambray; triple-needle flat-felled seams",
+      "fit": "not stated (classic 7-button work shirt)",
+      "product_url": "https://bdgastore.com/products/3-pocket-work-shirt",
+      "image_url": "https://cdn.shopify.com/s/files/1/0049/9112/files/40390202_63.png?v=1771884754&width=800"
+    },
+    {
+      "store": "Bodega",
+      "item_name": "Alpaca Knit Vest (Grey)",
+      "brand": "Estudio Niksen",
+      "price_usd": 165,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "Alpaca knit (per product name); composition and weight not stated",
+      "fit": "not stated (unisex, sizes 1-2)",
+      "product_url": "https://bdgastore.com/products/alpaca-knit-vest",
+      "image_url": "https://cdn.shopify.com/s/files/1/0049/9112/files/Untitleddesign_17_c70538fb-e4e5-4861-ab08-2ba2f67c864d.jpg?v=1760735420&width=800"
+    },
+    {
+      "store": "Bodega",
+      "item_name": "Jasper M (Java/Black)",
+      "brand": "KEEN",
+      "price_usd": 130,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "Premium leather upper from LWG-certified tannery; low-profile rubber outsole",
+      "fit": "Contoured fit, snug; climbing-inspired low-top",
+      "product_url": "https://bdgastore.com/products/jasper",
+      "image_url": "https://cdn.shopify.com/s/files/1/0049/9112/files/4a5eec06c2d2247de2ad238da1849d075eeefa25.webp?v=1773081027&width=800"
+    }
+  ]
+}]}

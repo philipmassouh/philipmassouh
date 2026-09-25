@@ -1,0 +1,58 @@
+{"stores": [{
+  "store": "END. Clothing",
+  "store_url": "https://www.endclothing.com/us/",
+  "status": "ok",
+  "note": "Data pulled from END.'s US site (product pages' embedded data + the site's own Algolia catalog index, US website id 2). Prices are native USD on the US site. All four are full price, marked in stock with every listed size available as of 2026-09-25. Fit is only stated on the Portuguese Flannel and Drake's pages. Shoe sizes are UK.",
+  "vibe": "A huge UK multi-brand retailer that puts heritage and craft labels like Drake's, Paraboot and Portuguese Flannel next to hype streetwear, with a lot of well-made menswear if you skip past the sneaker drops.",
+  "price_range": "$60–$600",
+  "items": [
+    {
+      "store": "END. Clothing",
+      "item_name": "Portuguese Flannel Labura Corduroy Chore Jacket (Brown / Autumn Shades)",
+      "brand": "Portuguese Flannel",
+      "price_usd": 225,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "Corduroy, 100% cotton; weight not stated. Made in Portugal",
+      "fit": "Relaxed/comfortable fit",
+      "product_url": "https://www.endclothing.com/us/portuguese-flannel-labura-corduroy-chore-jacket-aw26-037-brn.html",
+      "image_url": "https://media.endclothing.com/media/catalog/product/B/R/BR_AW26-037-BRN_1_1.jpg"
+    },
+    {
+      "store": "END. Clothing",
+      "item_name": "Drake's Selvedge Denim Jeans",
+      "brand": "Drake's",
+      "price_usd": 425,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "14.2oz selvedge denim, 100% cotton, natural-dyed indigo from Japan; button fly",
+      "fit": "Slightly higher rise, relaxed & tapered; 31.8\" inseam",
+      "product_url": "https://www.endclothing.com/us/drakes-selvedge-denim-jeans-dr2a6a-19555-03-200.html",
+      "image_url": "https://media.endclothing.com/media/catalog/product/B/R/BR_DR2A6A-19555-03-200_1_1.jpg"
+    },
+    {
+      "store": "END. Clothing",
+      "item_name": "PITTARI Findhorn Donegal Roll Collar Jumper",
+      "brand": "PITTARI",
+      "price_usd": 205,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "100% Donegal wool (flecked texture); weight not stated",
+      "fit": "not stated (raglan shoulders, loose rib, rolling hems)",
+      "product_url": "https://www.endclothing.com/us/pittari-findhorn-donegal-roll-collar-jumper-pit-fin-mil.html",
+      "image_url": "https://media.endclothing.com/media/catalog/product/B/R/BR_PIT-FIN-MIL_1_1.jpg"
+    },
+    {
+      "store": "END. Clothing",
+      "item_name": "Fracap MA187 Commando Sole Low Hiking Shoe - END. Exclusive",
+      "brand": "Fracap",
+      "price_usd": 365,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "Suede & leather upper, full leather lining, natural cuoio insole, Vibram Commando sole; handmade in Italy",
+      "fit": "not stated",
+      "product_url": "https://www.endclothing.com/us/fracap-ma187-commando-sole-low-hiking-shoe-presented-by-end-ma1087-cs-cor.html",
+      "image_url": "https://media.endclothing.com/media/catalog/product/B/R/BR_MA1087-CS-COR_1_1.jpg"
+    }
+  ]
+}]}

@@ -1,0 +1,106 @@
+{"stores": [
+{
+  "store": "Taylor Stitch",
+  "store_url": "https://www.taylorstitch.com",
+  "status": "ok",
+  "note": "All four items are men's, full price, and in stock in every size (Maritime, Ojai and Long Haul in XS through XXL; Good Acre in waists 28 through 38). Checked 2026-09-25 through the Shopify products/<handle>.js variant availability. Fit text is quoted from the product pages. The Ojai and Long Haul pages give no fit description, only model sizing.",
+  "vibe": "West Coast heritage workwear: chore coats, truckers and work pants in organic moleskin, corduroy, slub denim and duck canvas, built to wear in rather than wear out.",
+  "price_range": "$60–$298 (leather and shearling outerwear runs $700–$1,250)",
+  "items": [
+    {
+      "store": "Taylor Stitch",
+      "item_name": "The Maritime Shirt Jacket in Dark Forest Moleskin Twill",
+      "brand": "Taylor Stitch",
+      "price_usd": 188,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "13-oz. 100% organic cotton moleskin twill (short suede-like nap)",
+      "fit": "Fitted at the chest with a straighter fit through the body; 'tailored to a versatile fit that's easy to layer'",
+      "product_url": "https://www.taylorstitch.com/products/maritime-shirt-jacket-in-dark-forest-moleskin-twill-2609",
+      "image_url": "https://cdn.shopify.com/s/files/1/0070/1922/files/instock_m_q326_maritime-shirt-jacket-dark-forest-moleskin-twill_portrait_004.jpg?v=1787767792"
+    },
+    {
+      "store": "Taylor Stitch",
+      "item_name": "The Ojai Jacket in Soil Corduroy",
+      "brand": "Taylor Stitch",
+      "price_usd": 248,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "12-oz. 100% organic cotton corduroy (between chunky wale and pinwale); ring-back buttons",
+      "fit": "not stated (French chore coat with an 'easy to layer silhouette')",
+      "product_url": "https://www.taylorstitch.com/products/ojai-jacket-in-soil-corduroy-2609",
+      "image_url": "https://cdn.shopify.com/s/files/1/0070/1922/files/instock_m_q326_ojai-jacket-soil-corduroy_portrait_001.jpg?v=1788450301"
+    },
+    {
+      "store": "Taylor Stitch",
+      "item_name": "The Long Haul Jacket in Soil Slub Denim",
+      "brand": "Taylor Stitch",
+      "price_usd": 228,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "11.75-oz. 100% cotton slub denim, garment dyed and washed",
+      "fit": "not stated (trucker jacket)",
+      "product_url": "https://www.taylorstitch.com/products/long-haul-jacket-in-soil-slub-denim-2607",
+      "image_url": "https://cdn.shopify.com/s/files/1/0070/1922/files/Q326_the-long-haul-jacket-soil-slub-denim_pdp_compressed_01.jpg?v=1785177619"
+    },
+    {
+      "store": "Taylor Stitch",
+      "item_name": "The Good Acre Chore Pant in Coffee Canvas",
+      "brand": "Taylor Stitch",
+      "price_usd": 208,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "12-oz. 100% cotton Carr Textile duck canvas; double-knee; made in California",
+      "fit": "Classic medium rise, tailored fit, straight through the thigh with a slight taper from knee to leg opening",
+      "product_url": "https://www.taylorstitch.com/products/good-acre-chore-pant-in-coffee-canvas-2609",
+      "image_url": "https://cdn.shopify.com/s/files/1/0070/1922/files/instock_m_q326_good-acre-chore-pant-coffee_portrait_001.jpg?v=1785258281"
+    }
+  ]
+},
+{
+  "store": "Auralee",
+  "store_url": "https://auralee.jp",
+  "status": "ok",
+  "note": "auralee.jp has its own online store that ships to the US by DHL. With the country set to United States it shows USD prices with duties and taxes included, and those are the prices below. The $500 cap rules out nearly all of the brand's textured pieces: its tweed, moleskin, corduroy, flannel and denim items are all $533–$3,800. Men's items that fit the profile and cost $500 or less are limited to sweats, tees and accessories. Excluded: the Wool Silk Soft Rib Henley ($434.50, bold rib, in stock) because the site calls it a slim fit; the Super High Gauge Sweat P/O ($440) because it is smooth and nearly sold out; and the Luster Plaiting tees ($258.50–$286) because they are smooth, not textured. Stock was checked 2026-09-25 using the page's item_stock data.",
+  "vibe": "Quiet Tokyo minimalism built entirely around developing its own fabrics: muted, heathered colors in very fine yarns, where the cloth itself is the design.",
+  "price_range": "$260–$3,800 (most apparel $450–$1,300)",
+  "items": [
+    {
+      "store": "Auralee",
+      "item_name": "High-Twist Compact Sweat P/O (Ink Black)",
+      "brand": "Auralee",
+      "price_usd": 456.5,
+      "sale_price_usd_or_null": null,
+      "price_note": "USD price shown on auralee.jp for United States, duties & taxes included (JPY list price ¥36,300)",
+      "fabric_and_weight": "Cotton 62% / wool 32% / silk 6% three-layer sweat fleece with a brushed reverse and vintage-style heathered tones; weight not stated",
+      "fit": "Regular fit",
+      "product_url": "https://auralee.jp/item/detail/1_1_A26AP02WU_1/1903",
+      "image_url": "https://auralee.jp/photo/2026AW/A26AP02WU/z-A26AP02WU_1903-1.jpg?1782957910"
+    },
+    {
+      "store": "Auralee",
+      "item_name": "Cashmere Nep Knit Cap (Mix Gray)",
+      "brand": "Auralee",
+      "price_usd": 297,
+      "sale_price_usd_or_null": null,
+      "price_note": "USD price shown on auralee.jp for United States, duties & taxes included (JPY list price ¥24,200)",
+      "fabric_and_weight": "100% cashmere knit with cashmere neps for flecked texture; weight not stated",
+      "fit": "One size (19.5cm height x 25cm width)",
+      "product_url": "https://auralee.jp/item/detail/1_1_A26AC08NE_1/1037",
+      "image_url": "https://auralee.jp/photo/2026AW/A26AC08NE/z-A26AC08NE_1037-1.jpg?1782728304"
+    },
+    {
+      "store": "Auralee",
+      "item_name": "Cotton Cashmere Low Gauge Socks (Top Charcoal)",
+      "brand": "Auralee",
+      "price_usd": 66,
+      "sale_price_usd_or_null": null,
+      "price_note": "USD price shown on auralee.jp for United States, duties & taxes included (JPY list price ¥4,400)",
+      "fabric_and_weight": "Loosely knit low-gauge cotton 70% / nylon 20% / cashmere 10%; weight not stated",
+      "fit": "Men's size; relaxed, non-restrictive opening",
+      "product_url": "https://auralee.jp/item/detail/1_1_A00S01SX-M_1/1011",
+      "image_url": "https://auralee.jp/photo/2026SS/A00S01SX-M/z-A00S01SX-M_1011-1.jpg?1718701860"
+    }
+  ]
+}
+]}

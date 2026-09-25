@@ -1,0 +1,58 @@
+{"stores": [{
+  "store": "HBX",
+  "store_url": "https://hbx.com/men",
+  "status": "ok",
+  "note": "Prices are native USD from HBX's own listing/product JSON; stock verified per-size via product JSON on 2026-09-25. Several picks have only 1-2 sizes left. Footwear skews to performance/hype sneakers, so no shoe fit the profile. The Tonywack jacket is on sale.",
+  "vibe": "Hypebeast's shop mixes big streetwear and sneaker drops with a deep bench of Japanese and Korean labels (nonnative, Kaptain Sunshine, Nanamica, ANCELLM, Yoke) where the textured, well-made pieces live.",
+  "price_range": "$70–$615",
+  "items": [
+    {
+      "store": "HBX",
+      "item_name": "Kilcarra Wool Cardigan",
+      "brand": "District Vision",
+      "price_usd": 395,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "300gsm heavyweight Irish Kilcarra Donegal tweed wool knit with multicolored flecks, 100% wool",
+      "fit": "relaxed",
+      "product_url": "https://hbx.com/men/brands/district-vision/kilcarra-wool-cardigan-midnight-tweed",
+      "image_url": "https://image-cdn.hypb.st/https%3A%2F%2Fs3.store.hypebeast.com%2Fmedia%2Fimage%2Fe8%2F4a%2Fkilcarra-wool-cardigan-midnight-tweed-product-1-e84a592f.jpg?fit=max&w=1080&q=90"
+    },
+    {
+      "store": "HBX",
+      "item_name": "Wool Herringbone Easy Trousers",
+      "brand": "Kaptain Sunshine",
+      "price_usd": 480,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "Wool herringbone weave; shell 100% wool, lining 50% cupra / 50% cotton; weight not stated",
+      "fit": "relaxed straight leg, double pleats, drawstring waist",
+      "product_url": "https://hbx.com/men/brands/kaptain-sunshine/wool-herringbone-easy-trousers-top-grey",
+      "image_url": "https://image-cdn.hypb.st/https%3A%2F%2Fs3.store.hypebeast.com%2Fmedia%2Fimage%2F3c%2F75%2F953345-1-d7d32.jpg?fit=max&w=1080&q=90"
+    },
+    {
+      "store": "HBX",
+      "item_name": "Trucker 5P Jeans Cotton 13.5oz Denim OW",
+      "brand": "nonnative",
+      "price_usd": 255,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "13.5oz cotton denim, 100% cotton, one wash",
+      "fit": "regular straight",
+      "product_url": "https://hbx.com/men/brands/nonnative/trucker-5p-jeans-cotton-135-oz-denim-ow-indigo",
+      "image_url": "https://image-cdn.hypb.st/https%3A%2F%2Fs3.store.hypebeast.com%2Fmedia%2Fimage%2Ff1%2Fc5%2Ftrucker-5p-jeans-cotton-135-oz-denim-ow-indigo-product-1-f1c5bc1f.jpg?fit=max&w=1080&q=90"
+    },
+    {
+      "store": "HBX",
+      "item_name": "Garment Dyed Corduroy Zip Jacket",
+      "brand": "Tonywack",
+      "price_usd": 400,
+      "sale_price_usd_or_null": 240,
+      "price_note": null,
+      "fabric_and_weight": "Garment-dyed corduroy, 100% cotton, fully lined; weight not stated",
+      "fit": "not stated",
+      "product_url": "https://hbx.com/men/brands/tonywack/garment-dyed-corduroy-zip-jacket",
+      "image_url": "https://image-cdn.hypb.st/https%3A%2F%2Fs3.store.hypebeast.com%2Fmedia%2Fimage%2F64%2F68%2Fjacket-2-1-3f209.jpg?fit=max&w=1080&q=90"
+    }
+  ]
+}]}

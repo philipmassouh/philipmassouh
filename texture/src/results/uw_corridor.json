@@ -1,0 +1,120 @@
+{
+ "stores": [
+  {
+   "store": "Universal Works",
+   "store_url": "https://universalworks.com/en-us",
+   "status": "ok",
+   "note": "universalworks.co.uk redirects to universalworks.com; the /en-us/ locale shows USD. The product pages list composition but no fabric weights. The Harris Tweed OG Bakers Chore Jacket (~$588) is over the cap.",
+   "vibe": "Nottingham-made British workwear: chore jackets, pleated track pants and their own wool-fleece cardigans, cut in tweed, moleskin, cord and brushed flannel in earthy, muted colours.",
+   "price_range": "$120–$590",
+   "items": [
+    {
+     "store": "Universal Works",
+     "item_name": "Brown Harris Tweed Easy Jacket",
+     "brand": "Universal Works",
+     "price_usd": 447,
+     "sale_price_usd_or_null": null,
+     "price_note": "USD price taken directly from the brand's US storefront (universalworks.com/en-us); UK base price in GBP converted by the site at rate 1.3516632.",
+     "fabric_and_weight": "Harris Tweed, 100% wool (weight not stated)",
+     "fit": "Regular fit; unstructured, unlined shirt-jacket",
+     "product_url": "https://universalworks.com/en-us/products/brown-harris-tweed-easy-jacket",
+     "image_url": "https://cdn.shopify.com/s/files/1/1831/8429/files/35567_harris-tweed-brown_1.jpg?v=1787130378&width=800"
+    },
+    {
+     "store": "Universal Works",
+     "item_name": "Brown Comfort Moleskin Pleated Track Pant",
+     "brand": "Universal Works",
+     "price_usd": 271,
+     "sale_price_usd_or_null": null,
+     "price_note": "USD price taken directly from the brand's US storefront (universalworks.com/en-us); UK base price in GBP converted by the site at rate 1.3516632.",
+     "fabric_and_weight": "Comfort moleskin, 100% cotton (weight not stated)",
+     "fit": "Loose through hips and thigh, tapered leg; single pleat, drawstring waist",
+     "product_url": "https://universalworks.com/en-us/products/brown-comfort-moleskin-pleated-track-pant",
+     "image_url": "https://cdn.shopify.com/s/files/1/1831/8429/files/35629_comfort-moleskin-brown_1.jpg?v=1787922045&width=800"
+    },
+    {
+     "store": "Universal Works",
+     "item_name": "Brown Brushed Flannel Square Pocket Shirt",
+     "brand": "Universal Works",
+     "price_usd": 176,
+     "sale_price_usd_or_null": null,
+     "price_note": "USD price taken directly from the brand's US storefront (universalworks.com/en-us); UK base price in GBP converted by the site at rate 1.3516632.",
+     "fabric_and_weight": "Brushed flannel, 100% cotton (weight not stated)",
+     "fit": "Relaxed/loose fit",
+     "product_url": "https://universalworks.com/en-us/products/brown-brushed-flannel-square-pocket-shirt",
+     "image_url": "https://cdn.shopify.com/s/files/1/1831/8429/files/35565_brushed-flannel-brown_1.jpg?v=1786003871&width=800"
+    },
+    {
+     "store": "Universal Works",
+     "item_name": "Brown Pino Wool Fleece Cardigan",
+     "brand": "Universal Works",
+     "price_usd": 264,
+     "sale_price_usd_or_null": null,
+     "price_note": "USD price taken directly from the brand's US storefront (universalworks.com/en-us); UK base price in GBP converted by the site at rate 1.3516632.",
+     "fabric_and_weight": "Pino wool fleece, 80% wool / 20% recycled polyester (weight not stated)",
+     "fit": "Regular fit",
+     "product_url": "https://universalworks.com/en-us/products/brown-pino-wool-fleece-cardigan",
+     "image_url": "https://cdn.shopify.com/s/files/1/1831/8429/files/35658_pino-wool-fleece-brown_1.jpg?v=1787130738&width=800"
+    }
+   ]
+  },
+  {
+   "store": "Corridor",
+   "store_url": "https://corridornyc.com",
+   "status": "ok",
+   "note": "The Shopify 'vendor' field names manufacturers (e.g. OMTC, Black Q, Real), but every item is sold under the Corridor label.",
+   "vibe": "Brooklyn menswear built on custom-woven shirting from India: bouclé plaids, herringbone and madras, plus Italian selvedge denim and alpaca knits, with a relaxed, sunny Americana feel.",
+   "price_range": "$115–$565",
+   "items": [
+    {
+     "store": "Corridor",
+     "item_name": "Spacerock LS",
+     "brand": "Corridor",
+     "price_usd": 245,
+     "sale_price_usd_or_null": null,
+     "price_note": null,
+     "fabric_and_weight": "7 oz custom-weave yarn-dyed plaid with bouclé yarn, 100% cotton",
+     "fit": "Regular fit",
+     "product_url": "https://corridornyc.com/products/spacerock-ls",
+     "image_url": "https://cdn.shopify.com/s/files/1/0732/9117/files/CORRIDORNYC_AW263468.jpg?v=1786562587&width=800"
+    },
+    {
+     "store": "Corridor",
+     "item_name": "Herringbone LS (Indigo)",
+     "brand": "Corridor",
+     "price_usd": 245,
+     "sale_price_usd_or_null": null,
+     "price_note": null,
+     "fabric_and_weight": "8 oz herringbone twill, 100% cotton, garment washed",
+     "fit": "Regular fit; pearl snaps, double flap chest pockets",
+     "product_url": "https://corridornyc.com/products/indigo-herringbone-ls",
+     "image_url": "https://cdn.shopify.com/s/files/1/0732/9117/files/CORRIDORNYC_AW2614398.jpg?v=1787779288&width=800"
+    },
+    {
+     "store": "Corridor",
+     "item_name": "Selvedge 5 Pocket Jean - Rinse Wash",
+     "brand": "Corridor",
+     "price_usd": 295,
+     "sale_price_usd_or_null": null,
+     "price_note": null,
+     "fabric_and_weight": "15 oz Candiani Italian selvedge denim, 98.5% organic cotton / 1.5% elastane",
+     "fit": "Regular fit",
+     "product_url": "https://corridornyc.com/products/rinse-wash-jean-indigo",
+     "image_url": "https://cdn.shopify.com/s/files/1/0732/9117/files/CORRIDORNYC_AW2614620.jpg?v=1789068083&width=800"
+    },
+    {
+     "store": "Corridor",
+     "item_name": "Wool Boucle Rollneck - Natural",
+     "brand": "Corridor",
+     "price_usd": 325,
+     "sale_price_usd_or_null": null,
+     "price_note": null,
+     "fabric_and_weight": "7-gauge bouclé knit, 48% wool / 25% BCI cotton / 20% polyamide / 7% recycled polyamide",
+     "fit": "not stated",
+     "product_url": "https://corridornyc.com/products/wool-boucle-rollneck-natural",
+     "image_url": "https://cdn.shopify.com/s/files/1/0732/9117/files/CORRIDORNYC_AW2614364.jpg?v=1790112122&width=800"
+    }
+   ]
+  }
+ ]
+}

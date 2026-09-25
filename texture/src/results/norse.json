@@ -1,0 +1,62 @@
+{
+  "stores": [
+    {
+      "store": "Norse Store",
+      "store_url": "https://norseprojects.com/",
+      "status": "ok",
+      "note": "norsestore.com now 301-redirects to norseprojects.com: the old multi-brand Norse Store webshop is gone and only the Norse Projects brand shop remains, so all items are Norse Projects. All items verified in stock (multiple sizes) via the Shopify .js endpoint with USD market prices. The Korshavn chino's URL handle says 'fyresdal' but the page titles it 'Korshavn Broken Twill Regular Chino'.",
+      "vibe": "Understated Copenhagen utilitarian: muted earth tones, workwear and outdoor archetypes rendered in quality European mill fabrics (Brisbane Moss cord, Italian wool twills, merino knits) with clean Scandinavian restraint.",
+      "price_range": "$130–$450",
+      "items": [
+        {
+          "store": "Norse Store",
+          "item_name": "Vrigsted Wide Wale Corduroy Chore Jacket (Beluga)",
+          "brand": "Norse Projects",
+          "price_usd": 395,
+          "sale_price_usd_or_null": null,
+          "price_note": "USD price as shown by the site's own USD market pricing (?currency=USD); DKK list price 2,200",
+          "fabric_and_weight": "8-wale corduroy, 100% cotton, 320 GSM; Brisbane Moss fabric; heavy topstitching, rivet-reinforced cuffs",
+          "fit": "Regular fit, straight and boxy (overshirt / light jacket)",
+          "product_url": "https://norseprojects.com/products/vrigsted-wide-wale-corduroy-chore-jacket-beluga",
+          "image_url": "https://cdn.shopify.com/s/files/1/0960/6738/7723/files/N50-0278-8071-1133.jpg"
+        },
+        {
+          "store": "Norse Store",
+          "item_name": "Hirtshals Tech Merino Waffle Crewneck (Charcoal Melange)",
+          "brand": "Norse Projects",
+          "price_usd": 395,
+          "sale_price_usd_or_null": null,
+          "price_note": "USD price as shown by the site's own USD market pricing (?currency=USD); DKK list price 2,200",
+          "fabric_and_weight": "Waffle-stitch knit, 77% merino wool / 23% polyester (37.5 technology), 12 gauge 3-ply, German yarn",
+          "fit": "Regular fit",
+          "product_url": "https://norseprojects.com/products/hirtshals-tech-merino-waffle-crewneck-charcoal-melange",
+          "image_url": "https://cdn.shopify.com/s/files/1/0960/6738/7723/files/N45-0690-1034-0791.jpg"
+        },
+        {
+          "store": "Norse Store",
+          "item_name": "Korshavn Broken Twill Regular Chino (Delicioso Brown)",
+          "brand": "Norse Projects",
+          "price_usd": 250,
+          "sale_price_usd_or_null": null,
+          "price_note": "USD price as shown by the site's own USD market pricing (?currency=USD); DKK list price 1,400",
+          "fabric_and_weight": "Garment-dyed organic cotton broken twill, 100% cotton, 325 GSM",
+          "fit": "Regular fit",
+          "product_url": "https://norseprojects.com/products/fyresdal-broken-twill-regular-chino-delicioso-brown",
+          "image_url": "https://cdn.shopify.com/s/files/1/0960/6738/7723/files/N20-1400-1500-1171_2b5af8c0-be95-4ef8-8ccd-44e7fa58c428.jpg"
+        },
+        {
+          "store": "Norse Store",
+          "item_name": "Kongshoved Relaxed Micro Cord Shirt (Espresso)",
+          "brand": "Norse Projects",
+          "price_usd": 250,
+          "sale_price_usd_or_null": null,
+          "price_note": "USD price as shown by the site's own USD market pricing (?currency=USD); DKK list price 1,400",
+          "fabric_and_weight": "Light 18-wale corduroy, 100% cotton, Portuguese fabric; weight not stated",
+          "fit": "Relaxed fit, box pleat at back",
+          "product_url": "https://norseprojects.com/products/kongshoved-relaxed-micro-cord-shirt-espresso",
+          "image_url": "https://cdn.shopify.com/s/files/1/0960/6738/7723/files/N40-0899-2022_0004.jpg"
+        }
+      ]
+    }
+  ]
+}

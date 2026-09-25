@@ -1,0 +1,118 @@
+{"stores": [
+{
+  "store": "Mohawk General Store",
+  "store_url": "https://www.mohawkgeneralstore.com",
+  "status": "ok",
+  "note": "Large multi-brand catalog, mostly designer and Japanese labels (Dries Van Noten, Auralee, Lemaire, Our Legacy, orSlow, SMOCK, Studio Nicholson). A lot of it is over $500 or in women's cuts. All 4 picks checked via /products/<handle>.js with several sizes available.",
+  "vibe": "Silver Lake boutique mixing quiet designer and Japanese labels (Auralee, Lemaire, Our Legacy, orSlow) with its own LA-made house line SMOCK. The look is minimal and texture-driven, with an artsy West Coast edge.",
+  "price_range": "$175–$995 (clothing; median around $450)",
+  "items": [
+    {
+      "store": "Mohawk General Store",
+      "item_name": "6034-52S Coverall in Coffee Brown",
+      "brand": "orSlow",
+      "price_usd": 420,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "Washed 100% cotton oxford canvas with a contrasting corduroy collar; weight not stated. Made in Japan.",
+      "fit": "relaxed (per product page), raglan sleeves",
+      "product_url": "https://www.mohawkgeneralstore.com/products/orslow-6034-52s-coverall",
+      "image_url": "https://cdn.shopify.com/s/files/1/0653/6981/files/289592_IMG_182.jpg?v=1789146369&width=800"
+    },
+    {
+      "store": "Mohawk General Store",
+      "item_name": "Officer Trouser in Corduroy Washed Brown",
+      "brand": "SMOCK",
+      "price_usd": 350,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "Heavyweight 6-wale 100% cotton corduroy, garment-dyed; made in Los Angeles",
+      "fit": "not stated (button-fly officer trouser with slash pockets)",
+      "product_url": "https://www.mohawkgeneralstore.com/products/officer-trouser-corduroy-washed-brown",
+      "image_url": "https://cdn.shopify.com/s/files/1/0653/6981/files/295519_IMG_011.jpg?v=1789746141&width=800"
+    },
+    {
+      "store": "Mohawk General Store",
+      "item_name": "Leisure Zip Up in Grey Herringbone",
+      "brand": "mfpen",
+      "price_usd": 300,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "100% cotton in a two-tone herringbone weave; weight not stated. Made in Portugal.",
+      "fit": "regular (per product page), raglan sleeves, stand collar",
+      "product_url": "https://www.mohawkgeneralstore.com/products/mfpen-leisure-zip-up",
+      "image_url": "https://cdn.shopify.com/s/files/1/0653/6981/files/289380_IMG_0092.jpg?v=1787848203&width=800"
+    },
+    {
+      "store": "Mohawk General Store",
+      "item_name": "Selvage Denim Trucker Jacket in Indigo",
+      "brand": "Graphpaper",
+      "price_usd": 440,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "13.75oz raw selvedge denim by Cone Denim, shuttle-loomed, 100% cotton; made in Japan",
+      "fit": "relaxed with dropped shoulders (per product page)",
+      "product_url": "https://www.mohawkgeneralstore.com/products/graphpaper-selvage-denim-trucker-jacket",
+      "image_url": "https://cdn.shopify.com/s/files/1/0653/6981/files/279555_IMG_0094.jpg?v=1773963411&width=800"
+    }
+  ]
+},
+{
+  "store": "Portuguese Flannel",
+  "store_url": "https://www.portugueseflannel.com",
+  "status": "ok",
+  "note": "USD prices are what the site itself shows on the US storefront (Shopify.currency active USD, rate 1.162749 from EUR base). The /products/<handle>.js endpoint without ?currency=USD returns EUR, so the EUR base price is in price_note. Product pages list composition and measurements, but say little about fit or fabric weight. AW26 range goes well beyond shirts: corduroy and herringbone jackets, wool trousers, wool/jacquard overshirts.",
+  "vibe": "Portuguese-made shirting brand known for brushed flannels, jacquards and seersucker. It now also offers a full tailoring-casual range of corduroy and herringbone jackets, wool trousers and wool overshirts at approachable prices.",
+  "price_range": "$82–$466 (shirts mostly $123–$163)",
+  "items": [
+    {
+      "store": "Portuguese Flannel",
+      "item_name": "Alpino (heavyweight flannel shirt)",
+      "brand": "Portuguese Flannel",
+      "price_usd": 160,
+      "sale_price_usd_or_null": null,
+      "price_note": "Site-displayed USD price; EUR base €137 (rate 1.162749)",
+      "fabric_and_weight": "100% cotton flannel, tagged 'heavyweight flannel' (exact weight not stated); mother-of-pearl buttons",
+      "fit": "not stated (standard cut; the brand sells a separate 'Relaxed Fit' version for some styles)",
+      "product_url": "https://www.portugueseflannel.com/products/alpino",
+      "image_url": "https://cdn.shopify.com/s/files/1/1018/6883/files/ALPINO_006.jpg?v=1788874248&width=800"
+    },
+    {
+      "store": "Portuguese Flannel",
+      "item_name": "Labura Corduroy - Olive",
+      "brand": "Portuguese Flannel",
+      "price_usd": 224,
+      "sale_price_usd_or_null": null,
+      "price_note": "Site-displayed USD price; EUR base €192 (rate 1.162749)",
+      "fabric_and_weight": "100% cotton corduroy, weight not stated; corozo buttons",
+      "fit": "not stated (unstructured jacket; size M: 1/2 chest 57cm, shoulders 46cm)",
+      "product_url": "https://www.portugueseflannel.com/products/labura-corduroy-olive-5",
+      "image_url": "https://cdn.shopify.com/s/files/1/1018/6883/files/JACKET_KHAKI_163_1a06b797-3adb-4b57-aa87-03326fbf383b.jpg?v=1789131015&width=800"
+    },
+    {
+      "store": "Portuguese Flannel",
+      "item_name": "Single Pleat Herringbone Wool Trousers - Brown",
+      "brand": "Portuguese Flannel",
+      "price_usd": 291,
+      "sale_price_usd_or_null": null,
+      "price_note": "Site-displayed USD price; EUR base €250 (rate 1.162749)",
+      "fabric_and_weight": "100% virgin wool herringbone, weight not stated; viscose leg lining, horn buttons",
+      "fit": "not stated (single pleat; size 42/32: 1/2 thigh 35.5cm, hem opening 23cm, so straight leg)",
+      "product_url": "https://www.portugueseflannel.com/products/single-pleat-herringbone-wool-trousers-brown",
+      "image_url": "https://cdn.shopify.com/s/files/1/1018/6883/files/HERRINGBONESINGLEPLEATTROUSERS-BROWN0001.jpg?v=1788968034&width=800"
+    },
+    {
+      "store": "Portuguese Flannel",
+      "item_name": "Wool Field - Grey (overshirt)",
+      "brand": "Portuguese Flannel",
+      "price_usd": 305,
+      "sale_price_usd_or_null": null,
+      "price_note": "Site-displayed USD price; EUR base €262 (rate 1.162749)",
+      "fabric_and_weight": "100% wool shell, viscose lining, weight not stated; horn buttons",
+      "fit": "not stated (overshirt; size M: 1/2 chest 59cm)",
+      "product_url": "https://www.portugueseflannel.com/products/wool-field-grey",
+      "image_url": "https://cdn.shopify.com/s/files/1/1018/6883/files/WOOLFIELDGREY_002.jpg?v=1789032272&width=800"
+    }
+  ]
+}
+]}

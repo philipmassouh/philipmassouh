@@ -1,0 +1,120 @@
+{
+  "stores": [
+    {
+      "store": "Clutch Cafe",
+      "store_url": "https://clutch-cafe.com/",
+      "status": "ok",
+      "note": "The assigned domain clutchcafe.com is a parked GoDaddy page. The real store is clutch-cafe.com (Shopify, Great Portland St, London). Prices are the store's own US-market USD prices (set with ?currency=USD or country=US), not converted. UK GBP prices are in price_note for reference. Clone sites like ccfash.shop were ignored.",
+      "vibe": "A London shop and cafe steeped in Japanese Americana repro: loopwheel sweats, WWII-model selvedge, moleskin work jackets and Paraboot, all made in small batches to exacting heritage specs.",
+      "price_range": "$90–$950",
+      "items": [
+        {
+          "store": "Clutch Cafe",
+          "item_name": "Soundman Albany Fatigue Jacket Dark Brown",
+          "brand": "Soundman",
+          "price_usd": 440,
+          "sale_price_usd_or_null": null,
+          "price_note": "US-market USD price; UK price £375",
+          "fabric_and_weight": "Heavy-duty high-density moleskin, 100% US cotton, garment-dyed after sewing; weight not stated",
+          "fit": "Fit not stated; drawstring back to adjust fit (Vietnam-era jungle fatigue pattern)",
+          "product_url": "https://clutch-cafe.com/products/soundman-albany-fatigue-jacket-dark-brown",
+          "image_url": "https://cdn.shopify.com/s/files/1/2549/6314/files/Soundman-Albany-Fatigue-Jacket-Dark-Brown-Jacket-Clutch-Cafe-London.jpg?v=1789480686&width=800"
+        },
+        {
+          "store": "Clutch Cafe",
+          "item_name": "Yankshire 1963 Corduroy Trousers Camel",
+          "brand": "Yankshire (35 Summers)",
+          "price_usd": 290,
+          "sale_price_usd_or_null": null,
+          "price_note": "US-market USD price; UK price £245",
+          "fabric_and_weight": "Heavy-duty corduroy woven in Germany, 100% cotton; weight not stated",
+          "fit": "High rise, straight with a slight taper (1960s US Army officer chino)",
+          "product_url": "https://clutch-cafe.com/products/yankshire-1963-corduroy-trousers-camel",
+          "image_url": "https://cdn.shopify.com/s/files/1/2549/6314/files/Yankshire-1963-Corduroy-Trousers-Camel-Trousers-Clutch-Cafe-London.jpg?v=1774447501&width=800"
+        },
+        {
+          "store": "Clutch Cafe",
+          "item_name": "The Real McCoy's 10.oz Loopwheel Sweatshirt Navy",
+          "brand": "The Real McCoy's",
+          "price_usd": 235,
+          "sale_price_usd_or_null": null,
+          "price_note": "US-market USD price; UK price £200",
+          "fabric_and_weight": "10oz loopwheel fleece knit in Wakayama, 100% cotton",
+          "fit": "Fit not stated; classic crewneck with double-V",
+          "product_url": "https://clutch-cafe.com/products/the-real-mccoys-10-oz-loopwheel-sweatshirt-navy",
+          "image_url": "https://cdn.shopify.com/s/files/1/2549/6314/files/The-Real-McCoys-10_oz-Loopwheel-Sweatshirt-Navy-Sweatshirt-Clutch-Cafe-London.jpg?v=1788875881&width=800"
+        },
+        {
+          "store": "Clutch Cafe",
+          "item_name": "Paraboot Chambord Mid/Tex Marron Vel Brun",
+          "brand": "Paraboot",
+          "price_usd": 490,
+          "sale_price_usd_or_null": null,
+          "price_note": "US-market USD price; UK price £420",
+          "fabric_and_weight": "Full-grain leather uppers (brown 'vel' suede colourway), leather lining, Norwegian-welted, Paratex rubber sole",
+          "fit": "Four-eyelet moccasin-toe mid shoe; sizing not stated",
+          "product_url": "https://clutch-cafe.com/products/paraboot-chambord-mid-tex-marron-vel-brun",
+          "image_url": "https://cdn.shopify.com/s/files/1/2549/6314/files/Paraboot-Chambord-MidTex-Marron-Vel-Brun-Shoe-Clutch-Cafe-London.jpg?v=1759240722&width=800"
+        }
+      ]
+    },
+    {
+      "store": "Canoe Club",
+      "store_url": "https://shopcanoeclub.com/",
+      "status": "ok",
+      "note": "The assigned domain canoeclub.com is a parked GoDaddy page. The real store is shopcanoeclub.com (Boulder, CO; Shopify, prices in USD). Clone sites like wearcanoe.shop and thecanoeclub.shop were ignored. The Auralee pants have only size 3 left.",
+      "vibe": "A Boulder boutique that mixes Japanese makers (Kapital, orSlow, FrizmWORKS, Auralee) with Engineered Garments and Lady White: rugged workwear with a playful, crafty streak.",
+      "price_range": "$70–$1,000",
+      "items": [
+        {
+          "store": "Canoe Club",
+          "item_name": "Wool Heritage Hunting Jacket - Maple",
+          "brand": "FrizmWORKS",
+          "price_usd": 430,
+          "sale_price_usd_or_null": null,
+          "price_note": null,
+          "fabric_and_weight": "Textured patterned wool-based outer with a contrast corduroy collar; exact composition and weight not stated",
+          "fit": "Relaxed (roomy enough to layer knits underneath)",
+          "product_url": "https://shopcanoeclub.com/products/wool-heritage-hunting-jacket-maple",
+          "image_url": "https://cdn.shopify.com/s/files/1/1640/7655/files/frizmworks-wool-heritage-hunting-jacket-maple-1.png?v=1787002472&width=800"
+        },
+        {
+          "store": "Canoe Club",
+          "item_name": "Work Shirt - Khaki Cotton Heavy Shadow Plaid Flannel",
+          "brand": "Engineered Garments",
+          "price_usd": 430,
+          "sale_price_usd_or_null": null,
+          "price_note": null,
+          "fabric_and_weight": "Heavy shadow-plaid cotton flannel, 100% cotton; weight not stated; made in USA",
+          "fit": "Relaxed",
+          "product_url": "https://shopcanoeclub.com/products/work-shirt-khaki-cotton-heavy-shadow-plaid-flannel",
+          "image_url": "https://cdn.shopify.com/s/files/1/1640/7655/files/engineered-garments-work-shirt-khaki-cotton-heavy-shadow-plaid-flannel-1.png?v=1784673067&width=800"
+        },
+        {
+          "store": "Canoe Club",
+          "item_name": "Garment-Dyed Organic Cotton Heavy Moleskin Pants - Faded Brown",
+          "brand": "Auralee",
+          "price_usd": 485,
+          "sale_price_usd_or_null": null,
+          "price_note": null,
+          "fabric_and_weight": "Densely woven heavy organic cotton moleskin, 100% cotton, garment-dyed and hand-finished; weight not stated",
+          "fit": "Regular fit, straight leg",
+          "product_url": "https://shopcanoeclub.com/products/garment-dyed-organic-cotton-heavy-moleskin-pants-faded-brown",
+          "image_url": "https://cdn.shopify.com/s/files/1/1640/7655/files/auralee-garment-dyed-organic-cotton-heavy-moleskin-pants-faded-brown-1.png?v=1789162237&width=800"
+        },
+        {
+          "store": "Canoe Club",
+          "item_name": "14oz BLKxBLK Denim Westerner (regular) - Black",
+          "brand": "Kapital",
+          "price_usd": 444,
+          "sale_price_usd_or_null": null,
+          "price_note": null,
+          "fabric_and_weight": "14oz black-on-black denim, 100% cotton, made in Japan",
+          "fit": "Regular",
+          "product_url": "https://shopcanoeclub.com/products/14oz-blkxblk-denim-westerner-regular-black",
+          "image_url": "https://cdn.shopify.com/s/files/1/1640/7655/files/kapital-14oz-black-x-black-denim-westerner-regular-black-1.jpg?v=1782152397&width=800"
+        }
+      ]
+    }
+  ]
+}

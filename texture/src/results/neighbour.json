@@ -1,0 +1,58 @@
+{"stores": [{
+  "store": "Neighbour",
+  "store_url": "https://www.shopneighbour.com/en-us",
+  "status": "ok",
+  "note": "The domain given (neighbourshop.com) times out; the store's real site is shopneighbour.com (Shopify). Prices are USD from the /en-us/ storefront (Shopify rate there is about 0.721 USD per CAD). Stock checked per variant on 2026-09-25: the moleskin shirt is only in stock in IV/L.",
+  "vibe": "A Gastown menswear shop run by an editor: quiet Japanese, British and Canadian labels (Graphpaper, Auralee, Lady White Co, James Coward, Margaret Howell, Tender) chosen for fabric first, with a lot of moleskin, corduroy, selvedge and hairy wool.",
+  "price_range": "$150–$1,300",
+  "items": [
+    {
+      "store": "Neighbour",
+      "item_name": "MHL Simple Trousers 8 Wale Cotton Corduroy Slate",
+      "brand": "Margaret Howell (MHL)",
+      "price_usd": 480,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "Sturdy, plush 8-wale cotton corduroy, 100% cotton; weight not stated. Made in Portugal",
+      "fit": "Relaxed fit, straight leg",
+      "product_url": "https://www.shopneighbour.com/en-us/products/margaret-howell-mens-mhl-simple-trousers-8-wale-cotton-corduroy-slate",
+      "image_url": "https://cdn.shopify.com/s/files/1/0070/6402/files/nbrmenaug292026kimecomm-298.jpg?v=1788681470&width=800"
+    },
+    {
+      "store": "Neighbour",
+      "item_name": "Signal Shirt Cotton Moleskin Dark Brown",
+      "brand": "James Coward",
+      "price_usd": 375,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "Lightweight brushed cotton moleskin, 100% cotton; weight not stated. Flat-felled seams, Corozo buttons. Made in Canada",
+      "fit": "Lightly oversized, boxy overshirt with slightly dropped shoulders",
+      "product_url": "https://www.shopneighbour.com/en-us/products/james-coward-mens-signal-shirt-cotton-moleskin-dark-brown",
+      "image_url": "https://cdn.shopify.com/s/files/1/0070/6402/files/nbrmenecommdec112025james-67.jpg?v=1766008385&width=800"
+    },
+    {
+      "store": "Neighbour",
+      "item_name": "Crewneck Top Dry Wool Waffle Black",
+      "brand": "Slopeslow",
+      "price_usd": 494,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "Heavyweight, crisp, dry wool waffle jersey, 100% wool; exact weight not stated. Made in Japan",
+      "fit": "Classic fit, closer-fitting base-layer shape",
+      "product_url": "https://www.shopneighbour.com/en-us/products/slopeslow-mens-crewneck-top-dry-wool-waffle-black",
+      "image_url": "https://cdn.shopify.com/s/files/1/0070/6402/files/nbrmennov26ecommsascha-169.jpg?v=1765002970&width=800"
+    },
+    {
+      "store": "Neighbour",
+      "item_name": "Sanders Banana Shoe Anthracite Suede",
+      "brand": "James Coward x Sanders",
+      "price_usd": 433,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "Fine brushed suede upper, black leather lining, waxed cotton laces, crepe mudguard sole. Made in England",
+      "fit": "Asymmetric lace-up based on the monkey shoe, on Sanders' SNO last (rounder toe, a bit more room); fits true to size",
+      "product_url": "https://www.shopneighbour.com/en-us/products/james-coward-mens-sanders-banana-shoe-anthracite-suede",
+      "image_url": "https://cdn.shopify.com/s/files/1/0070/6402/files/nbrmenmay152026ecommkim-342.jpg?v=1780344279&width=800"
+    }
+  ]
+}]}

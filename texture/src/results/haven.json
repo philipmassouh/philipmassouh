@@ -1,0 +1,58 @@
+{"stores": [{
+  "store": "Haven",
+  "store_url": "https://havenshop.com",
+  "status": "ok",
+  "note": "Hydrogen storefront (products.json disabled); data read from product page embedded JSON. Site geo-served prices in USD (currencyCode USD). Availability checked per size on 2026-09-25.",
+  "vibe": "Vancouver/Toronto technical-meets-heritage shop pairing its own Japanese-made, Loro Piana-fabric house line with Japanese workwear labels (Kaptain Sunshine, Ulterior, Cale, A.Presse), Levi's Vintage Clothing, Arc'teryx Veilance and trail-leaning footwear.",
+  "price_range": "$170–$1,200",
+  "items": [
+    {
+      "store": "Haven",
+      "item_name": "HAVEN Station Pant - Corduroy Sulfur Dye Graphite",
+      "brand": "HAVEN",
+      "price_usd": 440,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "100% cotton 14-wale corduroy, garment and sulfur dyed, washed finish; made in Japan",
+      "fit": "Relaxed with a slight taper, 5-pocket",
+      "product_url": "https://havenshop.com/products/haven-station-pant-corduroy-sulfur-dye-graphite-fw26",
+      "image_url": "https://cdn.shopify.com/s/files/1/0051/7042/files/HAVEN-Station-Pant-Corduroy-Sulfur-Dye-Gunmetal-1.jpg?v=1786552795"
+    },
+    {
+      "store": "Haven",
+      "item_name": "LVC 1936 Type I Jacket Malone",
+      "brand": "Levi's Vintage Clothing",
+      "price_usd": 437,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "100% cotton rigid selvedge denim (weight not stated)",
+      "fit": "Standard fit, cinch back",
+      "product_url": "https://havenshop.com/products/levis-vintage-clothing-lvc-1936-type-i-jacket-malone-fw26",
+      "image_url": "https://cdn.shopify.com/s/files/1/0051/7042/files/Levi_s-Vintage-Clothing-LVC-1936-Type-I-Jacket-Malone-1.jpg?v=1790182978"
+    },
+    {
+      "store": "Haven",
+      "item_name": "LVC Bay Meadows Sweatshirt Jet Black",
+      "brand": "Levi's Vintage Clothing",
+      "price_usd": 172,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "100% cotton brushed fleece (weight not stated); made in Portugal",
+      "fit": "Standard fit, raglan sleeves, V-inserts",
+      "product_url": "https://havenshop.com/products/levis-vintage-clothing-lvc-bay-meadows-sweatshirt-jet-black-fw26",
+      "image_url": "https://cdn.shopify.com/s/files/1/0051/7042/files/Levi_s-Vintage-Clothing-LVC-Bay-Meadows-Sweatshirt-Jet-Black-1.jpg?v=1790183097"
+    },
+    {
+      "store": "Haven",
+      "item_name": "Wanderer Suede Black",
+      "brand": "Tarvas",
+      "price_usd": 383,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "Italian cow suede upper, cow leather lining, rubberized leather mudguard, waxed canvas laces, Vibram natural rubber sole; made in Portugal",
+      "fit": "Low-profile shoe; sizes 8.5-12 US available (8 US sold out)",
+      "product_url": "https://havenshop.com/products/tarvas-wanderer-suede-black-fw26",
+      "image_url": "https://cdn.shopify.com/s/files/1/0051/7042/files/Tarvas-Wanderer-Suede-Black-1.jpg?v=1786637497"
+    }
+  ]
+}]}

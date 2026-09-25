@@ -1,0 +1,58 @@
+{"stores": [{
+  "store": "Union LA",
+  "store_url": "https://store.unionlosangeles.com",
+  "status": "ok",
+  "note": "Catalog is heavy on Nike/Jordan/Human Made hype and Kapital/Visvim; picks are from Union's in-house line, which is where the textured workwear/knitwear lives. No sale prices (compare_at equals price). Harris Tweed x Vans Old Skool ($140) also exists but is crystal-studded skate styling, so skipped.",
+  "vibe": "A storied LA streetwear shop that pairs sneaker-drop hype with Japanese labels (Kapital, Visvim, A.PRESSE) and an in-house line reworking early-90s LA workwear and collegiate knits.",
+  "price_range": "$65–$500 (Visvim, Kapital outerwear and eyewear run higher)",
+  "items": [
+    {
+      "store": "Union LA",
+      "item_name": "Timmons Shirt (Purple)",
+      "brand": "Union Los Angeles",
+      "price_usd": 243,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "Melton wool, washed for a lived-in feel (weight and composition % not stated)",
+      "fit": "US Navy CPO shirt model, 'refined fit'",
+      "product_url": "https://store.unionlosangeles.com/products/timmons-shirt-purple",
+      "image_url": "https://cdn.shopify.com/s/files/1/0051/0392/files/082525_UNION_FALL252944.jpg?v=1756381319&width=800"
+    },
+    {
+      "store": "Union LA",
+      "item_name": "Mitchell Pant (Black)",
+      "brand": "Union Los Angeles",
+      "price_usd": 294,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "Heavyweight herringbone twill, washed pigment-dyed patina finish (oz and composition not stated)",
+      "fit": "Officer chino, generous cut sitting low on the hip",
+      "product_url": "https://store.unionlosangeles.com/products/mitchell-pant-black",
+      "image_url": "https://cdn.shopify.com/s/files/1/0051/0392/files/082525_UNION_FALL252615.jpg?v=1756380300&width=800"
+    },
+    {
+      "store": "Union LA",
+      "item_name": "Cole Sweater (Pink)",
+      "brand": "Union Los Angeles",
+      "price_usd": 290,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "Blended bouclé-texture knit (composition not stated)",
+      "fit": "Button-front two-pocket cardigan; fit not stated (model 6'0\" wears L)",
+      "product_url": "https://store.unionlosangeles.com/products/cole-sweater-pink",
+      "image_url": "https://cdn.shopify.com/s/files/1/0051/0392/files/030725_UNIONSP25_MODEL046.jpg?v=1741312977&width=800"
+    },
+    {
+      "store": "Union LA",
+      "item_name": "Mascot Jacket (Khaki/Tan)",
+      "brand": "Union Los Angeles",
+      "price_usd": 295,
+      "sale_price_usd_or_null": null,
+      "price_note": null,
+      "fabric_and_weight": "High-density cotton twill, 100% cotton (weight not stated)",
+      "fit": "Workwear jacket, slightly cropped",
+      "product_url": "https://store.unionlosangeles.com/products/mascot-jacket-khaki-tan",
+      "image_url": "https://cdn.shopify.com/s/files/1/0051/0392/files/UNION_SP26_ECOM20326_c7896fd2-e651-4151-bf1c-6c8d5fff3cbe.jpg?v=1775262881&width=800"
+    }
+  ]
+}]}
