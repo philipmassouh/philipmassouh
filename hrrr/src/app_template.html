@@ -4,184 +4,129 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>HRRR</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
   :root {
-    --red: #d7261e;
     --ink: #000;
     --paper: #fff;
+    --rule: 2px solid var(--ink);
     --font: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-    --edge: 12px;
-    --bar-h: 36px;
-    --safe-top: env(safe-area-inset-top, 0px);
-    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --h: 40px;
   }
   *, *::before, *::after { box-sizing: border-box; border-radius: 0; }
-  html, body { height: 100%; margin: 0; overflow: hidden; }
+  html, body { height: 100%; margin: 0; }
   body {
-    font-family: var(--font);
-    font-size: 12px;
-    line-height: 1.5;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font: 700 12px/1.2 var(--font);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
     color: var(--ink);
     background: var(--paper);
-    -webkit-font-smoothing: antialiased;
   }
-  button, select, input { font: inherit; color: inherit; }
-  :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
-  .label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+  button, select, input { font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; }
+  :focus-visible { outline: 3px solid var(--ink); outline-offset: -3px; }
   .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-  #map { position: fixed; inset: 0; width: 100%; height: 100%; cursor: grab; touch-action: none; }
-  #map.panning { cursor: grabbing; }
-
-  /* Top bar */
-  #bar {
-    position: fixed;
-    top: calc(var(--edge) + var(--safe-top));
-    left: var(--edge);
-    right: var(--edge);
-    z-index: 10;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    pointer-events: none;
-  }
-  #bar > * { pointer-events: auto; }
-  #wordmark { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
-  #wordmark a {
-    display: flex; align-items: center; height: var(--bar-h); padding: 0 12px;
-    color: var(--paper); background: var(--red); text-decoration: none;
-  }
-  .strip { display: flex; gap: 1px; background: var(--red); border: 1px solid var(--red); }
-  #bar .strip { border-left: 0; }
-  .bar-btn, .strip select {
-    height: calc(var(--bar-h) - 2px);
-    padding: 0 12px;
-    border: 0;
-    color: var(--red);
-    background: var(--paper);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    white-space: nowrap;
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .strip select {
-    appearance: none;
-    -webkit-appearance: none;
-    padding-right: 28px;
-    background-image: linear-gradient(45deg, transparent 50%, var(--red) 50%), linear-gradient(-45deg, transparent 50%, var(--red) 50%);
-    background-position: right 14px center, right 9px center;
-    background-size: 5px 5px;
-    background-repeat: no-repeat;
-  }
-  #field { max-width: 340px; text-overflow: ellipsis; }
-  .bar-btn:hover, .strip select:hover { text-decoration: underline; text-underline-offset: 3px; }
-  .bar-btn.is-active { color: var(--paper); background: var(--red); }
-  .bar-btn:focus-visible, .strip select:focus-visible { outline: 2px solid var(--ink); outline-offset: -4px; }
-
-  /* Bottom-left info + time controls */
-  #dock {
-    position: fixed;
-    left: var(--edge);
-    bottom: calc(var(--edge) + var(--safe-bottom));
-    z-index: 10;
-    width: min(440px, calc(100% - 2 * var(--edge)));
-  }
-  #info {
-    padding: 12px;
-    background: var(--paper);
-    border: 1px solid var(--ink);
-    border-bottom: 0;
-  }
-  #fieldTitle { margin: 0 0 8px; }
-  #fieldTitle .units { color: var(--red); }
-  #legend { display: block; width: 100%; height: 30px; }
-  #fieldDesc { margin: 8px 0 0; }
-  #validTime { margin: 8px 0 0; padding-top: 8px; border-top: 1px solid var(--ink); }
-  #status { margin: 4px 0 0; }
-  #status:empty { display: none; }
-  #status.err { color: var(--red); font-weight: 700; }
-  #timebar { display: flex; align-items: center; gap: 1px; }
-  #timebar .bar-btn { flex: none; width: 64px; }
-  #sliderWrap {
-    flex: 1;
+  .row { display: flex; align-items: stretch; min-height: var(--h); }
+  .cell {
     display: flex;
     align-items: center;
-    gap: 10px;
-    height: calc(var(--bar-h) - 2px);
     padding: 0 12px;
+    border-right: var(--rule);
+    white-space: nowrap;
     background: var(--paper);
   }
-  #fhr { flex: 1; min-width: 0; height: 20px; margin: 0; background: transparent; appearance: none; -webkit-appearance: none; cursor: pointer; }
+  button.cell, select.cell { border-top: 0; border-bottom: 0; border-left: 0; cursor: pointer; }
+  button.cell:hover, select.cell:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .cell.on { color: var(--paper); background: var(--ink); }
+  select.cell { appearance: none; -webkit-appearance: none; }
+
+  header { border-bottom: var(--rule); }
+  header .row { overflow-x: auto; scrollbar-width: none; }
+  header .row::-webkit-scrollbar { display: none; }
+  #wordmark { margin: 0; font-size: 14px; color: var(--paper); background: var(--ink); }
+  #more { max-width: 260px; text-overflow: ellipsis; }
+
+  #map { flex: 1; min-height: 0; background: var(--ink); }
+  .leaflet-container { font: inherit; }
+  .leaflet-control-zoom.leaflet-bar { border: var(--rule); box-shadow: none; }
+  .leaflet-bar a, .leaflet-bar a:hover {
+    width: 34px; height: 34px; line-height: 32px;
+    color: var(--ink); background: var(--paper);
+    border-bottom: var(--rule); border-radius: 0 !important;
+    font: 700 18px/32px var(--font);
+  }
+  .leaflet-bar a:last-child { border-bottom: 0; }
+  .leaflet-bar a:hover { color: var(--paper); background: var(--ink); }
+
+  footer { border-top: var(--rule); }
+  #legendRow { border-bottom: var(--rule); }
+  #legendTitle { flex: none; }
+  #legendCell { flex: 1; min-width: 0; padding: 6px 12px; }
+  #legend { display: block; width: 100%; height: 26px; }
+  #readout { flex: none; min-width: 23ch; justify-content: flex-end; border-right: 0; font-variant-numeric: tabular-nums; }
+  #play { width: 64px; justify-content: center; }
+  .step { width: 40px; justify-content: center; font-size: 14px; }
+  #fhrLabel { width: 56px; justify-content: center; font-variant-numeric: tabular-nums; }
+  #sliderCell { flex: 1; min-width: 80px; }
+  #fhr { width: 100%; height: 24px; margin: 0; background: transparent; appearance: none; -webkit-appearance: none; cursor: pointer; }
   #fhr::-webkit-slider-runnable-track { height: 2px; background: var(--ink); }
   #fhr::-moz-range-track { height: 2px; background: var(--ink); }
-  #fhr::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 16px; margin-top: -7px; background: var(--red); border: 0; }
-  #fhr::-moz-range-thumb { width: 12px; height: 16px; background: var(--red); border: 0; border-radius: 0; }
-  #fhrLabel { color: var(--red); min-width: 3ch; text-align: right; font-variant-numeric: tabular-nums; }
-
-  #readout {
-    position: fixed;
-    top: calc(var(--edge) + var(--safe-top));
-    right: var(--edge);
-    z-index: 11;
-    padding: 8px 10px;
-    text-align: right;
-    background: var(--paper);
-    border: 1px solid var(--ink);
-    pointer-events: none;
-    font-variant-numeric: tabular-nums;
-  }
-  #readout .val { font-size: 16px; font-weight: 700; }
+  #fhr::-webkit-slider-thumb { -webkit-appearance: none; width: 10px; height: 22px; margin-top: -10px; background: var(--ink); border: 0; }
+  #fhr::-moz-range-thumb { width: 10px; height: 22px; background: var(--ink); border: 0; border-radius: 0; }
+  #validTime { flex: none; }
+  #run { border-right: 0; }
+  #status:empty { display: none; }
+  #status { color: var(--paper); background: var(--ink); }
 
   @media (max-width: 760px) {
-    #bar { flex-wrap: nowrap; }
-    #bar .strip { flex: 1; flex-wrap: wrap; min-width: 0; }
-    #field { flex: 1 1 0; min-width: 0; max-width: none; }
-    #run { flex: 1 1 100%; }
-    #fieldDesc { display: none; }
-    #readout { top: auto; bottom: calc(var(--edge) + var(--safe-bottom) + 190px); }
+    #legendRow { flex-wrap: wrap; }
+    #legendCell { order: 3; flex: 1 1 100%; border-top: var(--rule); border-right: 0; }
+    #legendTitle { flex: 1; }
+    #readout { min-width: 0; }
+    #controls { flex-wrap: wrap; }
+    #sliderCell { flex: 1 1 100%; order: 5; border-top: var(--rule); border-right: 0; min-height: var(--h); }
+    #validTime { flex: 1; border-right: 0; }
+    #run { flex: 1 1 100%; order: 6; border-top: var(--rule); }
   }
 </style>
 </head>
 <body>
-<canvas id="map" aria-label="HRRR forecast map"></canvas>
-
-<header id="bar">
-  <h1 id="wordmark"><a href="/">HRRR</a></h1>
-  <div class="strip">
-    <label class="sr-only" for="field">Field</label>
-    <select id="field"></select>
-    <button type="button" class="bar-btn" id="allBtn" aria-pressed="false" title="Show every field in the HRRR file">All</button>
-    <label class="sr-only" for="run">Model run</label>
-    <select id="run"></select>
-  </div>
+<header>
+  <nav class="row" id="fields" aria-label="Fields">
+    <h1 class="cell" id="wordmark">HRRR</h1>
+    <label class="sr-only" for="more">More fields</label>
+    <select class="cell" id="more"></select>
+  </nav>
 </header>
 
-<div id="readout" hidden>
-  <div class="val"></div>
-  <div class="pos"></div>
-</div>
+<div id="map" aria-label="HRRR forecast map"></div>
 
-<div id="dock">
-  <div id="info">
-    <p id="fieldTitle" class="label"></p>
-    <canvas id="legend"></canvas>
-    <p id="fieldDesc"></p>
-    <p id="validTime"></p>
-    <p id="status">Starting…</p>
+<footer>
+  <div class="row" id="legendRow">
+    <div class="cell" id="legendTitle"></div>
+    <div class="cell" id="legendCell"><canvas id="legend"></canvas></div>
+    <div class="cell" id="readout">&nbsp;</div>
   </div>
-  <div id="timebar" class="strip">
-    <button type="button" class="bar-btn" id="play">Play</button>
-    <div id="sliderWrap">
+  <div class="row" id="controls">
+    <button type="button" class="cell" id="play">Play</button>
+    <button type="button" class="cell step" id="prev" aria-label="Previous hour">&lsaquo;</button>
+    <div class="cell" id="fhrLabel">F01</div>
+    <button type="button" class="cell step" id="next" aria-label="Next hour">&rsaquo;</button>
+    <div class="cell" id="sliderCell">
       <label class="sr-only" for="fhr">Forecast hour</label>
       <input type="range" id="fhr" min="0" max="18" step="1" value="1">
-      <span id="fhrLabel" class="label">F01</span>
     </div>
+    <div class="cell" id="validTime"></div>
+    <div class="cell" id="status">Starting</div>
+    <label class="sr-only" for="run">Model run</label>
+    <select class="cell" id="run"></select>
   </div>
-</div>
+</footer>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 /*__GRIB2__*/
 </script>
@@ -191,6 +136,7 @@
 const STATE_LINES_ENC = /*__STATES__*/;
 
 const BUCKET = "https://noaa-hrrr-bdp-pds.s3.amazonaws.com";
+const TERRAIN = "https://elevation-tiles-prod.s3.amazonaws.com/terrarium/{z}/{x}/{y}.png";
 
 // ---------- curated fields ----------
 // src picks a GRIB message by variable, level, and time window:
@@ -198,15 +144,14 @@ const BUCKET = "https://noaa-hrrr-bdp-pds.s3.amazonaws.com";
 const K2F = (v) => (v - 273.15) * 1.8 + 32;
 const MS2MPH = (v) => v * 2.23694;
 const WIND_STOPS = (k) => [
-  [0, 255, 255, 255, 255], [5 * k, 210, 230, 250, 255], [10 * k, 140, 200, 240, 255],
+  [0, 255, 255, 255, 0], [5 * k, 210, 230, 250, 255], [10 * k, 140, 200, 240, 255],
   [15 * k, 80, 180, 120, 255], [20 * k, 170, 210, 60, 255], [25 * k, 250, 220, 60, 255],
   [30 * k, 250, 150, 40, 255], [40 * k, 230, 60, 40, 255], [50 * k, 180, 0, 80, 255],
   [60 * k, 140, 0, 160, 255], [80 * k, 255, 160, 255, 255],
 ];
 const CURATED = [
   {
-    id: "temp", label: "Temperature", units: "°F",
-    desc: "Air temperature 2 m above the ground.",
+    id: "temp", short: "Temp", label: "Temperature", units: "°F",
     src: { var: "TMP", level: "2 m above ground" }, convert: K2F,
     stops: [
       [-30, 120, 0, 130, 255], [-10, 170, 110, 220, 255], [10, 60, 80, 200, 255],
@@ -217,8 +162,7 @@ const CURATED = [
     ],
   },
   {
-    id: "dewpt", label: "Dewpoint", units: "°F",
-    desc: "Dewpoint 2 m above the ground: how much moisture is in the air.",
+    id: "dewpt", short: "Dew", label: "Dewpoint", units: "°F",
     src: { var: "DPT", level: "2 m above ground" }, convert: K2F,
     stops: [
       [-10, 110, 80, 50, 255], [20, 165, 125, 85, 255], [35, 215, 195, 160, 255],
@@ -227,8 +171,7 @@ const CURATED = [
     ],
   },
   {
-    id: "wind", label: "Wind", units: "mph",
-    desc: "Sustained wind speed 10 m above the ground.",
+    id: "wind", short: "Wind", label: "Wind", units: "mph",
     components: [
       { var: "UGRD", level: "10 m above ground" },
       { var: "VGRD", level: "10 m above ground" },
@@ -237,14 +180,12 @@ const CURATED = [
     stops: WIND_STOPS(1),
   },
   {
-    id: "gust", label: "Wind gusts", units: "mph",
-    desc: "Peak wind gust at the surface.",
+    id: "gust", short: "Gust", label: "Wind gust", units: "mph",
     src: { var: "GUST", level: "surface" }, convert: MS2MPH,
     stops: WIND_STOPS(1.5),
   },
   {
-    id: "radar", label: "Radar", units: "dBZ",
-    desc: "Simulated radar: the strongest echo in each column.",
+    id: "radar", short: "Radar", label: "Radar", units: "dBZ",
     src: { var: "REFC", level: "entire atmosphere" },
     stops: [
       [5, 4, 233, 231, 0], [10, 4, 233, 231, 200], [15, 1, 100, 250, 220],
@@ -255,8 +196,7 @@ const CURATED = [
     ],
   },
   {
-    id: "precip", label: "Precip (1 hr)", units: "in",
-    desc: "Rain plus melted snow and ice over the past hour.",
+    id: "precip", short: "Precip", label: "Precip, past hour", units: "in",
     src: { var: "APCP", level: "surface", kind: "acc", win: "1h" }, convert: (v) => v / 25.4,
     stops: [
       [0.01, 200, 240, 190, 255], [0.05, 120, 210, 120, 255], [0.1, 40, 160, 60, 255],
@@ -266,8 +206,7 @@ const CURATED = [
     ],
   },
   {
-    id: "snow", label: "Snowfall (total)", units: "in",
-    desc: "Total snowfall since this model run started.",
+    id: "snow", short: "Snow", label: "Snowfall, run total", units: "in",
     src: { var: "ASNOW", level: "surface", kind: "acc", win: "run" }, convert: (v) => v * 39.3701,
     stops: [
       [0.1, 200, 220, 250, 255], [1, 140, 180, 240, 255], [3, 80, 130, 220, 255],
@@ -276,14 +215,12 @@ const CURATED = [
     ],
   },
   {
-    id: "cloud", label: "Cloud cover", units: "%",
-    desc: "Total cloud cover through the whole atmosphere.",
+    id: "cloud", short: "Cloud", label: "Cloud cover", units: "%",
     src: { var: "TCDC", level: "entire atmosphere" },
-    stops: [[10, 190, 190, 190, 0], [40, 150, 150, 150, 140], [80, 95, 95, 95, 220], [100, 60, 60, 60, 240]],
+    stops: [[10, 255, 255, 255, 0], [40, 230, 230, 230, 120], [80, 200, 200, 200, 210], [100, 170, 170, 170, 235]],
   },
   {
-    id: "mslp", label: "Pressure", units: "mb",
-    desc: "Sea-level pressure. Lows (blue) bring storms; highs (orange) bring fair weather.",
+    id: "mslp", short: "Pres", label: "Sea-level pressure", units: "mb",
     src: { var: "MSLMA", level: "mean sea level" }, convert: (v) => v / 100,
     stops: [
       [975, 120, 0, 130, 255], [990, 90, 90, 220, 255], [1000, 90, 170, 230, 255],
@@ -292,8 +229,7 @@ const CURATED = [
     ],
   },
   {
-    id: "cape", label: "CAPE", units: "J/kg",
-    desc: "Surface-based CAPE: energy available to rising air, the fuel for thunderstorms.",
+    id: "cape", short: "CAPE", label: "Surface CAPE", units: "J/kg",
     src: { var: "CAPE", level: "surface" },
     stops: [
       [100, 40, 90, 180, 0], [500, 60, 140, 230, 170], [1000, 0, 200, 140, 220],
@@ -307,7 +243,7 @@ const CURATED = [
 const NAMES = {
   REFC: ["Composite reflectivity", "dBZ"], REFD: ["Reflectivity", "dBZ"], RETOP: ["Echo top", "m"],
   VIL: ["Vertically integrated liquid", "kg/m²"], VIS: ["Visibility", "m"], GUST: ["Wind gust", "m/s"],
-  UGRD: ["U wind (west→east)", "m/s"], VGRD: ["V wind (south→north)", "m/s"], WIND: ["Wind speed", "m/s"],
+  UGRD: ["U wind", "m/s"], VGRD: ["V wind", "m/s"], WIND: ["Wind speed", "m/s"],
   MAXUW: ["Max U wind", "m/s"], MAXVW: ["Max V wind", "m/s"], HGT: ["Height", "m"],
   TMP: ["Temperature", "K"], DPT: ["Dewpoint", "K"], POT: ["Potential temperature", "K"],
   SPFH: ["Specific humidity", "kg/kg"], RH: ["Relative humidity", "%"], DZDT: ["Vertical velocity", "m/s"],
@@ -321,8 +257,8 @@ const NAMES = {
   MASSDEN: ["Smoke concentration", "kg/m³"], CPOFP: ["Frozen precip share", "%"],
   PRATE: ["Precip rate", "kg/m²/s"], APCP: ["Precipitation", "kg/m²"], FROZR: ["Frozen precip", "kg/m²"],
   FRZR: ["Freezing rain", "kg/m²"], SSRUN: ["Surface runoff", "kg/m²"], BGRUN: ["Subsurface runoff", "kg/m²"],
-  CSNOW: ["Snow (yes/no)", ""], CICEP: ["Ice pellets (yes/no)", ""], CFRZR: ["Freezing rain (yes/no)", ""],
-  CRAIN: ["Rain (yes/no)", ""], SFCR: ["Surface roughness", "m"], FRICV: ["Friction velocity", "m/s"],
+  CSNOW: ["Snow yes/no", ""], CICEP: ["Ice pellets yes/no", ""], CFRZR: ["Freezing rain yes/no", ""],
+  CRAIN: ["Rain yes/no", ""], SFCR: ["Surface roughness", "m"], FRICV: ["Friction velocity", "m/s"],
   SHTFL: ["Sensible heat flux", "W/m²"], LHTFL: ["Latent heat flux", "W/m²"], VEG: ["Vegetation", "%"],
   VEGMIN: ["Min vegetation", "%"], VEGMAX: ["Max vegetation", "%"], LAI: ["Leaf area index", ""],
   GFLUX: ["Ground heat flux", "W/m²"], VGTYP: ["Vegetation type", ""], LFTX: ["Lifted index", "K"],
@@ -331,7 +267,7 @@ const NAMES = {
   TCOLW: ["Column cloud water", "kg/m²"], TCOLI: ["Column cloud ice", "kg/m²"], TCDC: ["Cloud cover", "%"],
   LCDC: ["Low cloud cover", "%"], MCDC: ["Mid cloud cover", "%"], HCDC: ["High cloud cover", "%"],
   ULWRF: ["Outgoing longwave", "W/m²"], DSWRF: ["Incoming sunlight", "W/m²"], DLWRF: ["Incoming longwave", "W/m²"],
-  USWRF: ["Reflected sunlight", "W/m²"], CFNSF: ["Cloud forcing (solar)", "W/m²"],
+  USWRF: ["Reflected sunlight", "W/m²"], CFNSF: ["Cloud forcing, solar", "W/m²"],
   VBDSF: ["Direct visible sunlight", "W/m²"], VDDSF: ["Diffuse visible sunlight", "W/m²"],
   HLCY: ["Storm-relative helicity", "m²/s²"], USTM: ["Storm motion U", "m/s"], VSTM: ["Storm motion V", "m/s"],
   VUCSH: ["U wind shear", "1/s"], VVCSH: ["V wind shear", "1/s"], HPBL: ["Boundary layer height", "m"],
@@ -395,7 +331,7 @@ function makeProjection(grid) {
   };
 }
 
-// ---------- colormap ----------
+// ---------- colour ----------
 function makeColorLUT(stops, vmin, vmax, size) {
   const lut = new Uint8ClampedArray(size * 4);
   for (let k = 0; k < size; k++) {
@@ -404,10 +340,7 @@ function makeColorLUT(stops, vmin, vmax, size) {
     while (s < stops.length - 1 && v > stops[s + 1][0]) s++;
     const a = stops[s], b = stops[Math.min(s + 1, stops.length - 1)];
     const t = b[0] === a[0] ? 0 : Math.min(1, Math.max(0, (v - a[0]) / (b[0] - a[0])));
-    lut[k * 4] = a[1] + t * (b[1] - a[1]);
-    lut[k * 4 + 1] = a[2] + t * (b[2] - a[2]);
-    lut[k * 4 + 2] = a[3] + t * (b[3] - a[3]);
-    lut[k * 4 + 3] = a[4] + t * (b[4] - a[4]);
+    for (let c = 0; c < 4; c++) lut[k * 4 + c] = a[c + 1] + t * (b[c + 1] - a[c + 1]);
   }
   return lut;
 }
@@ -507,7 +440,7 @@ async function loadMessage(run, src, strict) {
   }
   const idx = await getIdx(run);
   const line = findLine(idx, src, strict);
-  if (!line) throw new Error(`not available at F${pad2(run.fhr)}`);
+  if (!line) throw new Error(`not in F${pad2(run.fhr)}`);
   const r = await fetch(`${BUCKET}/${runPath(run)}`, { headers: { Range: `bytes=${line.offset}-${line.end}` } });
   if (!r.ok) throw new Error(`HTTP ${r.status}`);
   const decoded = decodeGrib2(await r.arrayBuffer());
@@ -552,200 +485,224 @@ async function findRuns() {
   throw new Error("No recent HRRR runs found");
 }
 
-// ---------- app state ----------
+// ---------- state ----------
+const $ = (id) => document.getElementById(id);
 const ui = {
-  field: document.getElementById("field"),
-  allBtn: document.getElementById("allBtn"),
-  run: document.getElementById("run"),
-  fhr: document.getElementById("fhr"),
-  fhrLabel: document.getElementById("fhrLabel"),
-  play: document.getElementById("play"),
-  status: document.getElementById("status"),
-  map: document.getElementById("map"),
-  readout: document.getElementById("readout"),
-  legend: document.getElementById("legend"),
-  fieldTitle: document.getElementById("fieldTitle"),
-  fieldDesc: document.getElementById("fieldDesc"),
-  validTime: document.getElementById("validTime"),
+  fields: $("fields"), more: $("more"), run: $("run"), fhr: $("fhr"), fhrLabel: $("fhrLabel"),
+  play: $("play"), prev: $("prev"), next: $("next"), status: $("status"), readout: $("readout"),
+  legend: $("legend"), legendTitle: $("legendTitle"), validTime: $("validTime"),
 };
 const state = {
   runs: [],
   run: null,       // {date, hour}
   fhr: 1,
   field: CURATED[0],
-  allMode: false,
-  allFields: [],   // built from the run's file index
+  allFields: [],   // every message in the run's file
   current: null,   // {grid, data} or {grid, data: null} when unavailable
-  scale: null,     // {stops, vmin, vmax, clearZero}
+  scale: null,     // {stops, vmin, vmax, clearZero, clampLow}
+  rgba: null,      // coloured grid, row 0 = south
   proj: null,
-  view: { scale: 1, tx: 0, ty: 0 }, // grid px -> screen px
   playing: false,
   playTimer: null,
   loadSeq: 0,
-  stateLines: null, // projected polylines in canvas grid coords
 };
 
-const ctx = ui.map.getContext("2d");
-const fieldCanvas = document.createElement("canvas");
+// ---------- map ----------
+const map = L.map("map", {
+  attributionControl: false,
+  zoomControl: false,
+  minZoom: 3,
+  maxZoom: 11,
+  zoomSnap: 1,
+  worldCopyJump: false,
+}).fitBounds([[24, -125], [50, -66]]);
+L.control.zoom({ position: "topright" }).addTo(map);
 
-function decodeStateLines() {
-  const out = [];
+// Minimal topographic basemap drawn from Terrarium elevation tiles:
+// white land with stepped hillshade and contour lines, black sea.
+const Topo = L.GridLayer.extend({
+  createTile(coords, done) {
+    const tile = document.createElement("canvas");
+    tile.width = tile.height = 256;
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      try { drawTopo(tile, img, coords.z, coords.y); done(null, tile); } catch (e) { done(e, tile); }
+    };
+    img.onerror = () => done(new Error("terrain tile"), tile);
+    img.src = L.Util.template(TERRAIN, coords);
+    return tile;
+  },
+});
+
+function contourInterval(z) {
+  if (z <= 4) return 1000;
+  if (z <= 6) return 500;
+  if (z <= 7) return 300;
+  if (z <= 8) return 200;
+  if (z <= 9) return 100;
+  if (z <= 10) return 50;
+  return 25;
+}
+
+function drawTopo(tile, img, z, ty) {
+  const c = tile.getContext("2d", { willReadFrequently: true });
+  c.drawImage(img, 0, 0);
+  const src = c.getImageData(0, 0, 256, 256);
+  const p = src.data;
+  const N = 256;
+  const elev = new Float32Array(N * N);
+  for (let k = 0; k < N * N; k++) elev[k] = p[k * 4] * 256 + p[k * 4 + 1] + p[k * 4 + 2] / 256 - 32768;
+
+  const latC = Math.atan(Math.sinh(Math.PI * (1 - (2 * (ty + 0.5)) / 2 ** z))) ;
+  const mpp = (40075016.686 * Math.cos(latC)) / (256 * 2 ** z);
+  const exag = 2 ** Math.max(0.5, (11 - z) * 0.55);
+  const interval = contourInterval(z);
+  // Sun from the north-west, 45° up.
+  const az = (315 * Math.PI) / 180, alt = Math.PI / 4;
+  const sx = Math.sin(az) * Math.cos(alt), sy = Math.cos(az) * Math.cos(alt), sz = Math.sin(alt);
+  const out = c.createImageData(N, N);
+  const o = out.data;
+  const at = (x, y) => elev[Math.min(N - 1, Math.max(0, y)) * N + Math.min(N - 1, Math.max(0, x))];
+  for (let y = 0; y < N; y++) {
+    for (let x = 0; x < N; x++) {
+      const k = y * N + x, e = elev[k];
+      let g;
+      if (e <= 0) {
+        g = 0;
+      } else {
+        const dzdx = ((at(x + 1, y) - at(x - 1, y)) / (2 * mpp)) * exag;
+        const dzdy = ((at(x, y - 1) - at(x, y + 1)) / (2 * mpp)) * exag; // north-positive
+        const len = Math.hypot(dzdx, dzdy, 1);
+        const lit = Math.max(0, (-dzdx * sx - dzdy * sy + sz) / len);
+        // Stepped shading keeps it graphic rather than photographic.
+        g = 255 - Math.round((1 - lit / sz) * 5) * 24;
+        g = Math.max(135, Math.min(255, g));
+        const band = Math.floor(e / interval);
+        if (band !== Math.floor(at(x + 1, y) / interval) || band !== Math.floor(at(x, y + 1) / interval)) {
+          g = band % 5 === 0 ? 0 : Math.min(g - 40, 150);
+        }
+      }
+      o[k * 4] = o[k * 4 + 1] = o[k * 4 + 2] = g;
+      o[k * 4 + 3] = 255;
+    }
+  }
+  c.putImageData(out, 0, 0);
+}
+
+new Topo({ maxNativeZoom: 12, keepBuffer: 2 }).addTo(map);
+
+// HRRR overlay: each tile pixel looks up its grid cell, cached per tile so
+// changing field or hour only recolours.
+const tileIndex = new Map();
+const TILE_INDEX_MAX = 120;
+const liveTiles = new Set();
+function tileGridIndex(coords) {
+  const key = `${coords.z}/${coords.x}/${coords.y}`;
+  if (tileIndex.has(key)) return tileIndex.get(key);
+  const { nx, ny } = state.current.grid;
+  const idx = new Int32Array(256 * 256);
+  const world = 256 * 2 ** coords.z;
+  for (let y = 0; y < 256; y++) {
+    const py = coords.y * 256 + y + 0.5;
+    const lat = (Math.atan(Math.sinh(Math.PI * (1 - (2 * py) / world))) * 180) / Math.PI;
+    for (let x = 0; x < 256; x++) {
+      const lon = ((coords.x * 256 + x + 0.5) / world) * 360 - 180;
+      const [gi, gj] = state.proj.toGrid(lon, lat);
+      const i = Math.round(gi), j = Math.round(gj);
+      idx[y * 256 + x] = i >= 0 && i < nx && j >= 0 && j < ny ? j * nx + i : -1;
+    }
+  }
+  tileIndex.set(key, idx);
+  while (tileIndex.size > TILE_INDEX_MAX) tileIndex.delete(tileIndex.keys().next().value);
+  return idx;
+}
+
+function paintDataTile(tile) {
+  const c = tile.getContext("2d");
+  c.clearRect(0, 0, 256, 256);
+  if (!state.rgba || !state.proj) return;
+  const idx = tileGridIndex(tile._coords);
+  const img = c.createImageData(256, 256);
+  const o = img.data, src = state.rgba;
+  for (let k = 0; k < idx.length; k++) {
+    const g = idx[k];
+    if (g < 0) continue;
+    const s = g * 4;
+    o[k * 4] = src[s]; o[k * 4 + 1] = src[s + 1]; o[k * 4 + 2] = src[s + 2]; o[k * 4 + 3] = src[s + 3];
+  }
+  c.putImageData(img, 0, 0);
+}
+
+const DataLayer = L.GridLayer.extend({
+  createTile(coords) {
+    const tile = document.createElement("canvas");
+    tile.width = tile.height = 256;
+    tile._coords = coords;
+    liveTiles.add(tile);
+    paintDataTile(tile);
+    return tile;
+  },
+});
+const dataLayer = new DataLayer({ opacity: 0.78, zIndex: 2 }).addTo(map);
+dataLayer.on("tileunload", (e) => liveTiles.delete(e.tile));
+function repaintData() { for (const t of liveTiles) paintDataTile(t); }
+
+// US state outlines above the data.
+map.createPane("lines").style.zIndex = 450;
+(function addStateLines() {
+  const lines = [];
   for (const enc of STATE_LINES_ENC) {
-    const line = new Float64Array(enc.length);
+    const pts = [];
     let x = 0, y = 0;
     for (let k = 0; k < enc.length; k += 2) {
       x += enc[k]; y += enc[k + 1];
-      line[k] = x / 100; line[k + 1] = y / 100;
+      pts.push([y / 100, x / 100]);
     }
-    out.push(line);
+    lines.push(pts);
   }
-  return out;
-}
-const STATE_LONLAT = decodeStateLines();
+  L.polyline(lines, { pane: "lines", color: "#000", weight: 1, opacity: 1, interactive: false, smoothFactor: 0.5 }).addTo(map);
+})();
 
-function projectStateLines() {
-  const { ny } = state.current.grid;
-  state.stateLines = STATE_LONLAT.map((line) => {
-    const out = new Float64Array(line.length);
-    for (let k = 0; k < line.length; k += 2) {
-      const [gx, gy] = state.proj.toGrid(line[k], line[k + 1]);
-      out[k] = gx + 0.5;
-      out[k + 1] = (ny - 1) - gy + 0.5; // north-up canvas
-    }
-    return out;
-  });
+function setDomainBounds() {
+  const { nx, ny } = state.current.grid;
+  const pts = [];
+  for (const [i, j] of [[0, 0], [nx - 1, 0], [0, ny - 1], [nx - 1, ny - 1], [nx / 2, 0], [nx / 2, ny - 1], [0, ny / 2], [nx - 1, ny / 2]]) {
+    const [lon, lat] = state.proj.toLonLat(i, j);
+    pts.push([lat, lon]);
+  }
+  map.setMaxBounds(L.latLngBounds(pts).pad(0.05));
 }
 
+// ---------- rendering ----------
 function maxFhr(run) { return run.hour % 6 === 0 ? 48 : 18; }
 
 function computeScale() {
   const f = state.field;
   if (!f.auto) {
-    state.scale = { stops: f.stops, vmin: f.stops[0][0], vmax: f.stops[f.stops.length - 1][0], clearZero: false };
+    state.scale = { stops: f.stops, vmin: f.stops[0][0], vmax: f.stops[f.stops.length - 1][0], clearZero: false, clampLow: false };
     return;
   }
   const { lo, hi, clearZero } = autoScale(state.current.data);
-  state.scale = { stops: VIRIDIS.map(([t, r, g, b]) => [lo + t * (hi - lo), r, g, b, 255]), vmin: lo, vmax: hi, clearZero };
+  state.scale = { stops: VIRIDIS.map(([t, r, g, b]) => [lo + t * (hi - lo), r, g, b, 255]), vmin: lo, vmax: hi, clearZero, clampLow: true };
 }
 
-function renderFieldToCanvas() {
-  const { grid, data } = state.current;
-  const { nx, ny } = grid;
-  fieldCanvas.width = nx; fieldCanvas.height = ny;
-  const fctx = fieldCanvas.getContext("2d");
-  if (!data) { fctx.clearRect(0, 0, nx, ny); return; }
-  const { stops, vmin, vmax, clearZero } = state.scale;
-  const img = fctx.createImageData(nx, ny);
-  const px = img.data;
+function colorGrid() {
+  const { data } = state.current;
+  if (!data) { state.rgba = null; return; }
+  const { stops, vmin, vmax, clearZero, clampLow } = state.scale;
   const LUTN = 1024;
   const lut = makeColorLUT(stops, vmin, vmax, LUTN);
-  const k_scale = (LUTN - 1) / (vmax - vmin);
-  // Hand-tuned colormaps leave values below their range transparent; auto ones clamp.
-  const clampLow = state.field.auto;
-  for (let j = 0; j < ny; j++) {
-    const srcRow = j * nx;            // row 0 = south
-    const dstRow = (ny - 1 - j) * nx; // canvas row 0 = north
-    for (let i = 0; i < nx; i++) {
-      const v = data[srcRow + i];
-      if (!Number.isFinite(v) || (clearZero && v === 0)) continue;
-      if (v < vmin && !clampLow) continue;
-      let k = ((v - vmin) * k_scale) | 0;
-      if (k < 0) k = 0;
-      if (k >= LUTN) k = LUTN - 1;
-      const o = (dstRow + i) * 4, l = k * 4;
-      px[o] = lut[l]; px[o + 1] = lut[l + 1]; px[o + 2] = lut[l + 2]; px[o + 3] = lut[l + 3];
-    }
+  const k = (LUTN - 1) / (vmax - vmin);
+  const out = new Uint8ClampedArray(data.length * 4);
+  for (let i = 0; i < data.length; i++) {
+    const v = data[i];
+    if (!Number.isFinite(v) || (clearZero && v === 0) || (v < vmin && !clampLow)) continue;
+    let n = ((v - vmin) * k) | 0;
+    if (n < 0) n = 0; else if (n >= LUTN) n = LUTN - 1;
+    out[i * 4] = lut[n * 4]; out[i * 4 + 1] = lut[n * 4 + 1]; out[i * 4 + 2] = lut[n * 4 + 2]; out[i * 4 + 3] = lut[n * 4 + 3];
   }
-  fctx.putImageData(img, 0, 0);
-}
-
-function fitView() {
-  const { nx, ny } = state.current.grid;
-  const w = ui.map.width, h = ui.map.height;
-  const s = Math.min(w / nx, h / ny) * 0.97;
-  state.view = { scale: s, tx: (w - nx * s) / 2, ty: (h - ny * s) / 2 };
-}
-
-function draw() {
-  const w = ui.map.width, h = ui.map.height;
-  ctx.setTransform(1, 0, 0, 1, 0, 0);
-  ctx.fillStyle = "#fff";
-  ctx.fillRect(0, 0, w, h);
-  if (!state.current) return;
-  const { scale, tx, ty } = state.view;
-  const { nx, ny } = state.current.grid;
-  const dpr = window.devicePixelRatio || 1;
-  ctx.setTransform(scale, 0, 0, scale, tx, ty);
-  ctx.imageSmoothingEnabled = scale < 1.5;
-  ctx.drawImage(fieldCanvas, 0, 0);
-  ctx.lineWidth = dpr / scale;
-  ctx.strokeStyle = "#000";
-  ctx.lineJoin = "round";
-  ctx.save();
-  ctx.beginPath();
-  ctx.rect(0, 0, nx, ny); // Alaska and Hawaii project outside the HRRR grid
-  ctx.clip();
-  for (const line of state.stateLines) {
-    ctx.beginPath();
-    ctx.moveTo(line[0], line[1]);
-    for (let k = 2; k < line.length; k += 2) ctx.lineTo(line[k], line[k + 1]);
-    ctx.stroke();
-  }
-  ctx.restore();
-  ctx.lineWidth = 2 * dpr / scale;
-  ctx.strokeRect(0, 0, nx, ny);
-}
-
-function drawLegend() {
-  const c = ui.legend;
-  const dpr = window.devicePixelRatio || 1;
-  const cssW = c.clientWidth || 400, cssH = 30;
-  c.width = Math.round(cssW * dpr); c.height = Math.round(cssH * dpr);
-  const lctx = c.getContext("2d");
-  lctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  lctx.clearRect(0, 0, cssW, cssH);
-  if (!state.scale) return;
-  const { stops, vmin, vmax } = state.scale;
-  const barH = 12;
-  // Hand-tuned colormaps have uneven steps, so give each step equal width.
-  const even = !state.field.auto;
-  const segs = stops.length - 1;
-  const xOf = (v) => {
-    if (!even) return ((v - vmin) / (vmax - vmin)) * cssW;
-    const s = Math.max(0, stops.findIndex((st) => st[0] === v));
-    return (s / segs) * cssW;
-  };
-  for (let x = 0; x < cssW; x++) {
-    const t = x / Math.max(1, cssW - 1);
-    let rgba;
-    if (even) {
-      const s = Math.min(segs - 1, Math.floor(t * segs));
-      const u = t * segs - s, a = stops[s], b = stops[s + 1];
-      rgba = [1, 2, 3, 4].map((c) => a[c] + u * (b[c] - a[c]));
-    } else {
-      const v = vmin + t * (vmax - vmin);
-      let s = 0;
-      while (s < stops.length - 2 && v > stops[s + 1][0]) s++;
-      const a = stops[s], b = stops[s + 1];
-      const u = Math.min(1, Math.max(0, (v - a[0]) / (b[0] - a[0])));
-      rgba = [1, 2, 3, 4].map((c) => a[c] + u * (b[c] - a[c]));
-    }
-    lctx.fillStyle = `rgba(${rgba[0]},${rgba[1]},${rgba[2]},${Math.max(rgba[3], 60) / 255})`;
-    lctx.fillRect(x, 0, 1, barH);
-  }
-  lctx.strokeStyle = "#000";
-  lctx.lineWidth = 1;
-  lctx.strokeRect(0.5, 0.5, cssW - 1, barH - 1);
-  lctx.fillStyle = "#000";
-  lctx.font = "10px ui-monospace, Menlo, monospace";
-  const ticks = state.field.auto
-    ? [0, 0.25, 0.5, 0.75, 1].map((t) => vmin + t * (vmax - vmin))
-    : pickTicks(stops.map((s) => s[0]), Math.max(3, Math.floor(cssW / 55)));
-  ticks.forEach((v, n) => {
-    const x = xOf(v);
-    lctx.textAlign = n === 0 ? "left" : n === ticks.length - 1 ? "right" : "center";
-    lctx.fillText(fmt(v), x, barH + 13);
-  });
+  state.rgba = out;
 }
 
 function pickTicks(values, count) {
@@ -755,59 +712,90 @@ function pickTicks(values, count) {
   return out;
 }
 
-function setStatus(msg, isErr) {
-  ui.status.textContent = msg;
-  ui.status.classList.toggle("err", !!isErr);
+function drawLegend() {
+  const f = state.field;
+  ui.legendTitle.textContent = `${f.label}${f.units ? ` · ${f.units}` : ""}`;
+  const c = ui.legend;
+  const dpr = window.devicePixelRatio || 1;
+  const w = c.clientWidth || 300, h = 26;
+  c.width = Math.round(w * dpr); c.height = Math.round(h * dpr);
+  const g = c.getContext("2d");
+  g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  g.clearRect(0, 0, w, h);
+  if (!state.scale) return;
+  const { stops, vmin, vmax } = state.scale;
+  const barH = 10;
+  // Hand-tuned colormaps have uneven steps, so give each step equal width.
+  const even = !f.auto;
+  const segs = stops.length - 1;
+  const xOf = (v) => even ? (Math.max(0, stops.findIndex((s) => s[0] === v)) / segs) * w : ((v - vmin) / (vmax - vmin)) * w;
+  for (let x = 0; x < w; x++) {
+    const t = x / Math.max(1, w - 1);
+    let s, u;
+    if (even) {
+      s = Math.min(segs - 1, Math.floor(t * segs)); u = t * segs - s;
+    } else {
+      const v = vmin + t * (vmax - vmin);
+      s = 0;
+      while (s < segs - 1 && v > stops[s + 1][0]) s++;
+      u = Math.min(1, Math.max(0, (v - stops[s][0]) / (stops[s + 1][0] - stops[s][0])));
+    }
+    const a = stops[s], b = stops[s + 1];
+    const col = [1, 2, 3, 4].map((ch) => a[ch] + u * (b[ch] - a[ch]));
+    // Composite over white so transparent ends still read.
+    const al = col[3] / 255;
+    g.fillStyle = `rgb(${col.slice(0, 3).map((v) => Math.round(v * al + 255 * (1 - al))).join(",")})`;
+    g.fillRect(x, 0, 1, barH);
+  }
+  g.fillStyle = "#000";
+  g.fillRect(0, barH, w, 2);
+  g.font = `700 10px ui-monospace, Menlo, monospace`;
+  const ticks = f.auto
+    ? [0, 0.25, 0.5, 0.75, 1].map((t) => vmin + t * (vmax - vmin))
+    : pickTicks(stops.map((s) => s[0]), Math.max(3, Math.floor(w / 50)));
+  ticks.forEach((v, n) => {
+    const x = xOf(v);
+    g.textAlign = n === 0 ? "left" : n === ticks.length - 1 ? "right" : "center";
+    g.fillText(fmt(v), x, barH + 13);
+  });
 }
+
+function setStatus(msg) { ui.status.textContent = msg; }
 
 function validTimeText() {
   const { date, hour } = state.run;
   const runMs = Date.UTC(+date.slice(0, 4), +date.slice(4, 6) - 1, +date.slice(6, 8), hour);
   const valid = new Date(runMs + state.fhr * 3600e3);
-  const local = valid.toLocaleString(undefined, {
-    weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit",
-  });
-  return `Valid ${local} · ${pad2(hour)}Z run, F${pad2(state.fhr)}`;
-}
-
-function showFieldInfo() {
-  const f = state.field;
-  ui.fieldTitle.innerHTML = `${f.label}${f.units ? ` <span class="units">${f.units}</span>` : ""}`;
-  ui.fieldDesc.textContent = f.desc || "";
-  ui.fieldDesc.hidden = !f.desc;
+  return valid.toLocaleString(undefined, { weekday: "short", month: "short", day: "numeric", hour: "numeric" });
 }
 
 async function refresh() {
   const seq = ++state.loadSeq;
   const run = { ...state.run, fhr: state.fhr };
   const field = state.field;
-  showFieldInfo();
   ui.validTime.textContent = validTimeText();
-  setStatus(`Loading F${pad2(state.fhr)}…`);
+  setStatus("Loading");
   try {
     const decoded = await loadField(run, field);
     if (seq !== state.loadSeq) return;
-    const firstLoad = !state.current;
     state.current = decoded;
     if (!state.proj) {
       state.proj = makeProjection(decoded.grid);
-      projectStateLines();
+      setDomainBounds();
     }
     computeScale();
-    renderFieldToCanvas();
-    if (firstLoad) fitView();
-    draw();
+    colorGrid();
+    repaintData();
     drawLegend();
     setStatus("");
     prefetchNext();
   } catch (e) {
     if (seq !== state.loadSeq) return;
-    if (state.current) {
-      state.current = { grid: state.current.grid, data: null };
-      renderFieldToCanvas();
-      draw();
-    }
-    setStatus(`${field.label}: ${e.message}`, true);
+    if (state.current) state.current = { grid: state.current.grid, data: null };
+    state.rgba = null;
+    repaintData();
+    drawLegend();
+    setStatus(`No data: ${e.message}`);
   }
 }
 
@@ -817,116 +805,23 @@ function prefetchNext() {
   loadField({ ...state.run, fhr: next }, state.field).catch(() => {});
 }
 
-// ---------- map interactions ----------
-function resize() {
-  const dpr = window.devicePixelRatio || 1;
-  const r = ui.map.getBoundingClientRect();
-  const oldW = ui.map.width;
-  ui.map.width = Math.round(r.width * dpr);
-  ui.map.height = Math.round(r.height * dpr);
-  if (state.current) {
-    if (oldW) {
-      const f = ui.map.width / oldW;
-      state.view.scale *= f; state.view.tx *= f; state.view.ty *= f;
-    } else {
-      fitView();
-    }
-    draw();
-  }
-  drawLegend();
-}
-window.addEventListener("resize", resize);
-
-function zoomAt(mx, my, ns, base = state.view) {
-  ns = Math.min(Math.max(ns, 0.05), 40);
-  state.view = {
-    scale: ns,
-    tx: mx - (mx - base.tx) * (ns / base.scale),
-    ty: my - (my - base.ty) * (ns / base.scale),
-  };
-}
-
-ui.map.addEventListener("wheel", (e) => {
-  e.preventDefault();
-  if (!state.current) return;
-  const dpr = window.devicePixelRatio || 1;
-  zoomAt(e.offsetX * dpr, e.offsetY * dpr, state.view.scale * Math.exp(-e.deltaY * 0.0015));
-  draw();
-}, { passive: false });
-
-// One pointer pans; two pointers pinch-zoom around their midpoint.
-const pointers = new Map();
-let gesture = null;
-function startGesture() {
-  const pts = [...pointers.values()];
-  const dpr = window.devicePixelRatio || 1;
-  if (pts.length === 1) {
-    gesture = { type: "pan", x: pts[0].x, y: pts[0].y, view: { ...state.view } };
-  } else if (pts.length >= 2) {
-    const [a, b] = pts;
-    gesture = {
-      type: "pinch",
-      dist: Math.hypot(b.x - a.x, b.y - a.y),
-      cx: ((a.x + b.x) / 2) * dpr, cy: ((a.y + b.y) / 2) * dpr,
-      view: { ...state.view },
-    };
-  } else {
-    gesture = null;
-  }
-}
-ui.map.addEventListener("pointerdown", (e) => {
-  try { ui.map.setPointerCapture(e.pointerId); } catch (err) { /* capture is best-effort */ }
-  const r = ui.map.getBoundingClientRect();
-  pointers.set(e.pointerId, { x: e.clientX - r.left, y: e.clientY - r.top });
-  ui.map.classList.add("panning");
-  startGesture();
-});
-function endPointer(e) {
-  pointers.delete(e.pointerId);
-  if (!pointers.size) ui.map.classList.remove("panning");
-  startGesture();
-}
-ui.map.addEventListener("pointerup", endPointer);
-ui.map.addEventListener("pointercancel", endPointer);
-ui.map.addEventListener("pointermove", (e) => {
-  const dpr = window.devicePixelRatio || 1;
-  const r = ui.map.getBoundingClientRect();
-  const x = e.clientX - r.left, y = e.clientY - r.top;
-  if (pointers.has(e.pointerId)) {
-    pointers.set(e.pointerId, { x, y });
-    if (gesture?.type === "pan") {
-      state.view = { ...gesture.view, tx: gesture.view.tx + (x - gesture.x) * dpr, ty: gesture.view.ty + (y - gesture.y) * dpr };
-      draw();
-    } else if (gesture?.type === "pinch") {
-      const [a, b] = [...pointers.values()];
-      const dist = Math.hypot(b.x - a.x, b.y - a.y);
-      const cx = ((a.x + b.x) / 2) * dpr, cy = ((a.y + b.y) / 2) * dpr;
-      const g = gesture;
-      zoomAt(g.cx, g.cy, g.view.scale * (dist / g.dist), g.view);
-      state.view.tx += cx - g.cx;
-      state.view.ty += cy - g.cy;
-      draw();
-    }
-  }
-  if (e.pointerType === "mouse") updateReadout(x * dpr, y * dpr);
-});
-ui.map.addEventListener("pointerleave", () => { ui.readout.hidden = true; });
-ui.map.addEventListener("dblclick", () => { if (state.current) { fitView(); draw(); } });
-
-function updateReadout(sx, sy) {
-  if (!state.current?.data) { ui.readout.hidden = true; return; }
-  const { scale, tx, ty } = state.view;
+// ---------- readout ----------
+function readAt(latlng) {
+  if (!state.current?.data || !state.proj) return null;
   const { nx, ny } = state.current.grid;
-  const cx = (sx - tx) / scale, cy = (sy - ty) / scale;
-  const i = Math.floor(cx), j = Math.floor((ny - 1) - cy + 0.5);
-  if (i < 0 || i >= nx || j < 0 || j >= ny) { ui.readout.hidden = true; return; }
-  const v = state.current.data[j * nx + i];
-  const [lon, lat] = state.proj.toLonLat(i, j);
-  const f = state.field;
-  ui.readout.hidden = false;
-  ui.readout.querySelector(".val").textContent = Number.isFinite(v) ? `${fmt(v)} ${f.units}`.trim() : "—";
-  ui.readout.querySelector(".pos").textContent = `${lat.toFixed(2)}°N ${(-lon).toFixed(2)}°W`;
+  const [gi, gj] = state.proj.toGrid(latlng.lng, latlng.lat);
+  const i = Math.round(gi), j = Math.round(gj);
+  if (i < 0 || i >= nx || j < 0 || j >= ny) return null;
+  return state.current.data[j * nx + i];
 }
+function showReadout(latlng) {
+  const v = readAt(latlng);
+  const pos = `${Math.abs(latlng.lat).toFixed(1)}${latlng.lat >= 0 ? "N" : "S"} ${Math.abs(latlng.lng).toFixed(1)}${latlng.lng >= 0 ? "E" : "W"}`;
+  ui.readout.textContent = Number.isFinite(v) ? `${fmt(v)} ${state.field.units} · ${pos}`.replace("  ", " ") : pos;
+}
+map.on("mousemove", (e) => showReadout(e.latlng));
+map.on("click", (e) => showReadout(e.latlng));
+map.on("mouseout", () => { ui.readout.innerHTML = "&nbsp;"; });
 
 // ---------- field picker ----------
 function buildAllFields(idx) {
@@ -937,12 +832,12 @@ function buildAllFields(idx) {
     if (seen.has(id)) continue;
     seen.add(id);
     const win = ln.kind ? (ln.b - ln.a === 1 ? "1h" : "run") : "inst";
-    const [name, units] = NAMES[ln.var] || [ln.var.startsWith("var ") ? ln.var.replace(/^var /, "") : ln.var, ""];
-    const when = ln.kind ? ` · ${win === "1h" ? "1-hr" : "run"} ${KIND_WORDS[ln.kind]}` : "";
+    const [name, units] = NAMES[ln.var] || [ln.var.replace(/^var /, ""), ""];
+    const when = ln.kind ? `, ${win === "1h" ? "1-hr" : "run"} ${KIND_WORDS[ln.kind]}` : "";
     out.push({
       id: "all:" + id,
       auto: true,
-      label: `${name} · ${ln.level}${when}`,
+      label: `${name}, ${ln.level}${when}`,
       units,
       group: groupOf(ln.var, ln.level),
       src: { var: ln.var, level: ln.level, kind: ln.kind, win },
@@ -951,72 +846,71 @@ function buildAllFields(idx) {
   return out;
 }
 
-function fillFieldOptions() {
-  ui.field.innerHTML = "";
-  if (!state.allMode) {
-    for (const f of CURATED) ui.field.add(new Option(f.label, f.id));
-  } else {
-    const groups = new Map();
-    for (const f of state.allFields) {
-      if (!groups.has(f.group)) groups.set(f.group, []);
-      groups.get(f.group).push(f);
-    }
-    for (const [name] of GROUPS) {
-      if (!groups.has(name)) continue;
-      const og = document.createElement("optgroup");
-      og.label = name;
-      for (const f of groups.get(name)) og.appendChild(new Option(f.label, f.id));
-      ui.field.appendChild(og);
-    }
+for (const f of CURATED) {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.className = "cell";
+  b.textContent = f.short;
+  b.title = f.label;
+  b.dataset.field = f.id;
+  b.addEventListener("click", () => setField(f));
+  ui.fields.insertBefore(b, ui.more);
+}
+
+function fillMore() {
+  ui.more.innerHTML = "";
+  ui.more.add(new Option(`All ${state.allFields.length || ""} fields ▾`.replace("  ", " "), ""));
+  const groups = new Map();
+  for (const f of state.allFields) {
+    if (!groups.has(f.group)) groups.set(f.group, []);
+    groups.get(f.group).push(f);
   }
-  ui.field.value = state.field.id;
+  for (const [name] of GROUPS) {
+    if (!groups.has(name)) continue;
+    const og = document.createElement("optgroup");
+    og.label = name;
+    for (const f of groups.get(name)) og.appendChild(new Option(f.label, f.id));
+    ui.more.appendChild(og);
+  }
+  syncFieldButtons();
 }
 
-function fieldById(id) {
-  return CURATED.find((f) => f.id === id) || state.allFields.find((f) => f.id === id);
-}
-
-function sameSrc(a, b) {
-  return a && b && a.var === b.var && a.level === b.level && (a.kind || null) === (b.kind || null);
+function syncFieldButtons() {
+  for (const b of ui.fields.querySelectorAll("button[data-field]")) {
+    const on = b.dataset.field === state.field.id;
+    b.classList.toggle("on", on);
+    b.setAttribute("aria-pressed", String(on));
+  }
+  const fromMore = !!state.field.auto;
+  ui.more.classList.toggle("on", fromMore);
+  ui.more.value = fromMore ? state.field.id : "";
 }
 
 function setField(field) {
   state.field = field;
-  ui.field.value = field.id;
+  syncFieldButtons();
+  drawLegend();
   refresh();
 }
-ui.field.addEventListener("change", () => setField(fieldById(ui.field.value)));
-
-ui.allBtn.addEventListener("click", () => {
-  state.allMode = !state.allMode;
-  ui.allBtn.classList.toggle("is-active", state.allMode);
-  ui.allBtn.setAttribute("aria-pressed", String(state.allMode));
-  const cur = state.field;
-  let next;
-  if (state.allMode) {
-    next = state.allFields.find((f) => sameSrc(f.src, cur.src)) || state.allFields[0];
-  } else {
-    next = CURATED.find((f) => sameSrc(f.src, cur.src)) || CURATED[0];
-  }
-  fillFieldOptions();
-  if (next && next !== cur) setField(next);
-  else ui.field.value = cur.id;
+ui.more.addEventListener("change", () => {
+  const f = state.allFields.find((x) => x.id === ui.more.value);
+  if (f) setField(f); else syncFieldButtons();
 });
 
-// ---------- run + time controls ----------
+// ---------- run + time ----------
 async function loadRunFieldList() {
   try {
     state.allFields = buildAllFields(await getIdx({ ...state.run, fhr: 1 }));
   } catch (e) {
     state.allFields = [];
   }
-  if (state.allMode) fillFieldOptions();
+  fillMore();
 }
 
 function setRunOptions() {
   ui.run.innerHTML = "";
   state.runs.forEach((r, n) => {
-    const label = `${r.date.slice(4, 6)}/${r.date.slice(6, 8)} ${pad2(r.hour)}Z${n === 0 ? " · latest" : ""}`;
+    const label = `Run ${r.date.slice(4, 6)}/${r.date.slice(6, 8)} ${pad2(r.hour)}Z${n === 0 ? " latest" : ""} ▾`;
     ui.run.add(new Option(label, `${r.date}:${r.hour}`));
   });
 }
@@ -1038,17 +932,29 @@ function clampFhr() {
   setFhr(Math.min(state.fhr, maxFhr(state.run)));
 }
 ui.fhr.addEventListener("input", () => { setFhr(+ui.fhr.value); refresh(); });
+function stepFhr(d) {
+  const mx = maxFhr(state.run);
+  setFhr((state.fhr + d + mx + 1) % (mx + 1));
+  refresh();
+}
+ui.prev.addEventListener("click", () => { stopPlay(); stepFhr(-1); });
+ui.next.addEventListener("click", () => { stopPlay(); stepFhr(1); });
+document.addEventListener("keydown", (e) => {
+  if (e.target.closest("select, input")) return;
+  if (e.key === "ArrowLeft" && e.shiftKey) { stopPlay(); stepFhr(-1); }
+  if (e.key === "ArrowRight" && e.shiftKey) { stopPlay(); stepFhr(1); }
+});
 
 function stopPlay() {
   state.playing = false;
   clearTimeout(state.playTimer);
-  ui.play.classList.remove("is-active");
+  ui.play.classList.remove("on");
   ui.play.textContent = "Play";
 }
 ui.play.addEventListener("click", () => {
   if (state.playing) { stopPlay(); return; }
   state.playing = true;
-  ui.play.classList.add("is-active");
+  ui.play.classList.add("on");
   ui.play.textContent = "Stop";
   const step = async () => {
     if (!state.playing) return;
@@ -1059,16 +965,17 @@ ui.play.addEventListener("click", () => {
   step();
 });
 
+window.addEventListener("resize", drawLegend);
+
 // ---------- boot ----------
 (async function boot() {
-  fillFieldOptions();
-  showFieldInfo();
-  resize();
-  setStatus("Finding the latest HRRR run…");
+  syncFieldButtons();
+  drawLegend();
+  setStatus("Finding latest run");
   try {
     state.runs = await findRuns();
   } catch (e) {
-    setStatus(e.message, true);
+    setStatus(e.message);
     return;
   }
   state.run = state.runs[0];
