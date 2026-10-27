@@ -502,5 +502,93 @@
     "Notes": null,
     "lat": 34.0102984,
     "lng": -118.4955622
+  },
+  {
+    "Name": "The Hummingbird Ceviche House",
+    "Addresses": "1600 N Alvarado St, Los Angeles, CA 90026",
+    "Site": "https://thehummingbirdla.com/",
+    "Notes": "Japanese-Peruvian food. Recommended by Garrett.",
+    "lat": 34.083469,
+    "lng": -118.259777
+  },
+  {
+    "Name": "Totoraku",
+    "Addresses": "9111 W Olympic Blvd, Beverly Hills, CA 90212",
+    "Site": null,
+    "Notes": "Recommended by Garrett. Contact him for the number.",
+    "lat": 34.059314,
+    "lng": -118.3914268
+  },
+  {
+    "Name": "Rockenwagner Cafe & Bakery",
+    "Addresses": "12835 W Washington Blvd, Los Angeles, CA 90066",
+    "Site": "https://rockenwagner.com/cafe/",
+    "Notes": null,
+    "lat": 33.9953958,
+    "lng": -118.438037
+  },
+  {
+    "Name": "The Velvet Lounge",
+    "Addresses": "9400 Culver Blvd, Culver City, CA 90232",
+    "Site": "https://www.culverhotel.com/downtown-culver-city-restaurants",
+    "Notes": "Inside The Culver Hotel.",
+    "lat": 34.0237827,
+    "lng": -118.3942011
+  },
+  {
+    "Name": "Charcoal Venice",
+    "Addresses": "425 Washington Blvd, Venice, CA 90292",
+    "Site": "https://www.charcoalvenice.com/",
+    "Notes": null,
+    "lat": 33.9814746,
+    "lng": -118.4629732
+  },
+  {
+    "Name": "Found Oyster",
+    "Addresses": "4880 Fountain Ave, Los Angeles, CA 90029",
+    "Site": "https://www.foundoyster.com/",
+    "Notes": null,
+    "lat": 34.0953215,
+    "lng": -118.2956034
+  },
+  {
+    "Name": "Superba Food + Bread Venice",
+    "Addresses": "1900 S Lincoln Blvd, Venice, CA 90291",
+    "Site": "https://www.lifesuperba.com/location/superba-venice/",
+    "Notes": null,
+    "lat": 33.9970002,
+    "lng": -118.4588698
+  },
+  {
+    "Name": "Daikokuya Sawtelle",
+    "Addresses": "2208 Sawtelle Blvd, Los Angeles, CA 90025",
+    "Site": "https://group.bishamon-ten.com/daikokuya/sawtelle/",
+    "Notes": null,
+    "lat": 34.0379421,
+    "lng": -118.440797
+  },
+  {
+    "Name": "Nishi Poke & Ramen Bar Culver City",
+    "Addresses": "4263 Overland Ave, Culver City, CA 90230",
+    "Site": "https://www.nishipokeramen.com/",
+    "Notes": null,
+    "lat": 34.0115376,
+    "lng": -118.400742
+  },
+  {
+    "Name": "NBC Seafood Restaurant",
+    "Addresses": "404 S Atlantic Blvd, Monterey Park, CA 91754",
+    "Site": "https://www.nbcrestaurant.com/",
+    "Notes": null,
+    "lat": 34.0585818,
+    "lng": -118.1330259
+  },
+  {
+    "Name": "Pho 87",
+    "Addresses": "1019 N Broadway, Los Angeles, CA 90012",
+    "Site": "https://www.instagram.com/pho87la_og/",
+    "Notes": null,
+    "lat": 34.06734,
+    "lng": -118.2356553
   }
 ]

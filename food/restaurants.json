@@ -1385,5 +1385,68 @@
     "Comments": "The food was good but not better than Sugarfish. The waitress was new so not fair to evaluate the service (it was bad this time). I would go back and avoid the fixed menu and order stuff that looks good; bring a jacket, it's freezing.",
     "lat": 34.0280062,
     "lng": -118.4429742
+  },
+  {
+    "Name": "Great White",
+    "Tags": [
+      "Californian"
+    ],
+    "Patio": false,
+    "Noise": 3,
+    "Chaos": 3,
+    "Atmosphere": 4,
+    "Service": 4,
+    "Food": 2,
+    "Price": 4,
+    "Value": 2,
+    "Site": "https://www.greatwhite.cafe/",
+    "Instagram": "https://www.instagram.com/greatwhite/",
+    "Yelp": "https://www.yelp.com/biz/great-white-manhattan-beach",
+    "Addresses": "401 Manhattan Beach Blvd, Manhattan Beach, CA 90266",
+    "Comments": "I like going here but the food has been pretty bad for me, not my friends. Maybe I'm unlucky. Lots of women (good).",
+    "lat": 33.885585,
+    "lng": -118.408609
+  },
+  {
+    "Name": "Erewhon",
+    "Tags": [
+      "Grocery Store"
+    ],
+    "Patio": true,
+    "Noise": 2,
+    "Chaos": 3,
+    "Atmosphere": 2,
+    "Service": 3,
+    "Food": 3,
+    "Price": 4,
+    "Value": 2,
+    "Site": "https://erewhon.com/",
+    "Instagram": "https://www.instagram.com/erewhon/",
+    "Yelp": "https://www.yelp.com/biz/erewhon-manhattan-beach",
+    "Addresses": "1700 Rosecrans Ave, Manhattan Beach, CA 90266",
+    "Comments": "I got a steak plate from the hot bar and it was like $50. It's definitely better to just go to a restaurant.",
+    "lat": 33.901158,
+    "lng": -118.3825031
+  },
+  {
+    "Name": "Ginger's Divine Ice Creams",
+    "Tags": [
+      "Ice Cream"
+    ],
+    "Patio": false,
+    "Noise": 0,
+    "Chaos": 0,
+    "Atmosphere": 0,
+    "Service": 0,
+    "Food": 4,
+    "Price": 4,
+    "Value": 3,
+    "Site": "https://www.gingersicecreams.com/",
+    "Instagram": "https://www.instagram.com/gingersdivine/",
+    "Yelp": "https://www.yelp.com/biz/gingers-divine-ice-creams-el-segundo",
+    "Addresses": "225 Main St, El Segundo, CA 90245",
+    "Comments": "Good ice cream. The spoons are wood which sucks. Get an ice cream bar instead.",
+    "lat": 33.918124,
+    "lng": -118.4161728
   }
 ]
