@@ -79,8 +79,10 @@ a {
 }
 
 .spot-marker-try .spot-marker-dot {
+    width: 14px;
+    height: 14px;
     background: var(--paper);
-    box-shadow: inset 0 0 0 2px var(--red);
+    box-shadow: inset 0 0 0 3px var(--red);
 }
 
 .spot-marker:hover .spot-marker-dot,
@@ -94,7 +96,7 @@ a {
 .spot-marker-try:focus-visible .spot-marker-dot,
 .spot-marker-try.is-selected .spot-marker-dot {
     background: var(--paper);
-    box-shadow: inset 0 0 0 2px var(--ink);
+    box-shadow: inset 0 0 0 3px var(--ink);
 }
 
 .spot-marker:focus-visible {
