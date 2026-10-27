@@ -1,22 +1,23 @@
 :root {
-    --ink: #243747;
-    --paper: #fff8e9;
-    --muted: #657077;
-    --accent: #b55d43;
-    --rule: #ddd3bf;
+    --ink: #191919;
+    --paper: #ffffff;
+    --muted: #595959;
+    --accent: #c62e24;
+    --accent-dark: #9e2119;
+    --rule: #d5d5d5;
     --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    --font-heading: Georgia, "Times New Roman", serif;
+    --font-heading: var(--font-body);
     --color-a: var(--ink);
     --color-b: var(--muted);
     --color-c: var(--accent);
-    --color-try: var(--ink);
-    --color-control-bg: rgba(255, 248, 233, 0.96);
-    --color-control-shadow: rgba(36, 55, 71, 0.15);
-    --color-control-text: var(--ink);
+    --color-try: var(--accent);
+    --color-control-bg: var(--paper);
+    --color-control-text: var(--accent);
 }
 
-* {
+*, *::before, *::after {
     box-sizing: border-box;
+    border-radius: 0;
 }
 
 body {
@@ -60,13 +61,13 @@ button, a {
     overflow-y: auto;
     color: var(--ink);
     background: var(--paper);
-    border: 1px solid var(--rule);
-    border-radius: 5px;
-    box-shadow: 0 24px 80px rgba(25, 39, 48, 0.25);
+    border: 1px solid var(--ink);
+    border-top: 4px solid var(--accent);
+    box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.18);
 }
 
 #modal::backdrop {
-    background: rgba(27, 42, 52, 0.26);
+    background: rgba(0, 0, 0, 0.32);
 }
 
 .modal-eyebrow {
@@ -81,10 +82,10 @@ button, a {
 #modal-title {
     font-family: var(--font-heading);
     font-size: clamp(28px, 5vw, 36px);
-    font-weight: 400;
+    font-weight: 750;
     line-height: 1.12;
     letter-spacing: -0.025em;
-    margin: 0 20px 16px 0;
+    margin: 0 32px 20px 0;
     overflow-wrap: anywhere;
 }
 
@@ -95,11 +96,11 @@ button, a {
 }
 
 .link-btn {
-    color: var(--ink);
+    color: var(--accent);
     font-size: 12px;
     font-weight: 600;
     padding: 10px 0;
-    text-decoration-color: var(--rule);
+    text-decoration-color: currentColor;
     text-underline-offset: 4px;
 }
 
@@ -109,17 +110,16 @@ button, a {
     right: 12px;
     width: 40px;
     height: 40px;
-    background: transparent;
-    border: 0;
-    border-radius: 50%;
-    color: var(--muted);
+    background: var(--paper);
+    border: 1px solid var(--accent);
+    color: var(--accent);
     font-size: 26px;
     cursor: pointer;
 }
 
 #close-btn:hover {
-    background: #f0e7d6;
-    color: var(--ink);
+    background: var(--accent);
+    color: var(--paper);
 }
 
 #modal-tags {
@@ -131,7 +131,6 @@ button, a {
     color: var(--muted);
     padding: 3px 8px;
     margin: 0 6px 4px 0;
-    border-radius: 3px;
     font-size: 11px;
     display: inline-block;
 }
@@ -176,14 +175,12 @@ button, a {
 }
 
 #modal a:hover {
-    color: var(--accent);
+    color: var(--accent-dark);
 }
 
 #modal-quote {
-    font-family: var(--font-heading);
-    font-size: 17px;
+    font-size: 15px;
     line-height: 1.6;
-    font-style: italic;
     white-space: pre-line;
     margin-bottom: 16px;
 }
@@ -196,6 +193,7 @@ button, a {
     background: none;
     border: none;
     box-shadow: none;
+    border-radius: 0;
     text-shadow: -1px -1px 2px var(--paper), 1px -1px 2px var(--paper),
         -1px 1px 2px var(--paper), 1px 1px 2px var(--paper);
 }
@@ -219,15 +217,14 @@ button, a {
 .map-control-chip {
     background-color: var(--color-control-bg);
     font-size: 0.8em;
-    border: none;
-    color: var(--ink);
+    border: 1px solid var(--accent);
+    color: var(--accent);
     padding: 10px 14px;
     cursor: pointer;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
     white-space: nowrap;
-    border-radius: 999px;
-    box-shadow: 0 10px 24px var(--color-control-shadow);
+    font-weight: 600;
 }
 
 .map-control-chip.is-active {
@@ -238,21 +235,19 @@ button, a {
 .map-filter {
     display: flex;
     align-items: center;
-    padding: 4px;
+    padding: 0;
     margin: 0;
-    border: none;
-    border-radius: 999px;
+    border: 1px solid var(--accent);
     background-color: var(--color-control-bg);
-    box-shadow: 0 10px 24px var(--color-control-shadow);
 }
 
 .map-filter-btn {
     border: none;
     background: transparent;
     color: var(--color-control-text);
-    border-radius: 999px;
-    padding: 9px 14px;
+    padding: 10px 14px;
     font-size: 0.8em;
+    font-weight: 600;
     cursor: pointer;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
@@ -264,9 +259,19 @@ button, a {
     color: var(--paper);
 }
 
+.map-control-chip:hover,
+.map-filter-btn:hover {
+    background: #fff0ee;
+}
+
+.map-control-chip.is-active:hover,
+.map-filter-btn.is-active:hover {
+    background: var(--accent-dark);
+}
+
 .map-control-chip:focus-visible,
 .map-filter-btn:focus-visible {
-    outline: 2px solid rgba(29, 29, 81, 0.4);
+    outline: 2px solid var(--ink);
     outline-offset: 2px;
 }
 
@@ -286,13 +291,8 @@ button, a {
         padding: 28px 24px 20px;
     }
 
-    .map-filter {
-        box-shadow: 0 8px 18px rgba(6, 16, 42, 0.18);
-    }
-
     .map-control-chip {
         flex: 0 0 auto;
-        box-shadow: 0 8px 18px rgba(6, 16, 42, 0.18);
     }
 
     .map-filter {
@@ -388,7 +388,7 @@ button, a {
 }
 
 .spot-table tbody tr:hover {
-    background-color: rgba(181, 93, 67, 0.07);
+    background-color: rgba(198, 46, 36, 0.06);
 }
 
 .table-name {
@@ -416,7 +416,7 @@ button, a {
 }
 
 .dot-empty {
-    color: #c6baa3;
+    color: #b8b8b8;
 }
 
 .table-patio {
@@ -468,28 +468,39 @@ button, a {
     width: 12px;
     height: 12px;
     border: 2px solid var(--paper);
-    border-radius: 50%;
-    background: var(--ink);
-    box-shadow: 0 1px 3px rgba(36, 55, 71, 0.25);
+    background: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent);
     transition: transform 120ms ease, background-color 120ms ease;
 }
 
 .spot-marker-try .spot-marker-dot {
     background: var(--paper);
-    border-color: var(--ink);
+    border-color: var(--accent);
 }
 
 .spot-marker:hover .spot-marker-dot,
 .spot-marker:focus-visible .spot-marker-dot,
 .spot-marker.is-selected .spot-marker-dot {
-    background: var(--accent);
+    background: var(--accent-dark);
     border-color: var(--paper);
     transform: scale(1.25);
 }
 
 .leaflet-control-zoom a {
     background: var(--paper);
-    color: var(--ink);
+    color: var(--accent);
+}
+
+#map .leaflet-bar,
+#map .leaflet-bar a {
+    border-radius: 0;
+    border-color: var(--accent);
+    box-shadow: none;
+}
+
+#map .leaflet-bar a:hover {
+    background: #fff0ee;
+    color: var(--accent-dark);
 }
 
 @media (prefers-reduced-motion: reduce) {
