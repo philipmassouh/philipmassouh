@@ -1,0 +1,1082 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HRRR</title>
+<style>
+  :root {
+    --red: #d7261e;
+    --ink: #000;
+    --paper: #fff;
+    --font: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    --edge: 12px;
+    --bar-h: 36px;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  *, *::before, *::after { box-sizing: border-box; border-radius: 0; }
+  html, body { height: 100%; margin: 0; overflow: hidden; }
+  body {
+    font-family: var(--font);
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--ink);
+    background: var(--paper);
+    -webkit-font-smoothing: antialiased;
+  }
+  button, select, input { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  #map { position: fixed; inset: 0; width: 100%; height: 100%; cursor: grab; touch-action: none; }
+  #map.panning { cursor: grabbing; }
+
+  /* Top bar */
+  #bar {
+    position: fixed;
+    top: calc(var(--edge) + var(--safe-top));
+    left: var(--edge);
+    right: var(--edge);
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    pointer-events: none;
+  }
+  #bar > * { pointer-events: auto; }
+  #wordmark { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+  #wordmark a {
+    display: flex; align-items: center; height: var(--bar-h); padding: 0 12px;
+    color: var(--paper); background: var(--red); text-decoration: none;
+  }
+  .strip { display: flex; gap: 1px; background: var(--red); border: 1px solid var(--red); }
+  #bar .strip { border-left: 0; }
+  .bar-btn, .strip select {
+    height: calc(var(--bar-h) - 2px);
+    padding: 0 12px;
+    border: 0;
+    color: var(--red);
+    background: var(--paper);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .strip select {
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 28px;
+    background-image: linear-gradient(45deg, transparent 50%, var(--red) 50%), linear-gradient(-45deg, transparent 50%, var(--red) 50%);
+    background-position: right 14px center, right 9px center;
+    background-size: 5px 5px;
+    background-repeat: no-repeat;
+  }
+  #field { max-width: 340px; text-overflow: ellipsis; }
+  .bar-btn:hover, .strip select:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .bar-btn.is-active { color: var(--paper); background: var(--red); }
+  .bar-btn:focus-visible, .strip select:focus-visible { outline: 2px solid var(--ink); outline-offset: -4px; }
+
+  /* Bottom-left info + time controls */
+  #dock {
+    position: fixed;
+    left: var(--edge);
+    bottom: calc(var(--edge) + var(--safe-bottom));
+    z-index: 10;
+    width: min(440px, calc(100% - 2 * var(--edge)));
+  }
+  #info {
+    padding: 12px;
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    border-bottom: 0;
+  }
+  #fieldTitle { margin: 0 0 8px; }
+  #fieldTitle .units { color: var(--red); }
+  #legend { display: block; width: 100%; height: 30px; }
+  #fieldDesc { margin: 8px 0 0; }
+  #validTime { margin: 8px 0 0; padding-top: 8px; border-top: 1px solid var(--ink); }
+  #status { margin: 4px 0 0; }
+  #status:empty { display: none; }
+  #status.err { color: var(--red); font-weight: 700; }
+  #timebar { display: flex; align-items: center; gap: 1px; }
+  #timebar .bar-btn { flex: none; width: 64px; }
+  #sliderWrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: calc(var(--bar-h) - 2px);
+    padding: 0 12px;
+    background: var(--paper);
+  }
+  #fhr { flex: 1; min-width: 0; height: 20px; margin: 0; background: transparent; appearance: none; -webkit-appearance: none; cursor: pointer; }
+  #fhr::-webkit-slider-runnable-track { height: 2px; background: var(--ink); }
+  #fhr::-moz-range-track { height: 2px; background: var(--ink); }
+  #fhr::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 16px; margin-top: -7px; background: var(--red); border: 0; }
+  #fhr::-moz-range-thumb { width: 12px; height: 16px; background: var(--red); border: 0; border-radius: 0; }
+  #fhrLabel { color: var(--red); min-width: 3ch; text-align: right; font-variant-numeric: tabular-nums; }
+
+  #readout {
+    position: fixed;
+    top: calc(var(--edge) + var(--safe-top));
+    right: var(--edge);
+    z-index: 11;
+    padding: 8px 10px;
+    text-align: right;
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    pointer-events: none;
+    font-variant-numeric: tabular-nums;
+  }
+  #readout .val { font-size: 16px; font-weight: 700; }
+
+  @media (max-width: 760px) {
+    #bar { flex-wrap: nowrap; }
+    #bar .strip { flex: 1; flex-wrap: wrap; min-width: 0; }
+    #field { flex: 1 1 0; min-width: 0; max-width: none; }
+    #run { flex: 1 1 100%; }
+    #fieldDesc { display: none; }
+    #readout { top: auto; bottom: calc(var(--edge) + var(--safe-bottom) + 190px); }
+  }
+</style>
+</head>
+<body>
+<canvas id="map" aria-label="HRRR forecast map"></canvas>
+
+<header id="bar">
+  <h1 id="wordmark"><a href="/">HRRR</a></h1>
+  <div class="strip">
+    <label class="sr-only" for="field">Field</label>
+    <select id="field"></select>
+    <button type="button" class="bar-btn" id="allBtn" aria-pressed="false" title="Show every field in the HRRR file">All</button>
+    <label class="sr-only" for="run">Model run</label>
+    <select id="run"></select>
+  </div>
+</header>
+
+<div id="readout" hidden>
+  <div class="val"></div>
+  <div class="pos"></div>
+</div>
+
+<div id="dock">
+  <div id="info">
+    <p id="fieldTitle" class="label"></p>
+    <canvas id="legend"></canvas>
+    <p id="fieldDesc"></p>
+    <p id="validTime"></p>
+    <p id="status">Starting…</p>
+  </div>
+  <div id="timebar" class="strip">
+    <button type="button" class="bar-btn" id="play">Play</button>
+    <div id="sliderWrap">
+      <label class="sr-only" for="fhr">Forecast hour</label>
+      <input type="range" id="fhr" min="0" max="18" step="1" value="1">
+      <span id="fhrLabel" class="label">F01</span>
+    </div>
+  </div>
+</div>
+
+<script>
+/*__GRIB2__*/
+</script>
+<script>
+"use strict";
+// Delta-encoded (x100) US state outlines, [ [dx0,dy0,dx1,dy1,...], ... ]
+const STATE_LINES_ENC = /*__STATES__*/;
+
+const BUCKET = "https://noaa-hrrr-bdp-pds.s3.amazonaws.com";
+
+// ---------- curated fields ----------
+// src picks a GRIB message by variable, level, and time window:
+// "inst" = instantaneous, "1h" = the past hour, "run" = since the run started.
+const K2F = (v) => (v - 273.15) * 1.8 + 32;
+const MS2MPH = (v) => v * 2.23694;
+const WIND_STOPS = (k) => [
+  [0, 255, 255, 255, 255], [5 * k, 210, 230, 250, 255], [10 * k, 140, 200, 240, 255],
+  [15 * k, 80, 180, 120, 255], [20 * k, 170, 210, 60, 255], [25 * k, 250, 220, 60, 255],
+  [30 * k, 250, 150, 40, 255], [40 * k, 230, 60, 40, 255], [50 * k, 180, 0, 80, 255],
+  [60 * k, 140, 0, 160, 255], [80 * k, 255, 160, 255, 255],
+];
+const CURATED = [
+  {
+    id: "temp", label: "Temperature", units: "°F",
+    desc: "Air temperature 2 m above the ground.",
+    src: { var: "TMP", level: "2 m above ground" }, convert: K2F,
+    stops: [
+      [-30, 120, 0, 130, 255], [-10, 170, 110, 220, 255], [10, 60, 80, 200, 255],
+      [25, 70, 160, 230, 255], [32, 190, 230, 250, 255], [40, 120, 200, 150, 255],
+      [50, 60, 170, 80, 255], [60, 170, 210, 60, 255], [70, 250, 230, 70, 255],
+      [80, 250, 170, 40, 255], [90, 230, 90, 30, 255], [100, 190, 20, 30, 255],
+      [110, 120, 0, 40, 255], [120, 230, 130, 200, 255],
+    ],
+  },
+  {
+    id: "dewpt", label: "Dewpoint", units: "°F",
+    desc: "Dewpoint 2 m above the ground: how much moisture is in the air.",
+    src: { var: "DPT", level: "2 m above ground" }, convert: K2F,
+    stops: [
+      [-10, 110, 80, 50, 255], [20, 165, 125, 85, 255], [35, 215, 195, 160, 255],
+      [45, 190, 225, 170, 255], [55, 100, 200, 100, 255], [65, 20, 150, 60, 255],
+      [70, 0, 110, 90, 255], [75, 0, 80, 140, 255], [80, 80, 0, 140, 255],
+    ],
+  },
+  {
+    id: "wind", label: "Wind", units: "mph",
+    desc: "Sustained wind speed 10 m above the ground.",
+    components: [
+      { var: "UGRD", level: "10 m above ground" },
+      { var: "VGRD", level: "10 m above ground" },
+    ],
+    combine: (u, v) => MS2MPH(Math.hypot(u, v)),
+    stops: WIND_STOPS(1),
+  },
+  {
+    id: "gust", label: "Wind gusts", units: "mph",
+    desc: "Peak wind gust at the surface.",
+    src: { var: "GUST", level: "surface" }, convert: MS2MPH,
+    stops: WIND_STOPS(1.5),
+  },
+  {
+    id: "radar", label: "Radar", units: "dBZ",
+    desc: "Simulated radar: the strongest echo in each column.",
+    src: { var: "REFC", level: "entire atmosphere" },
+    stops: [
+      [5, 4, 233, 231, 0], [10, 4, 233, 231, 200], [15, 1, 100, 250, 220],
+      [20, 2, 220, 30, 235], [25, 1, 180, 10, 245], [30, 0, 130, 0, 255],
+      [35, 253, 248, 2, 255], [40, 229, 188, 0, 255], [45, 253, 149, 0, 255],
+      [50, 253, 0, 0, 255], [55, 200, 0, 0, 255], [60, 160, 0, 0, 255],
+      [65, 248, 0, 253, 255], [70, 170, 90, 210, 255], [75, 255, 255, 255, 255],
+    ],
+  },
+  {
+    id: "precip", label: "Precip (1 hr)", units: "in",
+    desc: "Rain plus melted snow and ice over the past hour.",
+    src: { var: "APCP", level: "surface", kind: "acc", win: "1h" }, convert: (v) => v / 25.4,
+    stops: [
+      [0.01, 200, 240, 190, 255], [0.05, 120, 210, 120, 255], [0.1, 40, 160, 60, 255],
+      [0.25, 30, 110, 200, 255], [0.5, 120, 70, 200, 255], [0.75, 200, 40, 180, 255],
+      [1, 230, 30, 30, 255], [1.5, 250, 140, 40, 255], [2, 250, 230, 80, 255],
+      [3, 255, 255, 255, 255],
+    ],
+  },
+  {
+    id: "snow", label: "Snowfall (total)", units: "in",
+    desc: "Total snowfall since this model run started.",
+    src: { var: "ASNOW", level: "surface", kind: "acc", win: "run" }, convert: (v) => v * 39.3701,
+    stops: [
+      [0.1, 200, 220, 250, 255], [1, 140, 180, 240, 255], [3, 80, 130, 220, 255],
+      [6, 40, 70, 180, 255], [12, 120, 60, 190, 255], [18, 190, 60, 190, 255],
+      [24, 240, 120, 220, 255], [36, 255, 220, 250, 255],
+    ],
+  },
+  {
+    id: "cloud", label: "Cloud cover", units: "%",
+    desc: "Total cloud cover through the whole atmosphere.",
+    src: { var: "TCDC", level: "entire atmosphere" },
+    stops: [[10, 190, 190, 190, 0], [40, 150, 150, 150, 140], [80, 95, 95, 95, 220], [100, 60, 60, 60, 240]],
+  },
+  {
+    id: "mslp", label: "Pressure", units: "mb",
+    desc: "Sea-level pressure. Lows (blue) bring storms; highs (orange) bring fair weather.",
+    src: { var: "MSLMA", level: "mean sea level" }, convert: (v) => v / 100,
+    stops: [
+      [975, 120, 0, 130, 255], [990, 90, 90, 220, 255], [1000, 90, 170, 230, 255],
+      [1008, 200, 235, 240, 255], [1013, 245, 245, 245, 255], [1018, 250, 220, 150, 255],
+      [1025, 240, 150, 60, 255], [1035, 200, 50, 40, 255], [1045, 130, 0, 40, 255],
+    ],
+  },
+  {
+    id: "cape", label: "CAPE", units: "J/kg",
+    desc: "Surface-based CAPE: energy available to rising air, the fuel for thunderstorms.",
+    src: { var: "CAPE", level: "surface" },
+    stops: [
+      [100, 40, 90, 180, 0], [500, 60, 140, 230, 170], [1000, 0, 200, 140, 220],
+      [2000, 240, 230, 60, 255], [3000, 255, 140, 0, 255], [4000, 255, 40, 0, 255],
+      [5000, 255, 0, 170, 255], [6000, 120, 0, 120, 255],
+    ],
+  },
+];
+
+// ---------- names for the full field list ----------
+const NAMES = {
+  REFC: ["Composite reflectivity", "dBZ"], REFD: ["Reflectivity", "dBZ"], RETOP: ["Echo top", "m"],
+  VIL: ["Vertically integrated liquid", "kg/m²"], VIS: ["Visibility", "m"], GUST: ["Wind gust", "m/s"],
+  UGRD: ["U wind (west→east)", "m/s"], VGRD: ["V wind (south→north)", "m/s"], WIND: ["Wind speed", "m/s"],
+  MAXUW: ["Max U wind", "m/s"], MAXVW: ["Max V wind", "m/s"], HGT: ["Height", "m"],
+  TMP: ["Temperature", "K"], DPT: ["Dewpoint", "K"], POT: ["Potential temperature", "K"],
+  SPFH: ["Specific humidity", "kg/kg"], RH: ["Relative humidity", "%"], DZDT: ["Vertical velocity", "m/s"],
+  MAXUVV: ["Max updraft", "m/s"], MAXDVV: ["Max downdraft", "m/s"], MSLMA: ["Sea-level pressure", "Pa"],
+  MAXREF: ["Max reflectivity", "dBZ"], MXUPHL: ["Max updraft helicity", "m²/s²"],
+  MNUPHL: ["Min updraft helicity", "m²/s²"], RELV: ["Relative vorticity", "1/s"],
+  HAIL: ["Max hail size", "m"], TCOLG: ["Column graupel", "kg/m²"], LTNGSD: ["Lightning strike density", ""],
+  LTNG: ["Lightning threat", ""], PRES: ["Pressure", "Pa"], ASNOW: ["Snowfall", "m"],
+  MSTAV: ["Soil moisture availability", "%"], CNWAT: ["Canopy water", "kg/m²"],
+  WEASD: ["Snow water equivalent", "kg/m²"], SNOWC: ["Snow cover", "%"], SNOD: ["Snow depth", "m"],
+  MASSDEN: ["Smoke concentration", "kg/m³"], CPOFP: ["Frozen precip share", "%"],
+  PRATE: ["Precip rate", "kg/m²/s"], APCP: ["Precipitation", "kg/m²"], FROZR: ["Frozen precip", "kg/m²"],
+  FRZR: ["Freezing rain", "kg/m²"], SSRUN: ["Surface runoff", "kg/m²"], BGRUN: ["Subsurface runoff", "kg/m²"],
+  CSNOW: ["Snow (yes/no)", ""], CICEP: ["Ice pellets (yes/no)", ""], CFRZR: ["Freezing rain (yes/no)", ""],
+  CRAIN: ["Rain (yes/no)", ""], SFCR: ["Surface roughness", "m"], FRICV: ["Friction velocity", "m/s"],
+  SHTFL: ["Sensible heat flux", "W/m²"], LHTFL: ["Latent heat flux", "W/m²"], VEG: ["Vegetation", "%"],
+  VEGMIN: ["Min vegetation", "%"], VEGMAX: ["Max vegetation", "%"], LAI: ["Leaf area index", ""],
+  GFLUX: ["Ground heat flux", "W/m²"], VGTYP: ["Vegetation type", ""], LFTX: ["Lifted index", "K"],
+  "4LFTX": ["Best lifted index", "K"], CAPE: ["CAPE", "J/kg"], CIN: ["CIN", "J/kg"],
+  PWAT: ["Precipitable water", "kg/m²"], AOTK: ["Aerosol optical depth", ""], COLMD: ["Column smoke", "kg/m²"],
+  TCOLW: ["Column cloud water", "kg/m²"], TCOLI: ["Column cloud ice", "kg/m²"], TCDC: ["Cloud cover", "%"],
+  LCDC: ["Low cloud cover", "%"], MCDC: ["Mid cloud cover", "%"], HCDC: ["High cloud cover", "%"],
+  ULWRF: ["Outgoing longwave", "W/m²"], DSWRF: ["Incoming sunlight", "W/m²"], DLWRF: ["Incoming longwave", "W/m²"],
+  USWRF: ["Reflected sunlight", "W/m²"], CFNSF: ["Cloud forcing (solar)", "W/m²"],
+  VBDSF: ["Direct visible sunlight", "W/m²"], VDDSF: ["Diffuse visible sunlight", "W/m²"],
+  HLCY: ["Storm-relative helicity", "m²/s²"], USTM: ["Storm motion U", "m/s"], VSTM: ["Storm motion V", "m/s"],
+  VUCSH: ["U wind shear", "1/s"], VVCSH: ["V wind shear", "1/s"], HPBL: ["Boundary layer height", "m"],
+  PLPL: ["Lifted parcel pressure", "Pa"], EFHL: ["Effective helicity", ""], CANGLE: ["Critical angle", "°"],
+  LAYTH: ["Layer thickness", "m"], ESP: ["Enhanced stretching potential", ""], RHPW: ["Column relative humidity", "%"],
+  LAND: ["Land", ""], ICEC: ["Sea ice", ""], SBT123: ["Satellite IR 12.3", "K"], SBT124: ["Satellite IR 12.4", "K"],
+  SBT113: ["Satellite IR 11.3", "K"], SBT114: ["Satellite IR 11.4", "K"],
+};
+
+// First matching group wins, so topical groups come before the level-based ones.
+const GROUPS = [
+  ["Storms & radar", (v) => ["REFC", "REFD", "RETOP", "VIL", "MAXREF", "MXUPHL", "MNUPHL", "RELV", "HAIL", "TCOLG", "LTNG", "LTNGSD", "MAXUVV", "MAXDVV"].includes(v)],
+  ["Precip & snow", (v) => ["APCP", "PRATE", "ASNOW", "WEASD", "SNOD", "SNOWC", "FROZR", "FRZR", "CSNOW", "CICEP", "CFRZR", "CRAIN", "CPOFP"].includes(v)],
+  ["Instability & shear", (v) => ["CAPE", "CIN", "LFTX", "4LFTX", "HLCY", "USTM", "VSTM", "VUCSH", "VVCSH", "EFHL", "CANGLE", "ESP", "PLPL", "HPBL"].includes(v)],
+  ["Clouds & radiation", (v, l) => /CDC$|^SBT|WRF$|SF$|^VIS$/.test(v) || /cloud/.test(l)],
+  ["Surface", (v, l) => /^(surface|mean sea level|\d+ m above ground|0 m underground)$/.test(l)],
+  ["Upper air", (v, l) => / mb$/.test(l)],
+  ["Other", () => true],
+];
+function groupOf(v, l) {
+  return GROUPS.find(([, test]) => test(v, l))[0];
+}
+
+const KIND_WORDS = { acc: "total", max: "max", min: "min", ave: "avg" };
+const VIRIDIS = [[0, 68, 1, 84], [0.25, 59, 82, 139], [0.5, 33, 145, 140], [0.75, 94, 201, 98], [1, 253, 231, 37]];
+
+// ---------- Lambert conformal projection (sphere, NCEP HRRR navigation) ----------
+const EARTH_R = 6371229;
+function makeProjection(grid) {
+  const d2r = Math.PI / 180;
+  const lat1 = grid.latin1 * d2r;
+  const n = Math.sin(lat1);
+  const F = Math.cos(lat1) * Math.pow(Math.tan(Math.PI / 4 + lat1 / 2), n) / n;
+  const rho = (lat) => EARTH_R * F / Math.pow(Math.tan(Math.PI / 4 + lat / 2), n);
+  const rho0 = rho(grid.lad * d2r);
+  const lov = grid.lov > 180 ? grid.lov - 360 : grid.lov;
+  const fwd = (lon, lat) => { // degrees -> metres
+    let dl = lon - lov;
+    if (dl > 180) dl -= 360;
+    if (dl < -180) dl += 360;
+    const r = rho(lat * d2r);
+    const th = n * dl * d2r;
+    return [r * Math.sin(th), rho0 - r * Math.cos(th)];
+  };
+  const [x0, y0] = fwd(grid.lo1, grid.la1);
+  const dx = grid.dx * 1000, dy = grid.dy * 1000; // decoder stores km
+  return {
+    toGrid(lon, lat) { // -> fractional grid indices (i east, j north-from-south)
+      const [x, y] = fwd(lon, lat);
+      return [(x - x0) / dx, (y - y0) / dy];
+    },
+    toLonLat(i, j) {
+      const x = x0 + i * dx, y = y0 + j * dy;
+      const r = Math.hypot(x, rho0 - y);
+      const th = Math.atan2(x, rho0 - y);
+      let lon = lov + (th / n) / d2r;
+      if (lon > 180) lon -= 360;
+      const lat = (2 * Math.atan(Math.pow(EARTH_R * F / r, 1 / n)) - Math.PI / 2) / d2r;
+      return [lon, lat];
+    },
+  };
+}
+
+// ---------- colormap ----------
+function makeColorLUT(stops, vmin, vmax, size) {
+  const lut = new Uint8ClampedArray(size * 4);
+  for (let k = 0; k < size; k++) {
+    const v = vmin + (k / (size - 1)) * (vmax - vmin);
+    let s = 0;
+    while (s < stops.length - 1 && v > stops[s + 1][0]) s++;
+    const a = stops[s], b = stops[Math.min(s + 1, stops.length - 1)];
+    const t = b[0] === a[0] ? 0 : Math.min(1, Math.max(0, (v - a[0]) / (b[0] - a[0])));
+    lut[k * 4] = a[1] + t * (b[1] - a[1]);
+    lut[k * 4 + 1] = a[2] + t * (b[2] - a[2]);
+    lut[k * 4 + 2] = a[3] + t * (b[3] - a[3]);
+    lut[k * 4 + 3] = a[4] + t * (b[4] - a[4]);
+  }
+  return lut;
+}
+
+// Colour range for fields without a hand-tuned colormap.
+function autoScale(data) {
+  const sample = [];
+  let zeros = 0, finite = 0;
+  for (let i = 0; i < data.length; i += 23) {
+    const v = data[i];
+    if (!Number.isFinite(v)) continue;
+    finite++;
+    if (v === 0) zeros++;
+    else sample.push(v);
+  }
+  // Mostly-zero fields (precip, hail, ...) leave zero transparent and scale the rest.
+  const clearZero = finite > 0 && zeros / finite > 0.5;
+  if (!clearZero) for (let k = 0; k < zeros; k++) sample.push(0);
+  if (!sample.length) return { lo: 0, hi: 1, clearZero };
+  sample.sort((a, b) => a - b);
+  const q = (p) => sample[Math.min(sample.length - 1, Math.floor(p * sample.length))];
+  let lo = q(0.02), hi = q(0.98);
+  if (hi <= lo) { lo = sample[0]; hi = sample[sample.length - 1]; }
+  if (hi <= lo) hi = lo + 1;
+  return { lo, hi, clearZero };
+}
+
+function fmt(v) {
+  const a = Math.abs(v);
+  if (a === 0) return "0";
+  if (a >= 1000) return Math.round(v).toLocaleString();
+  if (a >= 100) return v.toFixed(0);
+  if (a >= 10) return v.toFixed(1).replace(/\.0$/, "");
+  if (a >= 0.01) return v.toFixed(2).replace(/\.?0+$/, "");
+  return v.toExponential(1);
+}
+
+// ---------- HRRR file access ----------
+function pad2(n) { return String(n).padStart(2, "0"); }
+function runPath(run) {
+  return `hrrr.${run.date}/conus/hrrr.t${pad2(run.hour)}z.wrfsfcf${pad2(run.fhr)}.grib2`;
+}
+
+// "1 hour fcst" / "anl" -> instantaneous; "3-4 hour acc fcst" / "0-1 day max fcst" -> window.
+function parseTime(t) {
+  const m = /^(\d+)-(\d+) (hour|day) (acc|max|min|ave) fcst$/.exec(t);
+  if (!m) return { kind: null, a: null, b: null };
+  const mult = m[3] === "day" ? 24 : 1;
+  return { kind: m[4], a: +m[1] * mult, b: +m[2] * mult };
+}
+
+const idxCache = new Map();
+async function getIdx(run) {
+  const url = `${BUCKET}/${runPath(run)}.idx`;
+  if (idxCache.has(url)) return idxCache.get(url);
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`idx HTTP ${r.status}`);
+  const raw = (await r.text()).trim().split("\n");
+  const lines = raw.map((ln, k) => {
+    const parts = ln.split(":");
+    const next = raw[k + 1];
+    return {
+      offset: Number(parts[1]),
+      end: next ? Number(next.split(":")[1]) - 1 : "",
+      var: parts[3],
+      level: parts[4],
+      ...parseTime(parts[5]),
+    };
+  });
+  idxCache.set(url, lines);
+  return lines;
+}
+
+function windowMatches(line, win) {
+  if (win === "1h") return line.b - line.a === 1;
+  if (win === "run") return line.a === 0;
+  return true;
+}
+
+// Curated fields match strictly; the full list falls back to any time window
+// of the same field so animation keeps working when window labels shift.
+function findLine(idx, src, strict) {
+  const kind = src.kind || null;
+  const candidates = idx.filter((ln) => ln.var === src.var && ln.level === src.level && ln.kind === kind);
+  const exact = candidates.find((ln) => windowMatches(ln, src.win || "inst"));
+  return exact || (strict ? null : candidates[0] || null);
+}
+
+const msgCache = new Map();
+const MSG_CACHE_MAX = 30;
+async function loadMessage(run, src, strict) {
+  const key = `${run.date}/${run.hour}/${run.fhr}/${src.var}|${src.level}|${src.kind || ""}|${src.win || ""}`;
+  if (msgCache.has(key)) {
+    const v = msgCache.get(key);
+    msgCache.delete(key); msgCache.set(key, v); // LRU refresh
+    return v;
+  }
+  const idx = await getIdx(run);
+  const line = findLine(idx, src, strict);
+  if (!line) throw new Error(`not available at F${pad2(run.fhr)}`);
+  const r = await fetch(`${BUCKET}/${runPath(run)}`, { headers: { Range: `bytes=${line.offset}-${line.end}` } });
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  const decoded = decodeGrib2(await r.arrayBuffer());
+  msgCache.set(key, decoded);
+  while (msgCache.size > MSG_CACHE_MAX) msgCache.delete(msgCache.keys().next().value);
+  return decoded;
+}
+
+async function loadField(run, field) {
+  if (field.components) {
+    const [u, v] = await Promise.all(field.components.map((c) => loadMessage(run, c, true)));
+    const data = new Float32Array(u.data.length);
+    for (let i = 0; i < data.length; i++) data[i] = field.combine(u.data[i], v.data[i]);
+    return { grid: u.grid, data };
+  }
+  const msg = await loadMessage(run, field.src, !field.auto);
+  if (!field.convert) return msg;
+  const data = new Float32Array(msg.data.length);
+  for (let i = 0; i < data.length; i++) data[i] = field.convert(msg.data[i]);
+  return { grid: msg.grid, data };
+}
+
+async function findRuns() {
+  // Probe back from the current UTC hour for the newest run whose f01 exists.
+  const now = new Date();
+  const probes = [];
+  for (let back = 0; back < 30; back++) {
+    const t = new Date(now.getTime() - back * 3600e3);
+    probes.push({
+      date: `${t.getUTCFullYear()}${pad2(t.getUTCMonth() + 1)}${pad2(t.getUTCDate())}`,
+      hour: t.getUTCHours(),
+    });
+  }
+  for (let i = 0; i < probes.length; i++) {
+    try {
+      // Plain GET (not HEAD): the bucket's CORS policy only covers GET, and
+      // the idx is ~10 KB. getIdx caches it, so the probe doubles as the fetch.
+      await getIdx({ ...probes[i], fhr: 1 });
+      return probes.slice(i); // newest first, back ~24 runs
+    } catch (e) { /* keep probing */ }
+  }
+  throw new Error("No recent HRRR runs found");
+}
+
+// ---------- app state ----------
+const ui = {
+  field: document.getElementById("field"),
+  allBtn: document.getElementById("allBtn"),
+  run: document.getElementById("run"),
+  fhr: document.getElementById("fhr"),
+  fhrLabel: document.getElementById("fhrLabel"),
+  play: document.getElementById("play"),
+  status: document.getElementById("status"),
+  map: document.getElementById("map"),
+  readout: document.getElementById("readout"),
+  legend: document.getElementById("legend"),
+  fieldTitle: document.getElementById("fieldTitle"),
+  fieldDesc: document.getElementById("fieldDesc"),
+  validTime: document.getElementById("validTime"),
+};
+const state = {
+  runs: [],
+  run: null,       // {date, hour}
+  fhr: 1,
+  field: CURATED[0],
+  allMode: false,
+  allFields: [],   // built from the run's file index
+  current: null,   // {grid, data} or {grid, data: null} when unavailable
+  scale: null,     // {stops, vmin, vmax, clearZero}
+  proj: null,
+  view: { scale: 1, tx: 0, ty: 0 }, // grid px -> screen px
+  playing: false,
+  playTimer: null,
+  loadSeq: 0,
+  stateLines: null, // projected polylines in canvas grid coords
+};
+
+const ctx = ui.map.getContext("2d");
+const fieldCanvas = document.createElement("canvas");
+
+function decodeStateLines() {
+  const out = [];
+  for (const enc of STATE_LINES_ENC) {
+    const line = new Float64Array(enc.length);
+    let x = 0, y = 0;
+    for (let k = 0; k < enc.length; k += 2) {
+      x += enc[k]; y += enc[k + 1];
+      line[k] = x / 100; line[k + 1] = y / 100;
+    }
+    out.push(line);
+  }
+  return out;
+}
+const STATE_LONLAT = decodeStateLines();
+
+function projectStateLines() {
+  const { ny } = state.current.grid;
+  state.stateLines = STATE_LONLAT.map((line) => {
+    const out = new Float64Array(line.length);
+    for (let k = 0; k < line.length; k += 2) {
+      const [gx, gy] = state.proj.toGrid(line[k], line[k + 1]);
+      out[k] = gx + 0.5;
+      out[k + 1] = (ny - 1) - gy + 0.5; // north-up canvas
+    }
+    return out;
+  });
+}
+
+function maxFhr(run) { return run.hour % 6 === 0 ? 48 : 18; }
+
+function computeScale() {
+  const f = state.field;
+  if (!f.auto) {
+    state.scale = { stops: f.stops, vmin: f.stops[0][0], vmax: f.stops[f.stops.length - 1][0], clearZero: false };
+    return;
+  }
+  const { lo, hi, clearZero } = autoScale(state.current.data);
+  state.scale = { stops: VIRIDIS.map(([t, r, g, b]) => [lo + t * (hi - lo), r, g, b, 255]), vmin: lo, vmax: hi, clearZero };
+}
+
+function renderFieldToCanvas() {
+  const { grid, data } = state.current;
+  const { nx, ny } = grid;
+  fieldCanvas.width = nx; fieldCanvas.height = ny;
+  const fctx = fieldCanvas.getContext("2d");
+  if (!data) { fctx.clearRect(0, 0, nx, ny); return; }
+  const { stops, vmin, vmax, clearZero } = state.scale;
+  const img = fctx.createImageData(nx, ny);
+  const px = img.data;
+  const LUTN = 1024;
+  const lut = makeColorLUT(stops, vmin, vmax, LUTN);
+  const k_scale = (LUTN - 1) / (vmax - vmin);
+  // Hand-tuned colormaps leave values below their range transparent; auto ones clamp.
+  const clampLow = state.field.auto;
+  for (let j = 0; j < ny; j++) {
+    const srcRow = j * nx;            // row 0 = south
+    const dstRow = (ny - 1 - j) * nx; // canvas row 0 = north
+    for (let i = 0; i < nx; i++) {
+      const v = data[srcRow + i];
+      if (!Number.isFinite(v) || (clearZero && v === 0)) continue;
+      if (v < vmin && !clampLow) continue;
+      let k = ((v - vmin) * k_scale) | 0;
+      if (k < 0) k = 0;
+      if (k >= LUTN) k = LUTN - 1;
+      const o = (dstRow + i) * 4, l = k * 4;
+      px[o] = lut[l]; px[o + 1] = lut[l + 1]; px[o + 2] = lut[l + 2]; px[o + 3] = lut[l + 3];
+    }
+  }
+  fctx.putImageData(img, 0, 0);
+}
+
+function fitView() {
+  const { nx, ny } = state.current.grid;
+  const w = ui.map.width, h = ui.map.height;
+  const s = Math.min(w / nx, h / ny) * 0.97;
+  state.view = { scale: s, tx: (w - nx * s) / 2, ty: (h - ny * s) / 2 };
+}
+
+function draw() {
+  const w = ui.map.width, h = ui.map.height;
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(0, 0, w, h);
+  if (!state.current) return;
+  const { scale, tx, ty } = state.view;
+  const { nx, ny } = state.current.grid;
+  const dpr = window.devicePixelRatio || 1;
+  ctx.setTransform(scale, 0, 0, scale, tx, ty);
+  ctx.imageSmoothingEnabled = scale < 1.5;
+  ctx.drawImage(fieldCanvas, 0, 0);
+  ctx.lineWidth = dpr / scale;
+  ctx.strokeStyle = "#000";
+  ctx.lineJoin = "round";
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(0, 0, nx, ny); // Alaska and Hawaii project outside the HRRR grid
+  ctx.clip();
+  for (const line of state.stateLines) {
+    ctx.beginPath();
+    ctx.moveTo(line[0], line[1]);
+    for (let k = 2; k < line.length; k += 2) ctx.lineTo(line[k], line[k + 1]);
+    ctx.stroke();
+  }
+  ctx.restore();
+  ctx.lineWidth = 2 * dpr / scale;
+  ctx.strokeRect(0, 0, nx, ny);
+}
+
+function drawLegend() {
+  const c = ui.legend;
+  const dpr = window.devicePixelRatio || 1;
+  const cssW = c.clientWidth || 400, cssH = 30;
+  c.width = Math.round(cssW * dpr); c.height = Math.round(cssH * dpr);
+  const lctx = c.getContext("2d");
+  lctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  lctx.clearRect(0, 0, cssW, cssH);
+  if (!state.scale) return;
+  const { stops, vmin, vmax } = state.scale;
+  const barH = 12;
+  // Hand-tuned colormaps have uneven steps, so give each step equal width.
+  const even = !state.field.auto;
+  const segs = stops.length - 1;
+  const xOf = (v) => {
+    if (!even) return ((v - vmin) / (vmax - vmin)) * cssW;
+    const s = Math.max(0, stops.findIndex((st) => st[0] === v));
+    return (s / segs) * cssW;
+  };
+  for (let x = 0; x < cssW; x++) {
+    const t = x / Math.max(1, cssW - 1);
+    let rgba;
+    if (even) {
+      const s = Math.min(segs - 1, Math.floor(t * segs));
+      const u = t * segs - s, a = stops[s], b = stops[s + 1];
+      rgba = [1, 2, 3, 4].map((c) => a[c] + u * (b[c] - a[c]));
+    } else {
+      const v = vmin + t * (vmax - vmin);
+      let s = 0;
+      while (s < stops.length - 2 && v > stops[s + 1][0]) s++;
+      const a = stops[s], b = stops[s + 1];
+      const u = Math.min(1, Math.max(0, (v - a[0]) / (b[0] - a[0])));
+      rgba = [1, 2, 3, 4].map((c) => a[c] + u * (b[c] - a[c]));
+    }
+    lctx.fillStyle = `rgba(${rgba[0]},${rgba[1]},${rgba[2]},${Math.max(rgba[3], 60) / 255})`;
+    lctx.fillRect(x, 0, 1, barH);
+  }
+  lctx.strokeStyle = "#000";
+  lctx.lineWidth = 1;
+  lctx.strokeRect(0.5, 0.5, cssW - 1, barH - 1);
+  lctx.fillStyle = "#000";
+  lctx.font = "10px ui-monospace, Menlo, monospace";
+  const ticks = state.field.auto
+    ? [0, 0.25, 0.5, 0.75, 1].map((t) => vmin + t * (vmax - vmin))
+    : pickTicks(stops.map((s) => s[0]), Math.max(3, Math.floor(cssW / 55)));
+  ticks.forEach((v, n) => {
+    const x = xOf(v);
+    lctx.textAlign = n === 0 ? "left" : n === ticks.length - 1 ? "right" : "center";
+    lctx.fillText(fmt(v), x, barH + 13);
+  });
+}
+
+function pickTicks(values, count) {
+  if (values.length <= count) return values;
+  const out = [];
+  for (let n = 0; n < count; n++) out.push(values[Math.round((n * (values.length - 1)) / (count - 1))]);
+  return out;
+}
+
+function setStatus(msg, isErr) {
+  ui.status.textContent = msg;
+  ui.status.classList.toggle("err", !!isErr);
+}
+
+function validTimeText() {
+  const { date, hour } = state.run;
+  const runMs = Date.UTC(+date.slice(0, 4), +date.slice(4, 6) - 1, +date.slice(6, 8), hour);
+  const valid = new Date(runMs + state.fhr * 3600e3);
+  const local = valid.toLocaleString(undefined, {
+    weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit",
+  });
+  return `Valid ${local} · ${pad2(hour)}Z run, F${pad2(state.fhr)}`;
+}
+
+function showFieldInfo() {
+  const f = state.field;
+  ui.fieldTitle.innerHTML = `${f.label}${f.units ? ` <span class="units">${f.units}</span>` : ""}`;
+  ui.fieldDesc.textContent = f.desc || "";
+  ui.fieldDesc.hidden = !f.desc;
+}
+
+async function refresh() {
+  const seq = ++state.loadSeq;
+  const run = { ...state.run, fhr: state.fhr };
+  const field = state.field;
+  showFieldInfo();
+  ui.validTime.textContent = validTimeText();
+  setStatus(`Loading F${pad2(state.fhr)}…`);
+  try {
+    const decoded = await loadField(run, field);
+    if (seq !== state.loadSeq) return;
+    const firstLoad = !state.current;
+    state.current = decoded;
+    if (!state.proj) {
+      state.proj = makeProjection(decoded.grid);
+      projectStateLines();
+    }
+    computeScale();
+    renderFieldToCanvas();
+    if (firstLoad) fitView();
+    draw();
+    drawLegend();
+    setStatus("");
+    prefetchNext();
+  } catch (e) {
+    if (seq !== state.loadSeq) return;
+    if (state.current) {
+      state.current = { grid: state.current.grid, data: null };
+      renderFieldToCanvas();
+      draw();
+    }
+    setStatus(`${field.label}: ${e.message}`, true);
+  }
+}
+
+function prefetchNext() {
+  const next = state.fhr + 1;
+  if (next > maxFhr(state.run)) return;
+  loadField({ ...state.run, fhr: next }, state.field).catch(() => {});
+}
+
+// ---------- map interactions ----------
+function resize() {
+  const dpr = window.devicePixelRatio || 1;
+  const r = ui.map.getBoundingClientRect();
+  const oldW = ui.map.width;
+  ui.map.width = Math.round(r.width * dpr);
+  ui.map.height = Math.round(r.height * dpr);
+  if (state.current) {
+    if (oldW) {
+      const f = ui.map.width / oldW;
+      state.view.scale *= f; state.view.tx *= f; state.view.ty *= f;
+    } else {
+      fitView();
+    }
+    draw();
+  }
+  drawLegend();
+}
+window.addEventListener("resize", resize);
+
+function zoomAt(mx, my, ns, base = state.view) {
+  ns = Math.min(Math.max(ns, 0.05), 40);
+  state.view = {
+    scale: ns,
+    tx: mx - (mx - base.tx) * (ns / base.scale),
+    ty: my - (my - base.ty) * (ns / base.scale),
+  };
+}
+
+ui.map.addEventListener("wheel", (e) => {
+  e.preventDefault();
+  if (!state.current) return;
+  const dpr = window.devicePixelRatio || 1;
+  zoomAt(e.offsetX * dpr, e.offsetY * dpr, state.view.scale * Math.exp(-e.deltaY * 0.0015));
+  draw();
+}, { passive: false });
+
+// One pointer pans; two pointers pinch-zoom around their midpoint.
+const pointers = new Map();
+let gesture = null;
+function startGesture() {
+  const pts = [...pointers.values()];
+  const dpr = window.devicePixelRatio || 1;
+  if (pts.length === 1) {
+    gesture = { type: "pan", x: pts[0].x, y: pts[0].y, view: { ...state.view } };
+  } else if (pts.length >= 2) {
+    const [a, b] = pts;
+    gesture = {
+      type: "pinch",
+      dist: Math.hypot(b.x - a.x, b.y - a.y),
+      cx: ((a.x + b.x) / 2) * dpr, cy: ((a.y + b.y) / 2) * dpr,
+      view: { ...state.view },
+    };
+  } else {
+    gesture = null;
+  }
+}
+ui.map.addEventListener("pointerdown", (e) => {
+  try { ui.map.setPointerCapture(e.pointerId); } catch (err) { /* capture is best-effort */ }
+  const r = ui.map.getBoundingClientRect();
+  pointers.set(e.pointerId, { x: e.clientX - r.left, y: e.clientY - r.top });
+  ui.map.classList.add("panning");
+  startGesture();
+});
+function endPointer(e) {
+  pointers.delete(e.pointerId);
+  if (!pointers.size) ui.map.classList.remove("panning");
+  startGesture();
+}
+ui.map.addEventListener("pointerup", endPointer);
+ui.map.addEventListener("pointercancel", endPointer);
+ui.map.addEventListener("pointermove", (e) => {
+  const dpr = window.devicePixelRatio || 1;
+  const r = ui.map.getBoundingClientRect();
+  const x = e.clientX - r.left, y = e.clientY - r.top;
+  if (pointers.has(e.pointerId)) {
+    pointers.set(e.pointerId, { x, y });
+    if (gesture?.type === "pan") {
+      state.view = { ...gesture.view, tx: gesture.view.tx + (x - gesture.x) * dpr, ty: gesture.view.ty + (y - gesture.y) * dpr };
+      draw();
+    } else if (gesture?.type === "pinch") {
+      const [a, b] = [...pointers.values()];
+      const dist = Math.hypot(b.x - a.x, b.y - a.y);
+      const cx = ((a.x + b.x) / 2) * dpr, cy = ((a.y + b.y) / 2) * dpr;
+      const g = gesture;
+      zoomAt(g.cx, g.cy, g.view.scale * (dist / g.dist), g.view);
+      state.view.tx += cx - g.cx;
+      state.view.ty += cy - g.cy;
+      draw();
+    }
+  }
+  if (e.pointerType === "mouse") updateReadout(x * dpr, y * dpr);
+});
+ui.map.addEventListener("pointerleave", () => { ui.readout.hidden = true; });
+ui.map.addEventListener("dblclick", () => { if (state.current) { fitView(); draw(); } });
+
+function updateReadout(sx, sy) {
+  if (!state.current?.data) { ui.readout.hidden = true; return; }
+  const { scale, tx, ty } = state.view;
+  const { nx, ny } = state.current.grid;
+  const cx = (sx - tx) / scale, cy = (sy - ty) / scale;
+  const i = Math.floor(cx), j = Math.floor((ny - 1) - cy + 0.5);
+  if (i < 0 || i >= nx || j < 0 || j >= ny) { ui.readout.hidden = true; return; }
+  const v = state.current.data[j * nx + i];
+  const [lon, lat] = state.proj.toLonLat(i, j);
+  const f = state.field;
+  ui.readout.hidden = false;
+  ui.readout.querySelector(".val").textContent = Number.isFinite(v) ? `${fmt(v)} ${f.units}`.trim() : "—";
+  ui.readout.querySelector(".pos").textContent = `${lat.toFixed(2)}°N ${(-lon).toFixed(2)}°W`;
+}
+
+// ---------- field picker ----------
+function buildAllFields(idx) {
+  const seen = new Set();
+  const out = [];
+  for (const ln of idx) {
+    const id = `${ln.var}|${ln.level}|${ln.kind || ""}`;
+    if (seen.has(id)) continue;
+    seen.add(id);
+    const win = ln.kind ? (ln.b - ln.a === 1 ? "1h" : "run") : "inst";
+    const [name, units] = NAMES[ln.var] || [ln.var.startsWith("var ") ? ln.var.replace(/^var /, "") : ln.var, ""];
+    const when = ln.kind ? ` · ${win === "1h" ? "1-hr" : "run"} ${KIND_WORDS[ln.kind]}` : "";
+    out.push({
+      id: "all:" + id,
+      auto: true,
+      label: `${name} · ${ln.level}${when}`,
+      units,
+      group: groupOf(ln.var, ln.level),
+      src: { var: ln.var, level: ln.level, kind: ln.kind, win },
+    });
+  }
+  return out;
+}
+
+function fillFieldOptions() {
+  ui.field.innerHTML = "";
+  if (!state.allMode) {
+    for (const f of CURATED) ui.field.add(new Option(f.label, f.id));
+  } else {
+    const groups = new Map();
+    for (const f of state.allFields) {
+      if (!groups.has(f.group)) groups.set(f.group, []);
+      groups.get(f.group).push(f);
+    }
+    for (const [name] of GROUPS) {
+      if (!groups.has(name)) continue;
+      const og = document.createElement("optgroup");
+      og.label = name;
+      for (const f of groups.get(name)) og.appendChild(new Option(f.label, f.id));
+      ui.field.appendChild(og);
+    }
+  }
+  ui.field.value = state.field.id;
+}
+
+function fieldById(id) {
+  return CURATED.find((f) => f.id === id) || state.allFields.find((f) => f.id === id);
+}
+
+function sameSrc(a, b) {
+  return a && b && a.var === b.var && a.level === b.level && (a.kind || null) === (b.kind || null);
+}
+
+function setField(field) {
+  state.field = field;
+  ui.field.value = field.id;
+  refresh();
+}
+ui.field.addEventListener("change", () => setField(fieldById(ui.field.value)));
+
+ui.allBtn.addEventListener("click", () => {
+  state.allMode = !state.allMode;
+  ui.allBtn.classList.toggle("is-active", state.allMode);
+  ui.allBtn.setAttribute("aria-pressed", String(state.allMode));
+  const cur = state.field;
+  let next;
+  if (state.allMode) {
+    next = state.allFields.find((f) => sameSrc(f.src, cur.src)) || state.allFields[0];
+  } else {
+    next = CURATED.find((f) => sameSrc(f.src, cur.src)) || CURATED[0];
+  }
+  fillFieldOptions();
+  if (next && next !== cur) setField(next);
+  else ui.field.value = cur.id;
+});
+
+// ---------- run + time controls ----------
+async function loadRunFieldList() {
+  try {
+    state.allFields = buildAllFields(await getIdx({ ...state.run, fhr: 1 }));
+  } catch (e) {
+    state.allFields = [];
+  }
+  if (state.allMode) fillFieldOptions();
+}
+
+function setRunOptions() {
+  ui.run.innerHTML = "";
+  state.runs.forEach((r, n) => {
+    const label = `${r.date.slice(4, 6)}/${r.date.slice(6, 8)} ${pad2(r.hour)}Z${n === 0 ? " · latest" : ""}`;
+    ui.run.add(new Option(label, `${r.date}:${r.hour}`));
+  });
+}
+ui.run.addEventListener("change", async () => {
+  const [date, hour] = ui.run.value.split(":");
+  state.run = { date, hour: +hour };
+  clampFhr();
+  await loadRunFieldList();
+  refresh();
+});
+
+function setFhr(n) {
+  state.fhr = n;
+  ui.fhr.value = n;
+  ui.fhrLabel.textContent = "F" + pad2(n);
+}
+function clampFhr() {
+  ui.fhr.max = maxFhr(state.run);
+  setFhr(Math.min(state.fhr, maxFhr(state.run)));
+}
+ui.fhr.addEventListener("input", () => { setFhr(+ui.fhr.value); refresh(); });
+
+function stopPlay() {
+  state.playing = false;
+  clearTimeout(state.playTimer);
+  ui.play.classList.remove("is-active");
+  ui.play.textContent = "Play";
+}
+ui.play.addEventListener("click", () => {
+  if (state.playing) { stopPlay(); return; }
+  state.playing = true;
+  ui.play.classList.add("is-active");
+  ui.play.textContent = "Stop";
+  const step = async () => {
+    if (!state.playing) return;
+    setFhr(state.fhr >= maxFhr(state.run) ? 0 : state.fhr + 1);
+    await refresh();
+    state.playTimer = setTimeout(step, 450);
+  };
+  step();
+});
+
+// ---------- boot ----------
+(async function boot() {
+  fillFieldOptions();
+  showFieldInfo();
+  resize();
+  setStatus("Finding the latest HRRR run…");
+  try {
+    state.runs = await findRuns();
+  } catch (e) {
+    setStatus(e.message, true);
+    return;
+  }
+  state.run = state.runs[0];
+  setRunOptions();
+  clampFhr();
+  await loadRunFieldList();
+  refresh();
+})();
+</script>
+</body>
+</html>

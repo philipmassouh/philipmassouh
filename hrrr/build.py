@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Assemble tornado/index.html from src/.
+"""Assemble hrrr/index.html from src/.
 
 The viewer is a single self-contained HTML file: the GRIB2 decoder and the
 delta-encoded US state outlines are inlined into the template. Edit files in

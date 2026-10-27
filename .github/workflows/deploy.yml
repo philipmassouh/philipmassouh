@@ -25,7 +25,8 @@ jobs:
             set -e
             WWW=/var/www/philipmassouh.com/html
             git -C ~/site pull --ff-only
-            rsync -a --delete --exclude src --exclude build.py ~/site/tornado/ "$WWW/tornado/"
+            rsync -a --delete --exclude src --exclude build.py ~/site/hrrr/ "$WWW/hrrr/"
+            rm -rf "$WWW/tornado"
             rsync -a --delete --exclude .git ~/site/food/ "$WWW/food/"
             rsync -a --delete --exclude src ~/site/texture/ "$WWW/texture/"
             cp ~/site/index.html "$WWW/index.html"
