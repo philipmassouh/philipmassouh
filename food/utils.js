@@ -72,35 +72,27 @@ function addressToLink(address) {
     return link;
 }
 
-function scoreToEmoji(score, emoji) {
-    if (score === 0) {
-        return "🚫";
-    }
-    return emoji.repeat(score);
-}
-
-function buildLinkButton(url, iconClass) {
+function buildLinkButton(url, label) {
     if (!url) {
         return "";
     }
 
     return `
-        <div><button type="button" class="link-btn"><a href="${url}" target="_blank" rel="noreferrer"><i class="${iconClass}"></i></a></button></div>
+        <a class="link-btn" href="${url}" target="_blank" rel="noreferrer">${label} <span aria-hidden="true">↗</span></a>
     `;
 }
 
 function buildCloseButton() {
     return `
-        <div><button type="button" class="link-btn" id="close-btn" onclick="closeModal()">  <i id="close-icon" class="fa-solid fa-xmark">       </i></button></div>
+        <button type="button" id="close-btn" aria-label="Close place details" onclick="closeModal()" autofocus>×</button>
     `;
 }
 
 function buildButtons(restaurant) {
     return `
-        ${buildCloseButton()}
-        ${buildLinkButton(restaurant.Site, "fa-solid fa-link")}
-        ${buildLinkButton(restaurant.Instagram, "fa-brands fa-instagram")}
-        ${buildLinkButton(restaurant.Yelp, "fa-brands fa-yelp")}
+        ${buildLinkButton(restaurant.Site, "Website")}
+        ${buildLinkButton(restaurant.Instagram, "Instagram")}
+        ${buildLinkButton(restaurant.Yelp, "Yelp")}
     `;
 }
 
@@ -112,25 +104,23 @@ function buildTags(restaurant) {
 
 function buildTable(restaurant) {
     return `
-        <table id="modal-table">
-            <tr><td>Patio      </td><td>${restaurant.Patio ? "✅" : "❌"}           </td></tr>
-            <tr><td>Noise      </td><td>${scoreToEmoji(restaurant.Noise, "👂")}     </td></tr>
-            <tr><td>Chaos      </td><td>${scoreToEmoji(restaurant.Chaos, "💥")}     </td></tr>
-            <tr><td>Atmosphere </td><td>${scoreToEmoji(restaurant.Atmosphere, "⛩️")}</td></tr>
-            <tr><td>Service    </td><td>${scoreToEmoji(restaurant.Service, "😌")}   </td></tr>
-            <tr><td>Food       </td><td>${scoreToEmoji(restaurant.Food, "🧑‍🍳")}      </td></tr>
-            <tr><td>Value      </td><td>${scoreToEmoji(restaurant.Value, "⭐️")}     </td></tr>
-            <tr><td>Price      </td><td>${scoreToEmoji(restaurant.Price, "💰")}     </td></tr>
-        </table>
+        <table aria-label="Place ratings"><tbody>
+            <tr><th scope="row">Patio</th><td>${restaurant.Patio ? "Yes" : "No"}</td></tr>
+            ${["Noise", "Chaos", "Atmosphere", "Service", "Food", "Value", "Price"].map((key) => `
+                <tr><th scope="row">${key}</th><td aria-label="${restaurant[key]} out of 5"><span aria-hidden="true">${scoreToDots(restaurant[key])}</span></td></tr>
+            `).join("")}
+        </tbody></table>
     `;
 }
 
 function buildRestaurantModal(restaurant) {
     return `
+        ${buildCloseButton()}
         <div id="modal-left">
-            <div id="modal-title">
+            <p class="modal-eyebrow">Been &amp; noted</p>
+            <h1 id="modal-title">
                 ${restaurant.Name}
-            </div>
+            </h1>
             <div id="modal-tags">
                 ${buildTags(restaurant)}
             </div>
@@ -138,11 +128,9 @@ function buildRestaurantModal(restaurant) {
                 ${buildTable(restaurant)}
             </div>
             <div id="modal-address">
-                <a href="${addressToLink(restaurant.Addresses)}" target="_blank">${restaurant.Addresses}</a>
+                <a href="${addressToLink(restaurant.Addresses)}" target="_blank" rel="noreferrer">${restaurant.Addresses} ↗</a>
             </div>
-            <div id="modal-quote">
-                ${restaurant.Comments}
-            </div>
+            <div id="modal-quote">${restaurant.Comments || ""}</div>
         </div>
         <div id="modal-right">
             ${buildButtons(restaurant)}
@@ -153,28 +141,24 @@ function buildRestaurantModal(restaurant) {
 function buildTryModal(spot) {
     const notes = spot.Notes
         ? `
-            <div id="modal-quote">
-                ${spot.Notes}
-            </div>
+            <div id="modal-quote">${spot.Notes}</div>
         `
         : "";
 
     return `
+        ${buildCloseButton()}
         <div id="modal-left">
-            <div id="modal-title">
+            <p class="modal-eyebrow">On the list</p>
+            <h1 id="modal-title">
                 ${spot.Name}
-            </div>
-            <div id="modal-tags">
-                <span class="modal-tag">try</span>
-            </div>
+            </h1>
             <div id="modal-address">
                 <a href="${addressToLink(spot.Addresses)}" target="_blank" rel="noreferrer">${spot.Addresses}</a>
             </div>
             ${notes}
         </div>
         <div id="modal-right">
-            ${buildCloseButton()}
-            ${buildLinkButton(spot.Site, "fa-solid fa-link")}
+            ${buildLinkButton(spot.Site, "Website")}
         </div>
     `;
 }

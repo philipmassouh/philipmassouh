@@ -5,6 +5,7 @@ let sortState = { key: null, direction: null };
 let validRestaurants = [];
 let validTrySpots = [];
 let leafletMap = null;
+let selectedMarker = null;
 
 const MAP_FILTER_MODES = ["been", "try", "both"];
 
@@ -50,40 +51,48 @@ async function loadRestaurants() {
     L.DomEvent.disableClickPropagation(controls);
     L.DomEvent.disableScrollPropagation(controls);
 
-    function buildTryIcon() {
+    function buildSpotIcon(type) {
         return L.divIcon({
-            className: "try-marker",
-            html: '<div class="try-marker-question">?</div>',
-            iconSize: [24, 24],
-            iconAnchor: [12, 12],
+            className: `spot-marker spot-marker-${type}`,
+            html: '<span class="spot-marker-dot" aria-hidden="true"></span>',
+            iconSize: [28, 28],
+            iconAnchor: [14, 14],
         });
+    }
+
+    function enableMarkerKeyboard(marker) {
+        function bindKeyboard() {
+            const element = marker.getElement();
+            element.setAttribute("aria-label", marker.options.title);
+            element.onkeydown = (event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    marker.fire("click");
+                }
+            };
+        }
+        marker.on("add", bindKeyboard);
+        if (marker.getElement()) bindKeyboard();
     }
 
     function drawRestaurantMarkers() {
         restaurantLayer.clearLayers();
 
         validRestaurants.forEach((restaurant) => {
-            const marker = L.circleMarker([restaurant.lat, restaurant.lng], {
-                radius: 7.5,
-                fillColor: "transparent",
-                color: "#00a896",
-                weight: 2,
-                opacity: 1,
-                fillOpacity: 1.0,
+            const marker = L.marker([restaurant.lat, restaurant.lng], {
+                icon: buildSpotIcon("been"),
+                title: `${restaurant.Name} — been`,
             }).addTo(restaurantLayer);
-            marker.bindTooltip(restaurant.Name.toLowerCase(), {
+            marker.bindTooltip(restaurant.Name, {
                 permanent: tooltipsPermanent,
                 direction: "bottom",
                 className: "map-tooltip",
             });
 
             marker.on("click", function () {
-                const modalContent = document.getElementById("modal");
-                modalContent.innerHTML = buildRestaurantModal(restaurant);
-                const modal = document.getElementById("modal");
-                modal.classList.remove("modal-try");
-                modal.style.visibility = "visible";
+                openModal(buildRestaurantModal(restaurant), false, marker);
             });
+            enableMarkerKeyboard(marker);
         });
     }
 
@@ -92,22 +101,20 @@ async function loadRestaurants() {
 
         validTrySpots.forEach((spot) => {
             const marker = L.marker([spot.lat, spot.lng], {
-                icon: buildTryIcon(),
+                icon: buildSpotIcon("try"),
+                title: `${spot.Name} — want to try`,
             }).addTo(tryLayer);
 
-            marker.bindTooltip(spot.Name.toLowerCase(), {
+            marker.bindTooltip(spot.Name, {
                 permanent: tooltipsPermanent,
                 direction: "bottom",
                 className: "map-tooltip",
             });
 
             marker.on("click", function () {
-                const modalContent = document.getElementById("modal");
-                modalContent.innerHTML = buildTryModal(spot);
-                const modal = document.getElementById("modal");
-                modal.classList.add("modal-try");
-                modal.style.visibility = "visible";
+                openModal(buildTryModal(spot), true, marker);
             });
+            enableMarkerKeyboard(marker);
         });
     }
 
@@ -169,9 +176,17 @@ async function loadRestaurants() {
     drawMarkers();
     syncFilterControls();
 
-    //NOTE:if loadRestaurants is called again this will have unexpected behavior
-    document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") {
+    const modal = document.getElementById("modal");
+    modal.addEventListener("close", () => {
+        selectedMarker?.getElement()?.classList.remove("is-selected");
+        selectedMarker = null;
+    });
+    modal.addEventListener("click", (event) => {
+        const bounds = modal.getBoundingClientRect();
+        if (event.target === modal && (
+            event.clientX < bounds.left || event.clientX > bounds.right ||
+            event.clientY < bounds.top || event.clientY > bounds.bottom
+        )) {
             closeModal();
         }
     });
@@ -193,10 +208,19 @@ async function loadRestaurants() {
     });
 }
 
-function closeModal() {
+function openModal(content, isTry = false, marker = null) {
     const modal = document.getElementById("modal");
-    modal.style.visibility = "hidden";
-    modal.classList.remove("modal-try");
+    selectedMarker?.getElement()?.classList.remove("is-selected");
+    selectedMarker = marker;
+    selectedMarker?.getElement()?.classList.add("is-selected");
+    modal.innerHTML = content;
+    modal.classList.toggle("modal-try", isTry);
+    modal.showModal();
+    modal.scrollTop = 0;
+}
+
+function closeModal() {
+    document.getElementById("modal").close();
 }
 
 function setViewMode(mode) {
@@ -294,18 +318,13 @@ function renderTableView() {
         tr.addEventListener("click", () => {
             const idx = parseInt(tr.dataset.index, 10);
             const type = tr.dataset.type;
-            const modal = document.getElementById("modal");
-
             if (type === "been") {
                 const sorted = sortData(validRestaurants, sortState.key, sortState.direction);
-                modal.innerHTML = buildRestaurantModal(sorted[idx]);
-                modal.classList.remove("modal-try");
+                openModal(buildRestaurantModal(sorted[idx]));
             } else {
                 const sorted = sortData(validTrySpots, sortState.key, sortState.direction);
-                modal.innerHTML = buildTryModal(sorted[idx]);
-                modal.classList.add("modal-try");
+                openModal(buildTryModal(sorted[idx]), true);
             }
-            modal.style.visibility = "visible";
         });
     });
 }
