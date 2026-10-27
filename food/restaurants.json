@@ -1389,7 +1389,8 @@
   {
     "Name": "Great White",
     "Tags": [
-      "Californian"
+      "Californian",
+      "Lots of Women (Good)"
     ],
     "Patio": false,
     "Noise": 3,
@@ -1403,7 +1404,7 @@
     "Instagram": "https://www.instagram.com/greatwhite/",
     "Yelp": "https://www.yelp.com/biz/great-white-manhattan-beach",
     "Addresses": "401 Manhattan Beach Blvd, Manhattan Beach, CA 90266",
-    "Comments": "I like going here but the food has been pretty bad for me, not my friends. Maybe I'm unlucky. Lots of women (good).",
+    "Comments": "I like going here but the food has been pretty bad for me, not my friends. Maybe I'm unlucky.",
     "lat": 33.885585,
     "lng": -118.408609
   },
