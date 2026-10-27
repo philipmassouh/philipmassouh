@@ -28,6 +28,7 @@ async function loadRestaurants() {
 
     const map = L.map("map", {
         attributionControl: false,
+        zoomControl: false,
         minZoom: 1,
         maxZoom: 20,
         maxBounds: [[-85.051129, -Infinity], [85.051129, Infinity]],
@@ -54,8 +55,9 @@ async function loadRestaurants() {
         return L.divIcon({
             className: `spot-marker spot-marker-${type}`,
             html: '<span class="spot-marker-dot" aria-hidden="true"></span>',
-            iconSize: [28, 28],
-            iconAnchor: [14, 14],
+            iconSize: [24, 24],
+            iconAnchor: [12, 12],
+            tooltipAnchor: [0, 4],
         });
     }
 
@@ -89,7 +91,7 @@ async function loadRestaurants() {
             });
 
             marker.on("click", function () {
-                openModal(buildRestaurantModal(restaurant), false, marker);
+                openModal(buildRestaurantModal(restaurant), marker);
             });
             enableMarkerKeyboard(marker);
         });
@@ -111,7 +113,7 @@ async function loadRestaurants() {
             });
 
             marker.on("click", function () {
-                openModal(buildTryModal(spot), true, marker);
+                openModal(buildTryModal(spot), marker);
             });
             enableMarkerKeyboard(marker);
         });
@@ -180,15 +182,12 @@ async function loadRestaurants() {
         selectedMarker?.getElement()?.classList.remove("is-selected");
         selectedMarker = null;
     });
-    modal.addEventListener("click", (event) => {
-        const bounds = modal.getBoundingClientRect();
-        if (event.target === modal && (
-            event.clientX < bounds.left || event.clientX > bounds.right ||
-            event.clientY < bounds.top || event.clientY > bounds.bottom
-        )) {
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && modal.open) {
             closeModal();
         }
     });
+    map.on("click", closeModal);
 
     document.getElementById("toggle-tooltips").addEventListener("click", () => {
         tooltipsPermanent = !tooltipsPermanent;
@@ -207,19 +206,34 @@ async function loadRestaurants() {
     });
 }
 
-function openModal(content, isTry = false, marker = null) {
+// The panel is non-modal so the map stays usable beside it.
+function openModal(content, marker = null) {
     const modal = document.getElementById("modal");
     selectedMarker?.getElement()?.classList.remove("is-selected");
     selectedMarker = marker;
     selectedMarker?.getElement()?.classList.add("is-selected");
     modal.innerHTML = content;
-    modal.classList.toggle("modal-try", isTry);
-    modal.showModal();
+    if (!modal.open) modal.show();
     modal.scrollTop = 0;
+    document.getElementById("close-btn").focus({ preventScroll: true });
+    keepMarkerVisible(marker, modal);
+}
+
+function keepMarkerVisible(marker, panel) {
+    if (!marker || viewMode !== "map") return;
+    const rect = panel.getBoundingClientRect();
+    const point = leafletMap.latLngToContainerPoint(marker.getLatLng());
+    const margin = 40;
+    let dx = 0;
+    let dy = 0;
+    if (rect.left > 0 && point.x > rect.left - margin) dx = point.x - rect.left / 2;
+    if (rect.top > 0 && point.y > rect.top - margin) dy = point.y - rect.top / 2;
+    if (dx || dy) leafletMap.panBy([dx, dy]);
 }
 
 function closeModal() {
-    document.getElementById("modal").close();
+    const modal = document.getElementById("modal");
+    if (modal.open) modal.close();
 }
 
 function setViewMode(mode) {
@@ -233,6 +247,7 @@ function setViewMode(mode) {
         mapEl.style.display = "none";
         tableEl.style.display = "block";
         tableChip.classList.add("is-active");
+        tableChip.setAttribute("aria-pressed", "true");
         namesChip.style.display = "none";
         sortState = { key: null, direction: null };
         renderTableView();
@@ -240,6 +255,7 @@ function setViewMode(mode) {
         mapEl.style.display = "block";
         tableEl.style.display = "none";
         tableChip.classList.remove("is-active");
+        tableChip.setAttribute("aria-pressed", "false");
         namesChip.style.display = "";
         if (leafletMap) leafletMap.invalidateSize();
     }
@@ -283,7 +299,7 @@ function renderTableView() {
     if (showBeen) {
         const sorted = sortData(validRestaurants, sortState.key, sortState.direction);
         if (mapFilterMode === "both") {
-            html += '<h2 class="table-section-header">Been</h2>';
+            html += '<h2 class="table-section-header label">Been</h2>';
         }
         html += buildBeenTableHTML(sorted, sortState.key, sortState.direction);
     }
@@ -291,7 +307,7 @@ function renderTableView() {
     if (showTry) {
         const sorted = sortData(validTrySpots, sortState.key, sortState.direction);
         if (mapFilterMode === "both") {
-            html += '<h2 class="table-section-header table-section-try">Try</h2>';
+            html += '<h2 class="table-section-header label">Try</h2>';
         }
         html += buildTryTableHTML(sorted, sortState.key, sortState.direction);
     }
@@ -322,7 +338,7 @@ function renderTableView() {
                 openModal(buildRestaurantModal(sorted[idx]));
             } else {
                 const sorted = sortData(validTrySpots, sortState.key, sortState.direction);
-                openModal(buildTryModal(sorted[idx]), true);
+                openModal(buildTryModal(sorted[idx]));
             }
         });
     });
