@@ -35,6 +35,14 @@ async function loadRestaurants() {
         maxBoundsViscosity: 1,
     }).setView([33.9977671, -118.4748076], 10);
     leafletMap = map;
+
+    // Keep the world at least as tall as the window so zooming out never leaves empty bands.
+    function fitMinZoomToWindow() {
+        map.setMinZoom(Math.max(1, Math.ceil(Math.log2(map.getSize().y / 256))));
+    }
+    fitMinZoomToWindow();
+    map.on("resize", fitMinZoomToWindow);
+
     const restaurantLayer = L.layerGroup().addTo(map);
     const tryLayer = L.layerGroup();
 
