@@ -66,7 +66,7 @@
   #legendTitle { flex: none; }
   #legendCell { flex: 1; min-width: 0; padding: 6px 12px; }
   #legend { display: block; width: 100%; height: 26px; }
-  #readout { flex: none; min-width: 23ch; justify-content: flex-end; border-right: 0; font-variant-numeric: tabular-nums; }
+  #readout { flex: none; width: 28ch; overflow: hidden; justify-content: flex-end; border-right: 0; font-variant-numeric: tabular-nums; }
   #play { width: 64px; justify-content: center; }
   .step { width: 40px; justify-content: center; font-size: 14px; }
   #fhrLabel { width: 56px; justify-content: center; font-variant-numeric: tabular-nums; }
@@ -76,19 +76,30 @@
   #fhr::-moz-range-track { height: 2px; background: var(--ink); }
   #fhr::-webkit-slider-thumb { -webkit-appearance: none; width: 10px; height: 22px; margin-top: -10px; background: var(--ink); border: 0; }
   #fhr::-moz-range-thumb { width: 10px; height: 22px; background: var(--ink); border: 0; border-radius: 0; }
-  #validTime { flex: none; }
+  #validTime { flex: none; width: 21ch; justify-content: center; font-variant-numeric: tabular-nums; }
   #run { border-right: 0; }
+  /* Floats over the map so loading never shifts the bars. */
+  #status {
+    position: fixed;
+    top: calc(var(--h) + 2px + 12px);
+    left: 12px;
+    z-index: 1000;
+    min-height: 32px;
+    border: 2px solid var(--paper);
+    color: var(--paper);
+    background: var(--ink);
+    pointer-events: none;
+  }
   #status:empty { display: none; }
-  #status { color: var(--paper); background: var(--ink); }
 
   @media (max-width: 760px) {
     #legendRow { flex-wrap: wrap; }
     #legendCell { order: 3; flex: 1 1 100%; border-top: var(--rule); border-right: 0; }
     #legendTitle { flex: 1; }
-    #readout { min-width: 0; }
+    #readout { width: auto; flex: 1; }
     #controls { flex-wrap: wrap; }
     #sliderCell { flex: 1 1 100%; order: 5; border-top: var(--rule); border-right: 0; min-height: var(--h); }
-    #validTime { flex: 1; border-right: 0; }
+    #validTime { flex: 1; width: auto; border-right: 0; }
     #run { flex: 1 1 100%; order: 6; border-top: var(--rule); }
   }
 </style>
@@ -897,10 +908,14 @@ function setDomainBounds() {
 // ---------- rendering ----------
 function maxFhr(run) { return run.hour % 6 === 0 ? 48 : 18; }
 
+function curatedScale(f) {
+  return { stops: f.stops, vmin: f.stops[0][0], vmax: f.stops[f.stops.length - 1][0], clearZero: false, clampLow: false };
+}
+
 function computeScale() {
   const f = state.field;
   if (!f.auto) {
-    state.scale = { stops: f.stops, vmin: f.stops[0][0], vmax: f.stops[f.stops.length - 1][0], clearZero: false, clampLow: false };
+    state.scale = curatedScale(f);
     return;
   }
   const { lo, hi, clearZero } = autoScale(state.current.data);
@@ -932,12 +947,18 @@ function pickTicks(values, count) {
   return out;
 }
 
+let legendKey = "";
 function drawLegend() {
   const f = state.field;
   ui.legendTitle.textContent = `${f.label}${f.units ? ` · ${f.units}` : ""}`;
   const c = ui.legend;
   const dpr = window.devicePixelRatio || 1;
   const w = c.clientWidth || 300, h = 26;
+  // Resizing a canvas clears it, so only redraw when something visible changed.
+  const sc = state.scale;
+  const key = [f.id, w, dpr, sc ? sc.vmin.toPrecision(3) : "", sc ? sc.vmax.toPrecision(3) : ""].join("|");
+  if (key === legendKey) return;
+  legendKey = key;
   c.width = Math.round(w * dpr); c.height = Math.round(h * dpr);
   const g = c.getContext("2d");
   g.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -1109,7 +1130,11 @@ function syncFieldButtons() {
 function setField(field) {
   state.field = field;
   syncFieldButtons();
-  drawLegend();
+  // Curated legends are known up front; auto-scaled ones wait for the data.
+  if (!field.auto) {
+    state.scale = curatedScale(field);
+    drawLegend();
+  }
   refresh();
 }
 ui.more.addEventListener("change", () => {
@@ -1190,6 +1215,7 @@ window.addEventListener("resize", drawLegend);
 // ---------- boot ----------
 (async function boot() {
   syncFieldButtons();
+  state.scale = curatedScale(state.field);
   drawLegend();
   setStatus("Finding latest run");
   try {
