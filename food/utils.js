@@ -102,12 +102,26 @@ function buildTags(restaurant) {
     `;
 }
 
+function scoreToEmoji(score, emoji) {
+    if (score === 0) return "🚫";
+    return emoji.repeat(score);
+}
+
 function buildTable(restaurant) {
+    const ratings = [
+        ["Noise", "👂"],
+        ["Chaos", "💥"],
+        ["Atmosphere", "⛩️"],
+        ["Service", "😌"],
+        ["Food", "🧑‍🍳"],
+        ["Value", "⭐️"],
+        ["Price", "💰"],
+    ];
     return `
         <table aria-label="Place ratings"><tbody>
-            <tr><th scope="row">Patio</th><td>${restaurant.Patio ? "Yes" : "No"}</td></tr>
-            ${["Noise", "Chaos", "Atmosphere", "Service", "Food", "Value", "Price"].map((key) => `
-                <tr><th scope="row">${key}</th><td aria-label="${restaurant[key]} out of 5"><span aria-hidden="true">${scoreToDots(restaurant[key])}</span></td></tr>
+            <tr><th scope="row">Patio</th><td aria-label="${restaurant.Patio ? "Yes" : "No"}"><span aria-hidden="true">${restaurant.Patio ? "✅" : "❌"}</span></td></tr>
+            ${ratings.map(([key, emoji]) => `
+                <tr><th scope="row">${key}</th><td aria-label="${restaurant[key]} out of 5"><span class="emoji-rating" aria-hidden="true">${scoreToEmoji(restaurant[key], emoji)}</span></td></tr>
             `).join("")}
         </tbody></table>
     `;
@@ -117,7 +131,6 @@ function buildRestaurantModal(restaurant) {
     return `
         ${buildCloseButton()}
         <div id="modal-left">
-            <p class="modal-eyebrow">Been &amp; noted</p>
             <h1 id="modal-title">
                 ${restaurant.Name}
             </h1>

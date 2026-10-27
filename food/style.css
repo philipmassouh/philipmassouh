@@ -159,8 +159,10 @@ button, a {
     text-align: right;
 }
 
-#modal-table td > span {
-    letter-spacing: 3px;
+.emoji-rating {
+    font-size: 16px;
+    letter-spacing: 1px;
+    white-space: nowrap;
 }
 
 #modal-address {
