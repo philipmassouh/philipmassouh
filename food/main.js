@@ -27,6 +27,7 @@ async function loadRestaurants() {
     validTrySpots = trySpots.filter(hasCoordinates);
 
     const map = L.map("map", {
+        attributionControl: false,
         minZoom: 1,
         maxZoom: 20,
         maxBounds: [[-85.051129, -Infinity], [85.051129, Infinity]],
