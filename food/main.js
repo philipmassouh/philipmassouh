@@ -35,11 +35,16 @@ async function loadRestaurants() {
     const restaurantLayer = L.layerGroup().addTo(map);
     const tryLayer = L.layerGroup();
 
-    L.maplibreGL({
-        style: "https://tiles.openfreemap.org/styles/positron",
-        attribution:
-            '<a href="https://openfreemap.org/">OpenFreeMap</a> &copy; <a href="https://www.openmaptiles.org/">OpenMapTiles</a> Data from <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    }).addTo(map);
+    L.tileLayer(
+        "https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.jpg",
+        {
+            // Watercolor ends at z16; enlarge those tiles for closer views.
+            maxNativeZoom: 16,
+            maxZoom: 20,
+            attribution:
+                '&copy; <a href="https://stadiamaps.com/attribution/">Stadia Maps</a> &copy; <a href="https://stamen.com/">Stamen Design</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        },
+    ).addTo(map);
 
     const controls = document.getElementById("map-controls");
     L.DomEvent.disableClickPropagation(controls);
