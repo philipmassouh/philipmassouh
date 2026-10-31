@@ -1,0 +1,13 @@
+philipmassouh.com {
+	root * /var/www/philipmassouh.com/html
+
+	@hidden path */.*
+	respond @hidden 404
+
+	encode zstd gzip
+	file_server
+}
+
+www.philipmassouh.com {
+	redir https://philipmassouh.com{uri}
+}
