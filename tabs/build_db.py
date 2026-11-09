@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Load the ug-tabs.7z dump into one SQLite file.
+"""Load the tab dump archive into one SQLite file.
 
-The archive holds ~1M small .txt tabs (ug-tabs/<Type>/<Artist>-<id>/<Song>.txt),
+The archive holds ~1M small .txt tabs (<root>/<Type>/<Artist>-<id>/<Song>.txt),
 so it is never unpacked: bsdtar re-streams it as tar on stdout and each member
 is parsed in memory.
 
@@ -18,11 +18,11 @@ with thousands. A song's votes and rating pool all of its versions, and songs
 use a much heavier M: ratings cluster around 4.8, so with a light prior a B-side
 with a hundred 4.9 votes would outrank a song with thousands.
 
-    python3 tabs/build_db.py ~/Downloads/ug-tabs.7z ~/Downloads/ug-tabs.db
-    python3 tabs/build_db.py ~/Downloads/ug-tabs.7z /tmp/t.db --include 'ug-tabs/Drums/*'
+    python3 tabs/build_db.py ~/Downloads/dump.7z ~/Downloads/tabs.db
+    python3 tabs/build_db.py ~/Downloads/dump.7z /tmp/t.db --include '<root>/Drums/*'
 
 Bodies are zlib-compressed. The tabs_text view decompresses them with the
-sqlite3 shell's sqlar_uncompress, so `sqlite3 ug-tabs.db "SELECT body FROM
+sqlite3 shell's sqlar_uncompress, so `sqlite3 tabs.db "SELECT body FROM
 tabs_text ..."` works; other clients zlib-decompress tabs.body themselves.
 
 The database is the dataset, not site content: keep it out of the repo.
@@ -46,9 +46,9 @@ RAW = """
 CREATE TABLE raw (
     path TEXT NOT NULL,
     type TEXT NOT NULL,
-    ug_song_id INTEGER,
+    src_song_id INTEGER,
     title TEXT NOT NULL,
-    ug_artist_id INTEGER,
+    src_artist_id INTEGER,
     artist TEXT NOT NULL,
     rating REAL NOT NULL,
     votes INTEGER NOT NULL,
@@ -98,30 +98,30 @@ CREATE TEMP TABLE prior AS
     SELECT sum(rating * votes) / sum(votes) AS c FROM raw WHERE votes > 0;
 
 CREATE TEMP TABLE artist_map AS
-    SELECT ug_artist_id AS ug,
-           row_number() OVER (ORDER BY min(artist) COLLATE NOCASE, ug_artist_id) AS id,
+    SELECT src_artist_id AS src,
+           row_number() OVER (ORDER BY min(artist) COLLATE NOCASE, src_artist_id) AS id,
            min(artist) AS name
-    FROM raw GROUP BY ug_artist_id;
+    FROM raw GROUP BY src_artist_id;
 
 CREATE TEMP TABLE scored AS
-    SELECT rowid AS raw_id, ug_artist_id, ug_song_id, path, type, title,
+    SELECT rowid AS raw_id, src_artist_id, src_song_id, path, type, title,
            (votes * rating + :m_tab * (SELECT c FROM prior)) / (votes + :m_tab) AS score,
            votes * rating AS weighted, votes
     FROM raw;
 
 -- The song's title is its best version's; max() picks that row's title.
 CREATE TEMP TABLE song_agg AS
-    SELECT ug_artist_id, ug_song_id, title, max(score) AS top,
+    SELECT src_artist_id, src_song_id, title, max(score) AS top,
            (sum(weighted) + :m_song * (SELECT c FROM prior)) / (sum(votes) + :m_song) AS score
-    FROM scored GROUP BY ug_artist_id, ug_song_id;
+    FROM scored GROUP BY src_artist_id, src_song_id;
 
 CREATE TEMP TABLE song_map AS
-    SELECT s.ug_artist_id, s.ug_song_id, s.title, a.id AS artist_id,
-           row_number() OVER (ORDER BY a.name COLLATE NOCASE, a.id, s.title COLLATE NOCASE, s.ug_song_id) AS id,
-           row_number() OVER (ORDER BY s.score DESC, s.title, s.ug_song_id) AS rank
-    FROM song_agg s JOIN artist_map a ON a.ug = s.ug_artist_id;
+    SELECT s.src_artist_id, s.src_song_id, s.title, a.id AS artist_id,
+           row_number() OVER (ORDER BY a.name COLLATE NOCASE, a.id, s.title COLLATE NOCASE, s.src_song_id) AS id,
+           row_number() OVER (ORDER BY s.score DESC, s.title, s.src_song_id) AS rank
+    FROM song_agg s JOIN artist_map a ON a.src = s.src_artist_id;
 
-CREATE INDEX temp.song_map_ug ON song_map(ug_artist_id, ug_song_id);
+CREATE INDEX temp.song_map_src ON song_map(src_artist_id, src_song_id);
 
 INSERT INTO artists (id, name) SELECT id, name FROM artist_map;
 
@@ -134,7 +134,7 @@ INSERT INTO tabs (id, song_id, type, rank, tonality, tuning, body, size)
            r.tonality, r.tuning, r.body, r.size
     FROM scored s
     JOIN raw r ON r.rowid = s.raw_id
-    JOIN song_map m ON m.ug_artist_id = s.ug_artist_id AND m.ug_song_id IS s.ug_song_id;
+    JOIN song_map m ON m.src_artist_id = s.src_artist_id AND m.src_song_id IS s.src_song_id;
 
 INSERT INTO songs_fts (rowid, title, artist)
     SELECT songs.id, songs.title, artists.name FROM songs JOIN artists ON artists.id = songs.artist_id;
@@ -193,7 +193,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("archive")
     ap.add_argument("db")
-    ap.add_argument("--include", help="bsdtar --include glob, e.g. 'ug-tabs/Tab/Metallica-*'")
+    ap.add_argument("--include", help="bsdtar --include glob, e.g. '<root>/Tab/Metallica-*'")
     args = ap.parse_args()
 
     work = args.db + ".work"

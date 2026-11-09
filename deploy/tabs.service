@@ -6,7 +6,7 @@ After=network.target
 
 [Service]
 ExecStart=/usr/bin/python3 /srv/site/tabs/server.py
-Environment=TABS_DB=/srv/tabs/ug-tabs.db
+Environment=TABS_DB=/srv/tabs/tabs.db
 Environment=TABS_HOST=127.0.0.1
 Environment=TABS_PORT=8710
 Restart=on-failure

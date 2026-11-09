@@ -4,7 +4,7 @@
 In production Caddy serves the static page and proxies /tabs/api/* here. For
 local work this also serves the page itself:
 
-    TABS_DB=~/Downloads/ug-tabs.db python3 tabs/server.py
+    TABS_DB=~/Downloads/tabs.db python3 tabs/server.py
     open http://localhost:8710/tabs/
 
 Routes (all GET, all JSON). Songs come best-ranked first, each with the id of
@@ -23,7 +23,7 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 
-DB = os.path.expanduser(os.environ.get("TABS_DB", "~/Downloads/ug-tabs.db"))
+DB = os.path.expanduser(os.environ.get("TABS_DB", "~/Downloads/tabs.db"))
 HOST = os.environ.get("TABS_HOST", "127.0.0.1")
 PORT = int(os.environ.get("TABS_PORT", "8710"))
 ROOT = Path(__file__).resolve().parent.parent

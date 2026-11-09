@@ -5,6 +5,10 @@ philipmassouh.com {
 	respond @hidden 404
 
 	encode zstd gzip
+
+	# Keep /tabs out of search engines, API responses included.
+	@tabs path /tabs /tabs/*
+	header @tabs X-Robots-Tag "noindex, nofollow"
 	reverse_proxy /tabs/api/* 127.0.0.1:8710
 
 	# Aunt Donna's Wall: family only. DONNA_PASSWORD and the API keys live in
