@@ -645,7 +645,10 @@ function log(cls, who, text) {
   logEl.prepend(li);
   while (logEl.children.length > 12) logEl.lastChild.remove();
 }
+// Alan is Donna's son; Philip is her nephew.
+const CALLS_HER = { alan: 'Mom', philip: 'Aunt Donna' };
 function say(who, text) {
+  text = text.replace(/\bDonna\b/g, CALLS_HER[who] || 'Donna');
   log(who, who.toUpperCase(), text);
   showBubble(who, text);
 }
@@ -679,11 +682,11 @@ const QUESTIONS = {
   },
   who: {
     type: 'choice',
-    instructions: 'Who is Donna talking to? Alan holds the left side and Philip holds the right side.',
+    instructions: 'Who is Donna talking to? Alan, her son, holds the left side. Philip, her nephew, holds the right side.',
     criteria: {
       both: 'Both of them, or nobody in particular',
-      alan: 'Alan, or the left side only',
-      philip: 'Philip, or the right side only',
+      alan: 'Alan (her son), or the left side only',
+      philip: 'Philip (her nephew), or the right side only',
     },
   },
   done: {
