@@ -812,6 +812,7 @@ function act(a) {
 // "Alan, Philip, do you have a moment?" Every time.
 const bell = new Audio('bell.mp3');
 bell.preload = 'auto';
+bell.volume = 0.7;
 function summon() {
   bell.currentTime = 0;
   bell.play().catch(() => {});
