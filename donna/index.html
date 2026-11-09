@@ -853,9 +853,26 @@ function act(a) {
 const bell = new Audio('bell.mp3');
 bell.preload = 'auto';
 bell.volume = 0.7;
+
+// Browsers (Safari above all) only allow sound that starts from a tap or
+// click, and the bell starts after Jev answers. Playing it silently on the
+// first interaction unlocks it for later.
+let bellUnlocked = false;
+function unlockBell() {
+  if (bellUnlocked) return;
+  bellUnlocked = true;
+  bell.muted = true;
+  bell.play()
+    .then(() => { if (bell.muted) { bell.pause(); bell.currentTime = 0; } })
+    .catch(() => { bellUnlocked = false; })
+    .finally(() => { bell.muted = false; });
+}
+for (const ev of ['pointerdown', 'keydown', 'touchend']) addEventListener(ev, unlockBell, { capture: true });
+
 function summon() {
+  bell.muted = false;
   bell.currentTime = 0;
-  bell.play().catch(() => {});
+  bell.play().catch(err => log('err', '', `bell: ${err.message || err}`));
   say('alan', 'Yes?');
   setTimeout(() => say('philip', 'Yes?'), 350);
 }
