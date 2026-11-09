@@ -9,6 +9,7 @@ WWW=/var/www/philipmassouh.com/html
 git -C "$SITE" pull --ff-only
 rsync -a --delete --exclude '.*' --exclude src --exclude build.py "$SITE/hrrr/" "$WWW/hrrr/"
 rsync -a --delete --exclude '.*' "$SITE/food/" "$WWW/food/"
+rsync -a --delete --exclude '.*' "$SITE/donna/" "$WWW/donna/"
 rsync -a --delete --exclude '.*' --exclude src "$SITE/texture/" "$WWW/texture/"
 # The tabs API (server.py) runs from $SITE; tabs-restart.path restarts it on change.
 rsync -a --delete --exclude '.*' --exclude '*.py' "$SITE/tabs/" "$WWW/tabs/"

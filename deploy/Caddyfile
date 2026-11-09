@@ -6,6 +6,48 @@ philipmassouh.com {
 
 	encode zstd gzip
 	reverse_proxy /tabs/api/* 127.0.0.1:8710
+
+	# Aunt Donna's Wall: family only. The API keys live in /etc/caddy/donna.env
+	# (see bootstrap.sh) and are added here, so the page never sees them.
+	@donna path /donna /donna/*
+	basic_auth @donna {
+		donna $2a$14$gG4eRwqddMnmx5e5/mgLy.2mIq0pYXw32h2gT0aQAGucI0Boi30eC
+	}
+
+	@jev {
+		path /donna/api/jev
+		method POST
+	}
+	handle @jev {
+		request_body {
+			max_size 16KB
+		}
+		rewrite * /v1/systemone
+		reverse_proxy https://api.typesafe.ai {
+			header_up Host {upstream_hostport}
+			header_up Authorization "Bearer {env.TYPESAFE_API_KEY}"
+			header_up -Cookie
+		}
+	}
+
+	# Trades the Deepgram key for a 30-second token; the browser then
+	# streams audio straight to Deepgram with that token.
+	@stt {
+		path /donna/api/stt-token
+		method POST
+	}
+	handle @stt {
+		request_body {
+			max_size 1KB
+		}
+		rewrite * /v1/auth/grant
+		reverse_proxy https://api.deepgram.com {
+			header_up Host {upstream_hostport}
+			header_up Authorization "Token {env.DEEPGRAM_API_KEY}"
+			header_up -Cookie
+		}
+	}
+
 	file_server
 }
 

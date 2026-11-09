@@ -88,12 +88,27 @@ else
   echo "no $TABS_DB yet: upload it to pm's home and re-run provision.sh" >&2
 fi
 
+echo "==> Setting up API keys for /donna"
+# Caddy adds these to /donna's API calls. Fill them in with
+#   sudo nano /etc/caddy/donna.env && sudo systemctl restart caddy
+if [ ! -f /etc/caddy/donna.env ]; then
+  install -m 640 -o root -g caddy /dev/null /etc/caddy/donna.env
+  printf 'TYPESAFE_API_KEY=\nDEEPGRAM_API_KEY=\n' > /etc/caddy/donna.env
+fi
+install -d /etc/systemd/system/caddy.service.d
+cat > /etc/systemd/system/caddy.service.d/donna.conf <<'EOF'
+[Service]
+EnvironmentFile=/etc/caddy/donna.env
+EOF
+systemctl daemon-reload
+
 echo "==> Deploying the pages"
 runuser -u deploy -- /usr/local/bin/site-deploy
 install -m 644 "$SITE/deploy/Caddyfile" /etc/caddy/Caddyfile
 caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
-systemctl enable --now caddy
-systemctl reload caddy
+systemctl enable caddy
+# Restart, not reload: Caddy reads donna.env only when it starts.
+systemctl restart caddy
 
 echo "==> Turning on automatic security updates"
 cat > /etc/apt/apt.conf.d/20auto-upgrades <<'EOF'

@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aunt Donna's Wall</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #14110e;
+      color: #eee6d6;
+      font-family: "SF Mono", "Monaco", "Inconsolata", "Fira Mono", "Droid Sans Mono", "Source Code Pro", monospace;
+      font-size: 14px;
+      line-height: 1.5;
+      padding: 24px 16px 48px;
+    }
+
+    .wrap { max-width: 960px; margin: 0 auto; }
+
+    header { margin-bottom: 14px; display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 24px; }
+    h1 { font-family: "Pixelify Sans", monospace; font-size: 28px; font-weight: 600; letter-spacing: 0.5px; }
+    .sub { color: #9a8f7c; }
+    .stats { color: #9a8f7c; display: flex; flex-wrap: wrap; gap: 4px 20px; margin-top: 4px; }
+    .stats b { color: #eee6d6; font-weight: normal; }
+
+    .stage { position: relative; width: 100%; border: 3px solid #2a241d; }
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+
+    .bubble {
+      position: absolute;
+      max-width: 34%;
+      padding: 4px 8px 5px;
+      background: #fffaf0;
+      color: #1d1a16;
+      border: 2px solid #1d1a16;
+      font-family: "Pixelify Sans", monospace;
+      font-size: clamp(11px, 1.7vw, 17px);
+      line-height: 1.2;
+      box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.35);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s;
+      white-space: normal;
+    }
+    .bubble.show { opacity: 1; }
+    .bubble::after {
+      content: "";
+      position: absolute;
+      bottom: -8px;
+      width: 8px;
+      height: 8px;
+      background: #fffaf0;
+      border: 2px solid #1d1a16;
+      border-top: none;
+    }
+    .bubble.alan, .bubble.donna { transform: translate(0, -100%); }
+    .bubble.alan::after { right: 8px; border-left: none; }
+    .bubble.philip { transform: translate(0, -100%); }
+    .bubble.philip::after { left: 8px; border-right: none; }
+    .bubble.donna { background: #ffe3ec; }
+    .bubble.donna::after { right: 10px; border-left: none; background: #ffe3ec; }
+    .bubble.donna.interim { color: #7a6a70; }
+
+    .controls { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 10px; }
+    button, input[type="text"] {
+      font: inherit;
+      background: #1d1914;
+      color: #eee6d6;
+      border: 2px solid #4a4136;
+      padding: 8px 12px;
+    }
+    button { cursor: pointer; font-family: "Pixelify Sans", monospace; font-size: 16px; }
+    button:hover { border-color: #eee6d6; }
+    button.on { border-color: #f08aa8; color: #f08aa8; }
+    input[type="text"] { flex: 1; min-width: 180px; }
+    input[type="text"]:focus, button:focus-visible { outline: none; border-color: #eee6d6; }
+
+    #log { list-style: none; color: #7d7364; }
+    #log li { padding: 1px 0; }
+    #log .donna { color: #c98a9c; }
+    #log .jev { color: #5a5248; }
+    #log .err { color: #e06a5a; }
+    body:not(.debug) #log .jev, body:not(.debug) #log .err { display: none; }
+
+    .debug-toggle { color: #5a5248; display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; cursor: pointer; }
+    .debug-toggle input { accent-color: #7d7364; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Aunt Donna's Wall</h1>
+        <p class="sub">You are Donna. Tell Alan and Philip where it goes.</p>
+      </div>
+      <div class="stats">
+        <span>holding: <b id="title">-</b></span>
+        <span>level: <b id="level">-</b></span>
+        <span>hung: <b id="hung">0</b></span>
+      </div>
+    </header>
+
+    <div class="stage" id="stage">
+      <canvas id="scene" width="320" height="180" aria-label="Alan and Philip holding a painting against the wall while Donna directs from the doorway"></canvas>
+      <div class="bubble alan" id="b-alan"></div>
+      <div class="bubble philip" id="b-philip"></div>
+      <div class="bubble donna" id="b-donna"></div>
+    </div>
+
+    <div class="controls">
+      <button id="mic" type="button">● be Donna</button>
+      <form id="typed" style="display:contents">
+        <input id="say" type="text" autocomplete="off" placeholder="or type it: &quot;a hair to the left&quot;">
+      </form>
+    </div>
+    <ul id="log"></ul>
+    <label class="debug-toggle"><input type="checkbox" id="debug"> debug</label>
+  </div>
+
+<script>
+'use strict';
+
+const $ = id => document.getElementById(id);
+const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const MOCK = new URLSearchParams(location.search).has('mock');
+
+// ---------- world (in canvas pixels, 320x180) ----------
+const LW = 320, LH = 180, FLOOR_Y = 160;
+const PW = 56, PH = 42;                  // painting incl. frame
+const CX_MIN = 90, CX_MAX = 222;         // painting center x
+const B_MIN = 46, B_MAX = 96;            // painting bottom y
+const MAX_TILT = 14;                     // right corner minus left corner, px
+const HOME = { cx: 156, yL: 82, yR: 82 };
+const UNIT_X = 5, UNIT_Y = 4, UNIT_TILT = 3;
+const DONNA_X = 285;
+const S = 2;                             // people are drawn at 2x
+
+const canvas = $('scene');
+const ctx = canvas.getContext('2d');
+ctx.imageSmoothingEnabled = false;
+
+function makeCanvas(w, h) {
+  const c = document.createElement('canvas');
+  c.width = w; c.height = h;
+  const x = c.getContext('2d');
+  x.imageSmoothingEnabled = false;
+  return [c, x];
+}
+
+// ---------- sprites ----------
+// One character per pixel; '.' is transparent. Rows are 16 wide.
+const LEGS_STAND = [
+  '...PPPPPPPPP....',
+  '...PPPPPPPPP....',
+  '...PPPP.PPPP....',
+  '...PPPP.PPPP....',
+  '...PPP...PPP....',
+  '...PPP...PPP....',
+  '...PPP...PPP....',
+  '..FFFF...FFFF...',
+];
+const LEGS_WALK = [
+  '...PPPPPPPPP....',
+  '...PPPP.PPPP....',
+  '..PPPP...PPPP...',
+  '..PPP.....PPP...',
+  '.PPP.......PPP..',
+  '.PPP.......PPP..',
+  '.PPP.......PPP..',
+  'FFFF.......FFFF.',
+];
+
+const ALAN_TOP = [
+  '....HHHHHHH.....',
+  '..HHhHHHHhHHH...',
+  '.HHHHHHHHHHHHH..',
+  '.hhhhhhhhhhhhh..',
+  '..KSSSSSSSSSK...',
+  '..KGGGGGGGGGK...',
+  '..KGRRRGRRRGK...',
+  '...SSSSsSSSS....',
+  '...SSBBBBBSS....',
+  '...SSSSSSSSS....',
+  '....SSBBBSS.....',
+  '.....KBBBK......',
+  '......SSS.......',
+  '...TTTTTTTTT....',
+  '..TTTTTTTTTTT...',
+  '..TTTTTTTTTTT...',
+  '..tTTTTTTTTTt...',
+  '...TTTTTTTTT....',
+  '...TTTTTTTTT....',
+  '...TTTTTTTTT....',
+  '...tTTTTTTTt....',
+];
+const ALAN_PAL = {
+  H: '#a3a7ac', h: '#6b7076', S: '#e3b394', s: '#c99474', G: '#18181a', R: '#9a4436',
+  B: '#4b3428', T: '#5a6684', t: '#47506a', K: '#1c1c1f', P: '#2b2e36', F: '#121212',
+};
+
+const PHILIP_TOP = [
+  '.....SSSSSS.....',
+  '...SSSSSSSSSS...',
+  '..SSSSSSSSSSSS..',
+  '..SSSSSSSSSSSS..',
+  '..SGGGGSSGGGGS..',
+  '..SGSESGGSESGS..',
+  '..SGGGGSSGGGGS..',
+  '..sSSSSssSSSSs..',
+  '...SSSSSSSSSS...',
+  '...ZSSLLLLSSZ...',
+  '...ZZZZZZZZZZ...',
+  '....ZZZZZZZZ....',
+  '......SSSS......',
+  '...UUUUwwUUUU...',
+  '..UUUUUUUUUUUU..',
+  '..uUUUUwUUUUUu..',
+  '..UUUUUUUUUUUU..',
+  '..uUUUUwUUUUUu..',
+  '...UUUUUUUUUU...',
+  '...UUUUwUUUUU...',
+  '...uUUUUUUUUu...',
+];
+const PHILIP_PAL = {
+  S: '#ecc4a8', s: '#d3a386', Z: '#bda392', G: '#141414', E: '#3b2a20', L: '#c98a7e',
+  U: '#3f62ab', u: '#2f4c88', w: '#e8e8e8', P: '#45464e', F: '#121212',
+};
+
+const DONNA_TOP = [
+  '....aAAAAAa.....',
+  '...aAAAAAAAAa...',
+  '..AAAaAAAAAAAA..',
+  '..AAAASSSSSAAA..',
+  '..AASSSSSSSSAA..',
+  '..AASEESSEESAA..',
+  '..AASSSSSSSSAA..',
+  '..AASSSsSSSSAA..',
+  '.OAASSSLLSSSAAO.',
+  'O.OAAsSSSSsAAO.O',
+  '.O..AASSSSAA..O.',
+  '......SSSS......',
+  '...KKKKKKKKKK...',
+  '..KKKKKKKKKKKK..',
+  '..KKKkKKKKkKKK..',
+  '..KKKKKKKKKKKK..',
+  '..KKKkKKKKkKKK..',
+  '..KKKKKKKKKKKK..',
+  '...KKKKKKKKKK...',
+  '...KKKKKKKKKK...',
+  '...KkKKKKKKkK...',
+];
+const DONNA_PAL = {
+  a: '#b8693a', A: '#8b4a26', S: '#e9bba0', s: '#d09b80', E: '#3a2a22', L: '#b05a52',
+  O: '#d4ad52', K: '#1a1a1d', k: '#2e2e33', P: '#26262b', F: '#111111',
+};
+
+function sprite(rows, pal) {
+  const [c, x] = makeCanvas(16, rows.length);
+  rows.forEach((row, y) => {
+    for (let i = 0; i < 16; i++) {
+      const col = pal[row[i]];
+      if (col) { x.fillStyle = col; x.fillRect(i, y, 1, 1); }
+    }
+  });
+  return c;
+}
+
+const SPRITES = {
+  alan: { stand: sprite([...ALAN_TOP, ...LEGS_STAND], ALAN_PAL), walk: sprite([...ALAN_TOP, ...LEGS_WALK], ALAN_PAL) },
+  philip: { stand: sprite([...PHILIP_TOP, ...LEGS_STAND], PHILIP_PAL), walk: sprite([...PHILIP_TOP, ...LEGS_WALK], PHILIP_PAL) },
+  donna: sprite([...DONNA_TOP, ...LEGS_STAND], DONNA_PAL),
+};
+const SPRITE_H = 29 * S, SPRITE_W = 16 * S;
+
+// ---------- paintings ----------
+function disc(x, cx, cy, r, color) {
+  x.fillStyle = color;
+  for (let dy = -r; dy <= r; dy++) {
+    const w = Math.round(Math.sqrt(r * r - dy * dy));
+    x.fillRect(cx - w, cy + dy, w * 2 + 1, 1);
+  }
+}
+
+const ARTS = [
+  { title: 'Lake at Dusk', draw(x) {
+    ['#3b2a5a', '#5a3570', '#8c3f6e', '#c95a5a', '#e98a4f', '#f2b45a'].forEach((c, i) => {
+      x.fillStyle = c; x.fillRect(0, i * 4, 50, 4);
+    });
+    disc(x, 34, 16, 4, '#ffe0a0');
+    for (let i = 0; i < 50; i++) {
+      const back = 22 - Math.max(0, 9 - Math.abs(i - 36) * 0.7);
+      const front = 22 - Math.max(0, 11 - Math.abs(i - 13) * 0.9);
+      x.fillStyle = '#4a3a66'; x.fillRect(i, Math.round(back), 1, 22);
+      x.fillStyle = '#2b2240'; x.fillRect(i, Math.round(front), 1, 22);
+    }
+    x.fillStyle = '#2f4f7a'; x.fillRect(0, 22, 50, 14);
+    x.fillStyle = '#5b7fb0';
+    [[3, 25, 8], [18, 28, 10], [6, 32, 6], [36, 30, 9], [28, 34, 7]].forEach(([a, b, w]) => x.fillRect(a, b, w, 1));
+    x.fillStyle = '#f2b45a';
+    [[32, 24, 5], [33, 27, 3], [31, 30, 6]].forEach(([a, b, w]) => x.fillRect(a, b, w, 1));
+  } },
+  { title: 'Cat (oil on canvas)', draw(x) {
+    x.fillStyle = '#3d6b6b'; x.fillRect(0, 0, 50, 36);
+    x.fillStyle = '#4a7a78'; x.fillRect(0, 0, 50, 3);
+    x.fillStyle = '#8b3a3a'; x.fillRect(0, 29, 50, 7);
+    x.fillStyle = '#a84a48'; x.fillRect(0, 29, 50, 1);
+    disc(x, 25, 24, 8, '#e08a3c');
+    disc(x, 25, 13, 6, '#e08a3c');
+    x.fillStyle = '#e08a3c';
+    for (let i = 0; i < 4; i++) { x.fillRect(20 + i, 5 + i, 4 - i, 1); x.fillRect(27 + 0, 5 + i, 4 - i, 1); }
+    x.fillStyle = '#b8652a';
+    [[19, 21], [19, 25], [30, 22], [30, 26], [24, 8]].forEach(([a, b]) => x.fillRect(a, b, 3, 1));
+    x.fillStyle = '#9fd36a'; x.fillRect(22, 12, 2, 2); x.fillRect(27, 12, 2, 2);
+    x.fillStyle = '#111'; x.fillRect(23, 12, 1, 2); x.fillRect(28, 12, 1, 2);
+    x.fillStyle = '#f2a0a0'; x.fillRect(25, 15, 1, 1);
+    x.fillStyle = '#e08a3c'; x.fillRect(33, 28, 8, 2); x.fillRect(39, 24, 2, 5);
+  } },
+  { title: 'Still Life with Fruit', draw(x) {
+    x.fillStyle = '#2b2320'; x.fillRect(0, 0, 50, 36);
+    x.fillStyle = '#6b4a2c'; x.fillRect(0, 27, 50, 9);
+    x.fillStyle = '#82593a'; x.fillRect(0, 27, 50, 1);
+    x.fillStyle = '#f1c40f';
+    for (let i = 0; i < 16; i++) x.fillRect(12 + i, 12 + Math.round(Math.abs(i - 8) * -0.4 + 4), 1, 2);
+    disc(x, 18, 19, 5, '#c0392b');
+    disc(x, 31, 19, 5, '#7bb342');
+    disc(x, 25, 16, 5, '#e67e22');
+    x.fillStyle = '#fff'; x.fillRect(16, 16, 1, 1); x.fillRect(29, 16, 1, 1); x.fillRect(23, 13, 1, 1);
+    x.fillStyle = '#d9d2c3';
+    for (let r = 0; r < 7; r++) x.fillRect(9 + r, 21 + r, 32 - r * 2, 1);
+    x.fillStyle = '#b5ad9c'; x.fillRect(16, 27, 18, 1);
+  } },
+  { title: 'Sailboat, Probably Maine', draw(x) {
+    x.fillStyle = '#9fd0e8'; x.fillRect(0, 0, 50, 24);
+    x.fillStyle = '#c8e6f3'; x.fillRect(0, 18, 50, 6);
+    x.fillStyle = '#fff'; x.fillRect(5, 5, 9, 2); x.fillRect(7, 4, 5, 1); x.fillRect(36, 8, 8, 2);
+    x.fillStyle = '#2e6fa7'; x.fillRect(0, 24, 50, 12);
+    x.fillStyle = '#5aa0d8';
+    [[2, 27, 6], [14, 30, 8], [30, 28, 7], [40, 32, 6], [8, 33, 5]].forEach(([a, b, w]) => x.fillRect(a, b, w, 1));
+    x.fillStyle = '#5a3a20'; x.fillRect(25, 4, 1, 19);
+    x.fillStyle = '#fffaf0';
+    for (let y = 5; y < 21; y++) x.fillRect(26, y, Math.round((y - 4) * 0.65), 1);
+    for (let y = 9; y < 21; y++) x.fillRect(25 - Math.round((y - 8) * 0.5), y, Math.round((y - 8) * 0.5), 1);
+    x.fillStyle = '#c0392b'; x.fillRect(26, 4, 3, 1);
+    x.fillStyle = '#7a4a2a';
+    for (let r = 0; r < 4; r++) x.fillRect(16 + r, 21 + r, 20 - r * 2, 1);
+  } },
+  { title: 'Portrait of Donna', draw(x) {
+    x.fillStyle = '#4c5a3a'; x.fillRect(0, 0, 50, 36);
+    disc(x, 25, 18, 16, '#5d6c48');
+    x.fillStyle = '#1a1a1d'; x.fillRect(11, 29, 28, 7);
+    x.drawImage(SPRITES.donna, 0, 0, 16, 12, 9, 5, 32, 24);
+  } },
+];
+
+const FRAMES = ARTS.map(art => {
+  const [c, x] = makeCanvas(PW, PH);
+  x.fillStyle = '#8a6a28'; x.fillRect(0, 0, PW, PH);
+  x.fillStyle = '#d4ad52'; x.fillRect(1, 1, PW - 2, PH - 2);
+  x.fillStyle = '#f0d27a'; x.fillRect(1, 1, PW - 2, 1); x.fillRect(1, 1, 1, PH - 2);
+  x.fillStyle = '#8a6a28'; x.fillRect(2, 2, PW - 4, PH - 4);
+  const [inner, ix] = makeCanvas(PW - 6, PH - 6);
+  art.draw(ix);
+  x.drawImage(inner, 3, 3);
+  return c;
+});
+
+// ---------- the room ----------
+const [room, rx] = makeCanvas(LW, LH);
+(function drawRoom() {
+  rx.fillStyle = '#e6dcc0'; rx.fillRect(0, 0, LW, FLOOR_Y);
+  // Urn wallpaper, after the real dining room.
+  const urn = ['..UU..', '.UUUU.', 'UUUUUU', '.UUUU.', '..UU..', '.UUUU.', 'UUUUUU', 'UUUUUU', '.UUUU.', '..UU..', '.UUUU.'];
+  for (let y = 6, row = 0; y < 128; y += 22, row++) {
+    for (let x = (row % 2) * 16 + 6; x < LW; x += 32) {
+      rx.fillStyle = '#d6c9a6';
+      rx.fillRect(x - 3, y - 2, 12, 15);
+      rx.fillStyle = '#e6dcc0';
+      rx.fillRect(x - 2, y - 1, 10, 13);
+      rx.fillStyle = '#c4b48c';
+      urn.forEach((r, j) => { for (let i = 0; i < 6; i++) if (r[i] === 'U') rx.fillRect(x + i, y + j, 1, 1); });
+    }
+  }
+  // Chair rail and wainscot.
+  rx.fillStyle = '#d8ccaa'; rx.fillRect(0, 128, LW, 26);
+  rx.fillStyle = '#f2ecdc'; rx.fillRect(0, 126, LW, 3);
+  rx.fillStyle = '#c4b48c'; rx.fillRect(0, 129, LW, 1);
+  for (let x = 10; x < LW; x += 40) {
+    rx.fillStyle = '#cbbf9c'; rx.fillRect(x, 134, 30, 16);
+    rx.fillStyle = '#d8ccaa'; rx.fillRect(x + 1, 135, 28, 14);
+  }
+  // Baseboard and floor.
+  rx.fillStyle = '#f2ecdc'; rx.fillRect(0, 153, LW, 7);
+  rx.fillStyle = '#c4b48c'; rx.fillRect(0, 159, LW, 1);
+  rx.fillStyle = '#6e4a2c'; rx.fillRect(0, FLOOR_Y, LW, LH - FLOOR_Y);
+  rx.fillStyle = '#5c3d24';
+  for (let y = FLOOR_Y + 4; y < LH; y += 5) rx.fillRect(0, y, LW, 1);
+  for (let y = FLOOR_Y, k = 0; y < LH; y += 5, k++) {
+    for (let x = (k % 3) * 23; x < LW; x += 68) rx.fillRect(x, y, 1, 5);
+  }
+  // Doorway on the right, where Donna stands.
+  rx.fillStyle = '#f2ecdc'; rx.fillRect(278, 44, 42, 116);
+  rx.fillStyle = '#2a2119'; rx.fillRect(282, 48, 38, 112);
+  rx.fillStyle = '#3a2e22'; rx.fillRect(282, 48, 38, 3);
+  // Lamp on the left.
+  rx.fillStyle = '#3a3330'; rx.fillRect(18, 104, 2, 52); rx.fillRect(12, 155, 14, 3);
+  rx.fillStyle = '#efd9a0';
+  for (let r = 0; r < 14; r++) rx.fillRect(12 - Math.floor(r / 3), 90 + r, 14 + Math.floor(r / 3) * 2, 1);
+  rx.fillStyle = '#e0c47e'; rx.fillRect(8, 103, 22, 1);
+  const glow = rx.createRadialGradient(19, 100, 2, 19, 100, 60);
+  glow.addColorStop(0, 'rgba(255, 220, 140, 0.35)');
+  glow.addColorStop(1, 'rgba(255, 220, 140, 0)');
+  rx.fillStyle = glow; rx.fillRect(0, 40, 90, 120);
+})();
+
+// ---------- state ----------
+let artIndex = 0;
+let cur = { cx: CX_MIN, yL: HOME.yL, yR: HOME.yR };   // drawn
+let target = { ...HOME };                              // headed for
+let history = [];
+let lastDir = null;
+let hung = [];
+let hungCount = 0;
+let heldSince = Date.now();
+let lastGripe = Date.now();
+let hanging = false;
+let donnaPointUntil = 0;
+let donnaCheerUntil = 0;
+let tick = 0;
+
+function geometry(p) {
+  const t = clamp((p.yR - p.yL) / PW, -1, 1);
+  const a = Math.asin(t);
+  const cos = Math.cos(a), sin = Math.sin(a);
+  const mx = p.cx, my = (p.yL + p.yR) / 2;
+  const at = (px, py) => ({ x: mx + px * cos - py * sin, y: my + px * sin + py * cos });
+  return { a, mx, my, at };
+}
+
+function drawPainting(p, frame) {
+  const g = geometry(p);
+  ctx.save();
+  ctx.translate(Math.round(g.mx), Math.round(g.my));
+  ctx.rotate(g.a);
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.18)';
+  ctx.fillRect(-PW / 2 + 2, -PH + 2, PW, PH);
+  ctx.drawImage(frame, -PW / 2, -PH);
+  ctx.restore();
+  return g;
+}
+
+function line(x0, y0, x1, y1, color, t = 2) {
+  x0 = Math.round(x0); y0 = Math.round(y0); x1 = Math.round(x1); y1 = Math.round(y1);
+  const dx = Math.abs(x1 - x0), dy = -Math.abs(y1 - y0);
+  const sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1;
+  let e = dx + dy;
+  ctx.fillStyle = color;
+  for (;;) {
+    ctx.fillRect(x0, y0, t, t);
+    if (x0 === x1 && y0 === y1) break;
+    const e2 = 2 * e;
+    if (e2 >= dy) { e += dy; x0 += sx; }
+    if (e2 <= dx) { e += dx; y0 += sy; }
+  }
+}
+
+function drawHolder(who, hands, side, walking, tired) {
+  const spr = SPRITES[who];
+  const pal = who === 'alan' ? ALAN_PAL : PHILIP_PAL;
+  const sleeve = who === 'alan' ? ALAN_PAL.K : PHILIP_PAL.U;
+  const skin = pal.S;
+  const bodyX = Math.round(side === 'L' ? hands[0].x - 27 : hands[0].x - 5);
+  const reach = FLOOR_Y - SPRITE_H + 13 * S - Math.min(hands[0].y, hands[1].y);
+  const lift = clamp(Math.round(reach - 50), 0, 6);
+  const top = FLOOR_Y - SPRITE_H - lift;
+  const shake = tired && tick % 6 < 3 ? 1 : 0;
+
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
+  ctx.fillRect(bodyX + 2, FLOOR_Y - 1, SPRITE_W - 4, 3);
+  ctx.drawImage(walking && Math.floor(tick / 8) % 2 ? spr.walk : spr.stand, bodyX, top, SPRITE_W, SPRITE_H);
+
+  const shoulders = [{ x: bodyX + 4, y: top + 13 * S + 1 }, { x: bodyX + 24, y: top + 13 * S + 1 }];
+  if (side === 'R') shoulders.reverse();
+  hands.forEach((h, i) => {
+    const s = i === 0 ? shoulders[1] : shoulders[0];
+    line(s.x, s.y, h.x, h.y + shake, sleeve, 4);
+    ctx.fillStyle = skin;
+    ctx.fillRect(Math.round(h.x) - 1, Math.round(h.y) - 2 + shake, 5, 5);
+  });
+  if (tired && tick % 40 < 26) {
+    ctx.fillStyle = '#7cc6f0';
+    const sx = side === 'L' ? bodyX + 2 : bodyX + 28;
+    ctx.fillRect(sx, top + 10 + (tick % 40 > 14 ? 2 : 0), 2, 3);
+  }
+}
+
+function drawDonna(g) {
+  const top = FLOOR_Y - SPRITE_H;
+  const now = Date.now();
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+  ctx.fillRect(DONNA_X + 2, FLOOR_Y - 1, SPRITE_W - 4, 3);
+  ctx.drawImage(SPRITES.donna, DONNA_X, top, SPRITE_W, SPRITE_H);
+  const shoulderL = { x: DONNA_X + 4, y: top + 13 * S + 1 };
+  const shoulderR = { x: DONNA_X + 25, y: top + 13 * S + 1 };
+  const sleeve = DONNA_PAL.K, skin = DONNA_PAL.S;
+  if (now < donnaCheerUntil) {
+    const up = tick % 16 < 8 ? 0 : 3;
+    line(shoulderL.x, shoulderL.y, shoulderL.x - 8, shoulderL.y - 20 + up, sleeve, 4);
+    line(shoulderR.x, shoulderR.y, shoulderR.x + 6, shoulderR.y - 20 + up, sleeve, 4);
+    ctx.fillStyle = skin;
+    ctx.fillRect(shoulderL.x - 9, shoulderL.y - 24 + up, 5, 5);
+    ctx.fillRect(shoulderR.x + 6, shoulderR.y - 24 + up, 5, 5);
+    // Smile.
+    ctx.fillStyle = DONNA_PAL.S; ctx.fillRect(DONNA_X + 14, top + 16, 4, 2);
+    ctx.fillStyle = DONNA_PAL.L; ctx.fillRect(DONNA_X + 13, top + 16, 6, 2);
+    ctx.fillRect(DONNA_X + 11, top + 14, 2, 2); ctx.fillRect(DONNA_X + 19, top + 14, 2, 2);
+  } else if (now < donnaPointUntil) {
+    const dx = g.mx - shoulderL.x, dy = (g.my - PH / 2) - shoulderL.y;
+    const d = Math.hypot(dx, dy) || 1;
+    const hx = shoulderL.x + dx / d * 24, hy = shoulderL.y + dy / d * 24;
+    line(shoulderL.x, shoulderL.y, hx, hy, sleeve, 4);
+    ctx.fillStyle = skin; ctx.fillRect(Math.round(hx) - 1, Math.round(hy), 5, 4);
+    ctx.fillRect(Math.round(hx) - 5, Math.round(hy), 4, 2);
+    line(shoulderR.x, shoulderR.y, shoulderR.x + 2, shoulderR.y + 18, sleeve, 4);
+    ctx.fillStyle = skin; ctx.fillRect(shoulderR.x + 1, shoulderR.y + 20, 4, 4);
+  } else {
+    // Arms folded.
+    ctx.fillStyle = '#000'; ctx.fillRect(DONNA_X + 4, top + 33, 24, 1);
+    ctx.fillStyle = sleeve; ctx.fillRect(DONNA_X + 4, top + 34, 24, 6);
+    ctx.fillStyle = skin; ctx.fillRect(DONNA_X + 6, top + 34, 4, 4); ctx.fillRect(DONNA_X + 22, top + 36, 4, 4);
+  }
+}
+
+function render() {
+  ctx.drawImage(room, 0, 0);
+  for (const p of hung) {
+    const g = geometry(p);
+    const tl = g.at(-PW / 2 + 6, -PH), tr = g.at(PW / 2 - 6, -PH), nail = { x: g.mx, y: g.my - PH - 7 };
+    line(tl.x, tl.y, nail.x, nail.y, '#5a4a36', 1);
+    line(tr.x, tr.y, nail.x, nail.y, '#5a4a36', 1);
+    ctx.fillStyle = '#3a3330'; ctx.fillRect(Math.round(nail.x) - 1, Math.round(nail.y) - 1, 2, 2);
+    drawPainting(p, FRAMES[p.art]);
+  }
+
+  const g = drawPainting(cur, FRAMES[artIndex]);
+  const walking = Math.abs(cur.cx - target.cx) > 0.5;
+  const tired = Date.now() - heldSince > 60000;
+  drawHolder('alan', [g.at(-PW / 2 + 2, 0), g.at(-PW / 2, -12)], 'L', walking, tired);
+  drawHolder('philip', [g.at(PW / 2 - 2, 0), g.at(PW / 2, -12)], 'R', walking, tired);
+  drawDonna(g);
+
+  placeBubble('alan', g.at(-PW / 2 + 10, -PH));
+  placeBubble('philip', g.at(PW / 2 - 10, -PH));
+  placeBubble('donna', { x: DONNA_X + SPRITE_W, y: FLOOR_Y - SPRITE_H - 2 });
+
+  const deg = Math.round(g.a * 180 / Math.PI);
+  $('level').textContent = deg === 0 ? 'level' : `${Math.abs(deg)}° ${deg > 0 ? 'right side low' : 'left side low'}`;
+  $('title').textContent = ARTS[artIndex].title;
+  $('hung').textContent = hungCount;
+}
+
+function approach(a, b, speed) {
+  return Math.abs(b - a) <= speed ? b : a + Math.sign(b - a) * speed;
+}
+
+function loop() {
+  tick++;
+  cur = {
+    cx: approach(cur.cx, target.cx, 1.2),
+    yL: approach(cur.yL, target.yL, 0.8),
+    yR: approach(cur.yR, target.yR, 0.8),
+  };
+  const now = Date.now();
+  if (!hanging && now - heldSince > 40000 && now - lastGripe > 25000) {
+    lastGripe = now;
+    say(pick(['alan', 'philip']), pick(GRIPES));
+  }
+  render();
+  requestAnimationFrame(loop);
+}
+
+// ---------- speech bubbles ----------
+const bubbles = { alan: $('b-alan'), philip: $('b-philip'), donna: $('b-donna') };
+const bubbleTimers = {};
+
+function placeBubble(who, pt) {
+  const el = bubbles[who];
+  if (!el.classList.contains('show')) return;
+  const x = clamp(pt.x, 4, LW - 4) / LW * 100;
+  // Alan's and Donna's bubbles grow leftward, so pin their right edge.
+  if (who === 'philip') el.style.left = x + '%';
+  else el.style.right = (100 - x) + '%';
+  el.style.top = (clamp(pt.y - 3, 26, LH) / LH * 100) + '%';
+}
+
+function showBubble(who, text, interim = false) {
+  const el = bubbles[who];
+  el.textContent = text;
+  el.classList.toggle('interim', interim);
+  el.classList.add('show');
+  clearTimeout(bubbleTimers[who]);
+  if (!interim) bubbleTimers[who] = setTimeout(() => el.classList.remove('show'), 2500 + text.length * 45);
+}
+
+// ---------- dialogue ----------
+const GRIPES = [
+  'My arms, Donna.',
+  'Can we put it down for a sec?',
+  "I can't feel my fingers.",
+  'Is this where it was twenty minutes ago?',
+  'Maybe we just get a nail in it and see?',
+  'My shoulder is doing the thing again.',
+  'Is there a game on?',
+];
+const CONFUSED = ['...which way, Donna?', 'Huh?', 'Was that a left or a right?', 'Say again?', 'Like... where?'];
+const EDGE = {
+  left: ["That's the end of the wall, Donna.", "There's a lamp here."],
+  right: ["That's the doorway, Donna.", "I'm out of wall."],
+  up: ['Any higher and I need the ladder.', "I'm on my tippy toes."],
+  down: ["Any lower and it's on the floor.", 'My back, Donna.'],
+  tilt: ["It's as crooked as it goes."],
+};
+const ACK = ['', ' Like this?', ' Here?', " How's that?", ' Better?'];
+const DIR_WORD = {
+  left: 'Left', right: 'Right', up: 'Up', down: 'Down',
+  tilt_clockwise: 'Tilting it', tilt_counterclockwise: 'Tilting it the other way',
+};
+const AMOUNT_WORD = ['a hair', 'a little', 'a good bit', 'a lot'];
+
+const logEl = $('log');
+function log(cls, who, text) {
+  const li = document.createElement('li');
+  li.className = cls;
+  li.textContent = who ? `${who}: ${text}` : text;
+  logEl.prepend(li);
+  while (logEl.children.length > 12) logEl.lastChild.remove();
+}
+function say(who, text) {
+  log(who, who.toUpperCase(), text);
+  showBubble(who, text);
+}
+
+// ---------- Jev ----------
+const QUESTIONS = {
+  direction: {
+    type: 'choice',
+    instructions: 'Which way does Donna want the painting moved? Directions are as Donna sees the wall: left means toward her left.',
+    criteria: {
+      left: 'Move it left',
+      right: 'Move it right',
+      up: 'Raise it, higher, move it up',
+      down: 'Lower it, move it down',
+      tilt_clockwise: 'Rotate it clockwise: the right side goes down or the left side goes up',
+      tilt_counterclockwise: 'Rotate it counterclockwise: the left side goes down or the right side goes up',
+      level: "Straighten it, make it level, it's crooked",
+      reverse: "The opposite of the last move: 'no, the other way', 'too far', 'your other left'",
+      none: 'No movement asked for: praise, thinking out loud, chit-chat, or telling them to stop',
+    },
+  },
+  amount: {
+    type: 'score',
+    instructions: 'How far does Donna want it moved?',
+    criteria: [
+      'A hair, a smidge, the tiniest bit',
+      'A little, a bit',
+      'A fair amount, several inches',
+      'A lot, way over, a foot or more',
+    ],
+  },
+  who: {
+    type: 'choice',
+    instructions: 'Who is Donna talking to? Alan holds the left side and Philip holds the right side.',
+    criteria: {
+      both: 'Both of them, or nobody in particular',
+      alan: 'Alan, or the left side only',
+      philip: 'Philip, or the right side only',
+    },
+  },
+  done: {
+    type: 'noul',
+    instructions: "Donna says the painting is in the right spot and should be hung now ('perfect', 'right there', 'mark it', 'that's it').",
+  },
+  undo: {
+    type: 'noul',
+    instructions: "Donna wants it put back exactly where it was before the last move ('put it back', 'it was better before').",
+  },
+};
+
+async function askJev(text) {
+  const state = `Donna just said: "${text}"\nThe last move was: ${lastDir || 'none yet'}.`;
+  if (MOCK) return mockJev(text);
+  const res = await fetch('api/jev', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ model: 'jev-latest', state, questions: QUESTIONS }),
+  });
+  if (!res.ok) throw new Error(`Jev said ${res.status}`);
+  return (await res.json()).answers;
+}
+
+// Keyword stand-in so the page can be tried without the server (?mock).
+function mockJev(text) {
+  const t = text.toLowerCase();
+  const has = re => re.test(t);
+  let dir = 'none';
+  if (has(/other way|too far|other left/)) dir = 'reverse';
+  else if (has(/straight|level|crooked/)) dir = 'level';
+  else if (has(/counter|anti/)) dir = 'tilt_counterclockwise';
+  else if (has(/clockwise|tilt/)) dir = 'tilt_clockwise';
+  else if (has(/\bleft\b/)) dir = 'left';
+  else if (has(/\bright\b(?! there)/)) dir = 'right';
+  else if (has(/\bup\b|higher|raise/)) dir = 'up';
+  else if (has(/\bdown\b|lower/)) dir = 'down';
+  const score = has(/hair|smidge|tiny|tad/) ? 0 : has(/lot|way|foot/) ? 3 : has(/bit|little/) ? 1 : 1.5;
+  const who = has(/alan/) ? 'alan' : has(/\bphilip\b/) ? 'philip' : 'both';
+  return Promise.resolve({
+    direction: { choice: dir, confidence: 0.9 },
+    amount: { score },
+    who: { choice: who, confidence: 0.9 },
+    done: { noul: has(/perfect|right there|mark it|that's it/) ? 0.95 : 0.02 },
+    undo: { noul: has(/put it back|was better/) ? 0.95 : 0.02 },
+  });
+}
+
+// ---------- turning Jev's answers into moves ----------
+const OPPOSITE = {
+  left: 'right', right: 'left', up: 'down', down: 'up',
+  tilt_clockwise: 'tilt_counterclockwise', tilt_counterclockwise: 'tilt_clockwise',
+};
+
+function act(a) {
+  const d = a.direction, who = a.who.choice;
+  const conf = n => (n == null ? '-' : n.toFixed(2));
+  log('jev', '', `jev → ${d.choice} (${conf(d.confidence)}) amount ${a.amount.score.toFixed(1)} who ${who} done ${conf(a.done.noul)} undo ${conf(a.undo.noul)}`);
+
+  const anyone = () => pick(['alan', 'philip']);
+  if (a.done.noul > 0.6) return hang();
+  if (a.undo.noul > 0.6) {
+    if (!history.length) return say(anyone(), "That's where it started, Donna.");
+    target = history.pop();
+    donnaPointUntil = Date.now() + 1500;
+    return say(anyone(), 'Back where it was.');
+  }
+
+  let dir = d.choice;
+  if (dir === 'none') return;
+  if (d.confidence < 0.3) return say(anyone(), pick(CONFUSED));
+  if (dir === 'reverse') {
+    if (!OPPOSITE[lastDir]) return say(anyone(), pick(CONFUSED));
+    dir = OPPOSITE[lastDir];
+  }
+
+  const level = clamp(Math.round(a.amount.score), 0, 3);
+  const steps = Math.max(1, Math.round(2 ** a.amount.score));
+  const before = { ...target };
+  const next = { ...target };
+  const speaker = who === 'alan' || who === 'philip' ? who : anyone();
+
+  if (dir === 'left' || dir === 'right') {
+    next.cx = clamp(next.cx + (dir === 'left' ? -UNIT_X : UNIT_X) * steps, CX_MIN, CX_MAX);
+  } else if (dir === 'up' || dir === 'down') {
+    const dy = (dir === 'up' ? -UNIT_Y : UNIT_Y) * steps;
+    if (who !== 'philip') next.yL += dy;
+    if (who !== 'alan') next.yR += dy;
+  } else if (dir === 'level') {
+    next.yL = next.yR = Math.round((next.yL + next.yR) / 2);
+  } else {
+    // Clockwise means the right side drops.
+    const k = UNIT_TILT * Math.max(1, Math.ceil(steps / 2));
+    const sign = dir === 'tilt_clockwise' ? 1 : -1;
+    if (who === 'alan') next.yL -= sign * k;
+    else if (who === 'philip') next.yR += sign * k;
+    else { next.yR += sign * Math.ceil(k / 2); next.yL -= sign * Math.floor(k / 2); }
+  }
+
+  next.yL = clamp(next.yL, B_MIN, B_MAX);
+  next.yR = clamp(next.yR, B_MIN, B_MAX);
+  if (Math.abs(next.yR - next.yL) > MAX_TILT) {
+    if (who === 'alan') next.yL = next.yR + Math.sign(next.yL - next.yR) * MAX_TILT;
+    else next.yR = next.yL + Math.sign(next.yR - next.yL) * MAX_TILT;
+  }
+
+  if (next.cx === before.cx && next.yL === before.yL && next.yR === before.yR) {
+    const edge = dir.startsWith('tilt') ? 'tilt' : EDGE[dir] ? dir : null;
+    return say(speaker, edge ? pick(EDGE[edge]) : 'It already is, Donna.');
+  }
+
+  history.push(before);
+  target = next;
+  donnaPointUntil = Date.now() + 1500;
+  if (dir !== 'level') lastDir = dir;
+  say(speaker, dir === 'level' ? 'Leveling it.' : `${DIR_WORD[dir]}, ${AMOUNT_WORD[level]}.${pick(ACK)}`);
+}
+
+function hang() {
+  if (hanging) return;
+  hanging = true;
+  donnaCheerUntil = Date.now() + 2200;
+  say('alan', 'MARKING IT!');
+  setTimeout(() => say('philip', '*tap tap tap*'), 700);
+  setTimeout(() => {
+    hung.push({ ...target, art: artIndex });
+    if (hung.length > 5) hung.shift();
+    hungCount++;
+    artIndex = (artIndex + 1) % ARTS.length;
+    cur = { cx: CX_MIN, yL: HOME.yL, yR: HOME.yR };
+    target = { ...HOME };
+    history = [];
+    lastDir = null;
+    heldSince = lastGripe = Date.now();
+    hanging = false;
+    say('philip', pick(['Okay. Next one.', 'Next! This one is heavier.', 'Where does this one go?']));
+  }, 1600);
+}
+
+let queue = Promise.resolve();
+function heard(text) {
+  text = text.trim();
+  if (text.length < 2) return;
+  log('donna', 'DONNA', text);
+  showBubble('donna', text);
+  queue = queue
+    .then(() => askJev(text))
+    .then(act)
+    .catch(err => {
+      log('err', '', String(err.message || err));
+      say('philip', 'Sorry, what was that, Donna?');
+    });
+}
+
+$('typed').addEventListener('submit', e => {
+  e.preventDefault();
+  heard($('say').value);
+  $('say').value = '';
+});
+
+// ---------- Deepgram live transcription ----------
+const WORKLET = `
+class Pcm extends AudioWorkletProcessor {
+  constructor() { super(); this.buf = new Int16Array(2048); this.n = 0; }
+  process(inputs) {
+    const ch = inputs[0] && inputs[0][0];
+    if (ch) for (let i = 0; i < ch.length; i++) {
+      const v = Math.max(-1, Math.min(1, ch[i]));
+      this.buf[this.n++] = v < 0 ? v * 0x8000 : v * 0x7fff;
+      if (this.n === this.buf.length) { this.port.postMessage(this.buf.slice().buffer); this.n = 0; }
+    }
+    return true;
+  }
+}
+registerProcessor('pcm', Pcm);`;
+
+let mic = null;   // { stream, ctx, ws }
+const micBtn = $('mic');
+
+async function openSocket(rate) {
+  const res = await fetch('api/stt-token', { method: 'POST' });
+  if (!res.ok) throw new Error(`speech token failed (${res.status})`);
+  const { access_token } = await res.json();
+  const params = new URLSearchParams({
+    model: 'nova-3', encoding: 'linear16', sample_rate: String(rate), channels: '1',
+    interim_results: 'true', punctuate: 'true', endpointing: '250',
+  });
+  for (const k of ['Alan', 'Philip', 'Donna']) params.append('keyterm', k);
+  const ws = new WebSocket(`wss://api.deepgram.com/v1/listen?${params}`, ['bearer', access_token]);
+  ws.binaryType = 'arraybuffer';
+  ws.onmessage = e => {
+    const m = JSON.parse(e.data);
+    if (m.type !== 'Results') return;
+    const t = m.channel.alternatives[0].transcript;
+    if (!t) return;
+    if (m.is_final) heard(t);
+    else showBubble('donna', t + '…', true);
+  };
+  ws.onclose = () => {
+    // Reconnect if the socket dropped while Donna is still talking.
+    if (mic && mic.ws === ws) openSocket(rate).then(n => { if (mic) mic.ws = n; }).catch(stopMic);
+  };
+  return ws;
+}
+
+async function startMic() {
+  micBtn.disabled = true;
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true },
+    });
+    const actx = new AudioContext();
+    await actx.audioWorklet.addModule(URL.createObjectURL(new Blob([WORKLET], { type: 'application/javascript' })));
+    const node = new AudioWorkletNode(actx, 'pcm');
+    const mute = actx.createGain();
+    mute.gain.value = 0;
+    actx.createMediaStreamSource(stream).connect(node);
+    node.connect(mute).connect(actx.destination);
+    mic = { stream, ctx: actx, ws: null };
+    mic.ws = await openSocket(actx.sampleRate);
+    node.port.onmessage = e => {
+      if (mic && mic.ws && mic.ws.readyState === WebSocket.OPEN) mic.ws.send(e.data);
+    };
+    micBtn.textContent = '■ listening';
+    micBtn.classList.add('on');
+  } catch (err) {
+    stopMic();
+    log('err', '', `mic: ${err.message || err}`);
+    say('alan', "We can't hear you, Donna. Try typing it.");
+  } finally {
+    micBtn.disabled = false;
+  }
+}
+
+function stopMic() {
+  const m = mic;
+  mic = null;
+  if (m) {
+    if (m.ws && m.ws.readyState === WebSocket.OPEN) m.ws.send(JSON.stringify({ type: 'CloseStream' }));
+    m.stream.getTracks().forEach(t => t.stop());
+    m.ctx.close();
+  }
+  micBtn.textContent = '● be Donna';
+  micBtn.classList.remove('on');
+}
+
+micBtn.addEventListener('click', () => (mic ? stopMic() : startMic()));
+
+// ---------- debug ----------
+const debugBox = $('debug');
+function setDebug(on) {
+  document.body.classList.toggle('debug', on);
+  try { localStorage.setItem('donna-debug', on ? '1' : ''); } catch {}
+}
+try { debugBox.checked = !!localStorage.getItem('donna-debug'); } catch {}
+setDebug(debugBox.checked);
+debugBox.addEventListener('change', () => setDebug(debugBox.checked));
+
+requestAnimationFrame(loop);
+say('alan', 'Okay Donna, where do you want it?');
+if (MOCK) log('jev', '', 'mock mode: Jev is a keyword stand-in');
+</script>
+</body>
+</html>
