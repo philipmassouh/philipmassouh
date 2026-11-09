@@ -690,6 +690,10 @@ const QUESTIONS = {
     type: 'noul',
     instructions: "Donna says the painting is in the right spot and should be hung now ('perfect', 'right there', 'mark it', 'that's it').",
   },
+  summon: {
+    type: 'noul',
+    instructions: "Donna is calling Alan and Philip over or asking if they're free ('Alan, Philip, do you have a moment?', 'boys, come here a sec').",
+  },
   undo: {
     type: 'noul',
     instructions: "Donna wants it put back exactly where it was before the last move ('put it back', 'it was better before').",
@@ -730,6 +734,7 @@ function mockJev(text) {
     who: { choice: who, confidence: 0.9 },
     done: { noul: has(/perfect|right there|mark it|that's it/) ? 0.95 : 0.02 },
     undo: { noul: has(/put it back|was better/) ? 0.95 : 0.02 },
+    summon: { noul: has(/(have|got) a (moment|minute|sec)|come here/) ? 0.95 : 0.02 },
   });
 }
 
@@ -742,9 +747,10 @@ const OPPOSITE = {
 function act(a) {
   const d = a.direction, who = a.who.choice;
   const conf = n => (n == null ? '-' : n.toFixed(2));
-  log('jev', '', `jev → ${d.choice} (${conf(d.confidence)}) amount ${a.amount.score.toFixed(1)} who ${who} done ${conf(a.done.noul)} undo ${conf(a.undo.noul)}`);
+  log('jev', '', `jev → ${d.choice} (${conf(d.confidence)}) amount ${a.amount.score.toFixed(1)} who ${who} done ${conf(a.done.noul)} undo ${conf(a.undo.noul)} summon ${conf(a.summon && a.summon.noul)}`);
 
   const anyone = () => pick(['alan', 'philip']);
+  if (a.summon && a.summon.noul > 0.6) return summon();
   if (a.done.noul > 0.6) return hang();
   if (a.undo.noul > 0.6) {
     if (!history.length) return say(anyone(), "That's where it started, Donna.");
@@ -801,6 +807,16 @@ function act(a) {
   donnaPointUntil = Date.now() + 1500;
   if (dir !== 'level') lastDir = dir;
   say(speaker, dir === 'level' ? 'Leveling it.' : `${DIR_WORD[dir]}, ${AMOUNT_WORD[level]}.${pick(ACK)}`);
+}
+
+// "Alan, Philip, do you have a moment?" Every time.
+const bell = new Audio('bell.mp3');
+bell.preload = 'auto';
+function summon() {
+  bell.currentTime = 0;
+  bell.play().catch(() => {});
+  say('alan', 'Yes?');
+  setTimeout(() => say('philip', 'Yes?'), 350);
 }
 
 function hang() {
