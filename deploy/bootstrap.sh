@@ -69,11 +69,11 @@ chmod 600 /home/deploy/.ssh/authorized_keys
 
 echo "==> Setting up the tabs API"
 # The database is too big for git. Upload it once to pm's home and re-run:
-#   rsync -P ~/Downloads/ug-tabs.db pm@<host>:
-TABS_DB=/srv/tabs/ug-tabs.db
+#   rsync -P ~/Downloads/tabs.db pm@<host>:
+TABS_DB=/srv/tabs/tabs.db
 install -d -m 755 /srv/tabs
-if [ ! -f "$TABS_DB" ] && [ -f /home/pm/ug-tabs.db ]; then
-  mv /home/pm/ug-tabs.db "$TABS_DB"
+if [ ! -f "$TABS_DB" ] && [ -f /home/pm/tabs.db ]; then
+  mv /home/pm/tabs.db "$TABS_DB"
   chown root:root "$TABS_DB"
   chmod 644 "$TABS_DB"
 fi
