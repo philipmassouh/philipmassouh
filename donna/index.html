@@ -138,7 +138,7 @@ const MOCK = new URLSearchParams(location.search).has('mock');
 // ---------- world (in canvas pixels, 320x180) ----------
 const LW = 320, LH = 180, FLOOR_Y = 160;
 const PW = 56, PH = 42;                  // painting incl. frame
-const CX_MIN = 90, CX_MAX = 222;         // painting center x
+const CX_MIN = 90, CX_MAX = 200;         // painting center x (the pug owns the rest)
 const B_MIN = 46, B_MAX = 96;            // painting bottom y
 const MAX_TILT = 14;                     // right corner minus left corner, px
 const HOME = { cx: 156, yL: 82, yR: 82 };
@@ -276,10 +276,38 @@ function sprite(rows, pal) {
   return c;
 }
 
+// Murphy, Donna's pug. Sits by her feet and disapproves.
+const PUG = [
+  '...MM......MM...',
+  '..MMMffffffMMM..',
+  '..MMffffffffMM..',
+  '..MBffFFFFffBM..',
+  '...fBBffffBBf...',
+  '...fweffffwef...',
+  '...feeffffeef...',
+  '...ffMMnnMMff...',
+  '..fffMMMMMMfff..',
+  '..FffMMMMMMffF..',
+  '...fMffffffMf...',
+  '..ffffffffffff..',
+  '.ffffffccffffFF.',
+  '.ffffffccfffF.F.',
+  '.fffffffffffFF..',
+  '.FFff.ffff.ffFF.',
+];
+const PUG_PAL = {
+  M: '#231d19', f: '#d9b382', F: '#b38c5a', B: '#6e4f2f', c: '#ecd0a4',
+  e: '#0d0d0d', w: '#ffffff', n: '#000000',
+};
+const PUG_BLINK = PUG.map(r => r.replace(/[ew]/g, 'B'));
+const PUG_X = 254;
+
 const SPRITES = {
   alan: { stand: sprite([...ALAN_TOP, ...LEGS_STAND], ALAN_PAL), walk: sprite([...ALAN_TOP, ...LEGS_WALK], ALAN_PAL) },
   philip: { stand: sprite([...PHILIP_TOP, ...LEGS_STAND], PHILIP_PAL), walk: sprite([...PHILIP_TOP, ...LEGS_WALK], PHILIP_PAL) },
   donna: sprite([...DONNA_TOP, ...LEGS_STAND], DONNA_PAL),
+  pug: sprite(PUG, PUG_PAL),
+  pugBlink: sprite(PUG_BLINK, PUG_PAL),
 };
 const SPRITE_H = 29 * S, SPRITE_W = 16 * S;
 
@@ -504,6 +532,14 @@ function drawHolder(who, hands, side, walking, tired) {
   }
 }
 
+function drawPug() {
+  const w = 16 * S, h = PUG.length * S, top = FLOOR_Y + 3 - h;   // sprite canvases are 16 wide
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+  ctx.fillRect(PUG_X + 2, FLOOR_Y + 1, w - 4, 3);
+  // A slow, judgmental blink every few seconds.
+  ctx.drawImage(tick % 260 < 10 ? SPRITES.pugBlink : SPRITES.pug, PUG_X, top, w, h);
+}
+
 function drawDonna(g) {
   const top = FLOOR_Y - SPRITE_H;
   const now = Date.now();
@@ -558,6 +594,7 @@ function render() {
   drawHolder('alan', [g.at(-PW / 2 + 2, 0), g.at(-PW / 2, -12)], 'L', walking, tired);
   drawHolder('philip', [g.at(PW / 2 - 2, 0), g.at(PW / 2, -12)], 'R', walking, tired);
   drawDonna(g);
+  drawPug();
 
   placeBubble('alan', g.at(-PW / 2 + 10, -PH));
   placeBubble('philip', g.at(PW / 2 - 10, -PH));
@@ -625,7 +662,7 @@ const GRIPES = [
 const CONFUSED = ['...which way, Donna?', 'Huh?', 'Was that a left or a right?', 'Say again?', 'Like... where?'];
 const EDGE = {
   left: ["That's the end of the wall, Donna.", "There's a lamp here."],
-  right: ["That's the doorway, Donna.", "I'm out of wall."],
+  right: ["Murphy won't let me any closer, Donna.", "I'm not getting any closer to Murphy."],
   up: ['Any higher and I need the ladder.', "I'm on my tippy toes."],
   down: ["Any lower and it's on the floor.", 'My back, Donna.'],
   tilt: ["It's as crooked as it goes."],
