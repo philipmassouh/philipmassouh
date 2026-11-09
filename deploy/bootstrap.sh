@@ -89,11 +89,11 @@ else
 fi
 
 echo "==> Setting up API keys for /donna"
-# Caddy adds these to /donna's API calls. Fill them in with
+# The /donna password, and the keys Caddy adds to /donna's API calls. Fill them in with
 #   sudo nano /etc/caddy/donna.env && sudo systemctl restart caddy
 if [ ! -f /etc/caddy/donna.env ]; then
   install -m 640 -o root -g caddy /dev/null /etc/caddy/donna.env
-  printf 'TYPESAFE_API_KEY=\nDEEPGRAM_API_KEY=\n' > /etc/caddy/donna.env
+  printf 'DONNA_PASSWORD=\nTYPESAFE_API_KEY=\nDEEPGRAM_API_KEY=\n' > /etc/caddy/donna.env
 fi
 install -d /etc/systemd/system/caddy.service.d
 cat > /etc/systemd/system/caddy.service.d/donna.conf <<'EOF'

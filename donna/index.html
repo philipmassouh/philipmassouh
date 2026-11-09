@@ -704,6 +704,7 @@ async function askJev(text) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ model: 'jev-latest', state, questions: QUESTIONS }),
   });
+  if (res.status === 401) location.reload();   // back to the login page
   if (!res.ok) throw new Error(`Jev said ${res.status}`);
   return (await res.json()).answers;
 }
@@ -865,6 +866,7 @@ const micBtn = $('mic');
 
 async function openSocket(rate) {
   const res = await fetch('api/stt-token', { method: 'POST' });
+  if (res.status === 401) location.reload();
   if (!res.ok) throw new Error(`speech token failed (${res.status})`);
   const { access_token } = await res.json();
   const params = new URLSearchParams({

@@ -7,16 +7,28 @@ philipmassouh.com {
 	encode zstd gzip
 	reverse_proxy /tabs/api/* 127.0.0.1:8710
 
-	# Aunt Donna's Wall: family only. The API keys live in /etc/caddy/donna.env
-	# (see bootstrap.sh) and are added here, so the page never sees them.
-	@donna path /donna /donna/*
-	basic_auth @donna {
-		donna $2a$14$gG4eRwqddMnmx5e5/mgLy.2mIq0pYXw32h2gT0aQAGucI0Boi30eC
+	# Aunt Donna's Wall: family only. DONNA_PASSWORD and the API keys live in
+	# /etc/caddy/donna.env (see bootstrap.sh). The login page stores the
+	# password in a cookie; without a matching cookie, /donna shows the login
+	# page and the APIs refuse.
+	@donna_locked {
+		path /donna /donna/ /donna/index.html
+		not expression `{env.DONNA_PASSWORD} != "" && {http.request.cookie.donna_key} == {env.DONNA_PASSWORD}`
+	}
+	rewrite @donna_locked /donna/login.html
+
+	@donna_api_locked {
+		path /donna/api/*
+		not expression `{env.DONNA_PASSWORD} != "" && {http.request.cookie.donna_key} == {env.DONNA_PASSWORD}`
+	}
+	handle @donna_api_locked {
+		respond 401
 	}
 
 	@jev {
 		path /donna/api/jev
 		method POST
+		expression `{env.DONNA_PASSWORD} != "" && {http.request.cookie.donna_key} == {env.DONNA_PASSWORD}`
 	}
 	handle @jev {
 		request_body {
@@ -35,6 +47,7 @@ philipmassouh.com {
 	@stt {
 		path /donna/api/stt-token
 		method POST
+		expression `{env.DONNA_PASSWORD} != "" && {http.request.cookie.donna_key} == {env.DONNA_PASSWORD}`
 	}
 	handle @stt {
 		request_body {
