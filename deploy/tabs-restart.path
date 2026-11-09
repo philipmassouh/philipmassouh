@@ -1,0 +1,11 @@
+# Restarts the tabs API when a deploy pulls a new server.py, so the deploy
+# user needs no sudo.
+[Unit]
+Description=Watch tabs/server.py for deploys
+
+[Path]
+PathChanged=/srv/site/tabs/server.py
+Unit=tabs-restart.service
+
+[Install]
+WantedBy=multi-user.target

@@ -21,7 +21,7 @@ echo "==> Installing packages"
 apt-get update
 apt-get -y upgrade
 apt-get -y install curl debian-keyring debian-archive-keyring apt-transport-https \
-  git gnupg rsync ufw unattended-upgrades
+  git gnupg python3 rsync ufw unattended-upgrades
 
 if [ ! -f /etc/apt/sources.list.d/caddy-stable.list ]; then
   curl -1sLf https://dl.cloudsmith.io/public/caddy/stable/gpg.key \
@@ -66,6 +66,27 @@ install -d -m 700 -o deploy -g deploy /home/deploy/.ssh
 } > /home/deploy/.ssh/authorized_keys
 chown deploy:deploy /home/deploy/.ssh/authorized_keys
 chmod 600 /home/deploy/.ssh/authorized_keys
+
+echo "==> Setting up the tabs API"
+# The database is too big for git. Upload it once to pm's home and re-run:
+#   rsync -P ~/Downloads/ug-tabs.db pm@<host>:
+TABS_DB=/srv/tabs/ug-tabs.db
+install -d -m 755 /srv/tabs
+if [ ! -f "$TABS_DB" ] && [ -f /home/pm/ug-tabs.db ]; then
+  mv /home/pm/ug-tabs.db "$TABS_DB"
+  chown root:root "$TABS_DB"
+  chmod 644 "$TABS_DB"
+fi
+install -m 644 "$SITE/deploy/tabs.service" "$SITE/deploy/tabs-restart.service" \
+  "$SITE/deploy/tabs-restart.path" /etc/systemd/system/
+systemctl daemon-reload
+systemctl enable --now tabs-restart.path
+if [ -f "$TABS_DB" ]; then
+  systemctl enable tabs.service
+  systemctl restart tabs.service
+else
+  echo "no $TABS_DB yet: upload it to pm's home and re-run provision.sh" >&2
+fi
 
 echo "==> Deploying the pages"
 runuser -u deploy -- /usr/local/bin/site-deploy

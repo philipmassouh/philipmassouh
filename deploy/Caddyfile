@@ -5,6 +5,7 @@ philipmassouh.com {
 	respond @hidden 404
 
 	encode zstd gzip
+	reverse_proxy /tabs/api/* 127.0.0.1:8710
 	file_server
 }
 

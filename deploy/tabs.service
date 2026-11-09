@@ -1,0 +1,20 @@
+# The /tabs API (tabs/server.py). Caddy proxies /tabs/api/* to it; the page
+# itself is static. Runs as a throwaway user that can only read the database.
+[Unit]
+Description=Tabs API
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /srv/site/tabs/server.py
+Environment=TABS_DB=/srv/tabs/ug-tabs.db
+Environment=TABS_HOST=127.0.0.1
+Environment=TABS_PORT=8710
+Restart=on-failure
+DynamicUser=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+NoNewPrivileges=yes
+
+[Install]
+WantedBy=multi-user.target

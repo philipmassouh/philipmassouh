@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+        <title>Philip's Tabs</title>
+        <link rel="stylesheet" href="style.css?v=4" />
+        <script>
+            // Set before first paint so a pinned theme doesn't flash.
+            try {
+                const t = JSON.parse(localStorage.getItem("tabs.theme"));
+                if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+            } catch {}
+        </script>
+    </head>
+    <body>
+        <header id="site-header">
+            <h1 id="wordmark"><a href="#/">Philip's Tabs</a></h1>
+            <nav id="tab-controls" aria-label="Tab controls" hidden>
+                <div class="bar-group" role="group" aria-label="Transpose">
+                    <button type="button" class="bar-btn" id="transpose-down" aria-label="Transpose down">−</button>
+                    <span class="bar-btn bar-readout" id="transpose-readout">Key 0</span>
+                    <button type="button" class="bar-btn" id="transpose-up" aria-label="Transpose up">+</button>
+                </div>
+                <div class="bar-group" role="group" aria-label="Text size">
+                    <button type="button" class="bar-btn" id="size-down" aria-label="Smaller text">A−</button>
+                    <button type="button" class="bar-btn" id="size-up" aria-label="Larger text">A+</button>
+                </div>
+                <div class="bar-group" role="group" aria-label="Autoscroll">
+                    <button type="button" class="bar-btn" id="scroll-toggle" aria-pressed="false">Scroll</button>
+                    <button type="button" class="bar-btn" id="scroll-slower" aria-label="Scroll slower">−</button>
+                    <span class="bar-btn bar-readout" id="scroll-readout">3</span>
+                    <button type="button" class="bar-btn" id="scroll-faster" aria-label="Scroll faster">+</button>
+                </div>
+            </nav>
+            <button type="button" class="bar-btn" id="theme-toggle" aria-label="Color theme">System</button>
+        </header>
+
+        <main id="search-view" hidden>
+            <form id="search-form" role="search">
+                <input type="search" id="search" placeholder="Song or artist" autocomplete="off" aria-label="Song or artist">
+            </form>
+            <div class="bar-group" id="type-filter" role="group" aria-label="Type"></div>
+            <p id="search-status" class="status"></p>
+            <ul id="results" class="results"></ul>
+        </main>
+
+        <main id="artist-view" hidden>
+            <h2 id="artist-name"></h2>
+            <div class="bar-group" id="artist-filter" role="group" aria-label="Type"></div>
+            <p id="artist-status" class="status"></p>
+            <ul id="artist-results" class="results"></ul>
+        </main>
+
+        <main id="tab-view" hidden>
+            <div id="tab-head">
+                <h2 id="tab-title"></h2>
+                <p id="tab-artist"><a></a></p>
+                <p id="tab-meta" class="label"></p>
+                <div id="tab-picker">
+                    <div class="bar-group" id="tab-types" role="group" aria-label="Type"></div>
+                    <label id="tab-versions-label" class="label" hidden>Version
+                        <select id="tab-versions"></select>
+                    </label>
+                </div>
+            </div>
+            <pre id="tab-body"></pre>
+        </main>
+
+        <script src="main.js?v=4"></script>
+    </body>
+</html>
