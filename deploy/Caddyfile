@@ -12,14 +12,15 @@ philipmassouh.com {
 	reverse_proxy /tabs/api/* 127.0.0.1:8710
 
 	# Aunt Donna's Wall: family only. DONNA_PASSWORD and the API keys live in
-	# /etc/caddy/donna.env (see bootstrap.sh). The login page stores the
-	# password in a cookie; without a matching cookie, /donna shows the login
-	# page and the APIs refuse.
-	@donna_locked {
-		path /donna /donna/ /donna/index.html
-		not expression `{env.DONNA_PASSWORD} != "" && {http.request.cookie.donna_key} == {env.DONNA_PASSWORD}`
+	# /etc/caddy/donna.env (see bootstrap.sh). The page's front door stores the
+	# password in a cookie, and every /donna API needs a matching cookie.
+	@donna_check {
+		path /donna/api/check
+		expression `{env.DONNA_PASSWORD} != "" && {http.request.cookie.donna_key} == {env.DONNA_PASSWORD}`
 	}
-	rewrite @donna_locked /donna/login.html
+	handle @donna_check {
+		respond 204
+	}
 
 	@donna_api_locked {
 		path /donna/api/*

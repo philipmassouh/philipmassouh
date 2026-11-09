@@ -36,7 +36,6 @@ def key(name):
 
 
 PASSWORD = key("DONNA_PASSWORD")
-LOCKED_PAGES = {"/donna", "/donna/", "/donna/index.html"}
 
 ROUTES = {
     "/donna/api/jev": ("https://api.typesafe.ai/v1/systemone", "Bearer", key("TYPESAFE_API_KEY")),
@@ -49,18 +48,20 @@ class Handler(SimpleHTTPRequestHandler):
         cookie = SimpleCookie(self.headers.get("Cookie") or "").get("donna_key")
         return cookie is not None and unquote(cookie.value) == PASSWORD
 
-    def do_GET(self):
-        if self.path.split("?")[0] in LOCKED_PAGES and not self.unlocked():
-            self.path = "/donna/login.html"
-        super().do_GET()
-
     def do_POST(self):
-        route = ROUTES.get(self.path)
-        if not route:
+        if not self.path.startswith("/donna/api/"):
             self.send_error(404)
             return
         if not self.unlocked():
             self.send_error(401)
+            return
+        if self.path == "/donna/api/check":
+            self.send_response(204)
+            self.end_headers()
+            return
+        route = ROUTES.get(self.path)
+        if not route:
+            self.send_error(404)
             return
         url, scheme, secret = route
         body = self.rfile.read(int(self.headers.get("Content-Length") or 0))

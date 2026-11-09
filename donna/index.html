@@ -92,11 +92,54 @@
     #log .err { color: #e06a5a; }
     body:not(.debug) #log .jev, body:not(.debug) #log .err { display: none; }
 
+    .door {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      background: #14110e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+      text-align: center;
+      font-family: "Pixelify Sans", monospace;
+    }
+    .door[hidden] { display: none; }
+    .door main { width: 100%; max-width: 420px; }
+    .door h1 { margin-bottom: 18px; font-size: 32px; }
+    .door .stage { margin-bottom: 20px; }
+    .door .bubble { opacity: 1; left: 6%; top: 10%; max-width: 48%; font-size: 18px; background: #ffe3ec; text-align: left; }
+    .door .bubble::after { left: auto; right: -10px; bottom: 10px; background: #ffe3ec; border-left: none; border-bottom: none; border-top: 2px solid #1d1a16; }
+    .door form { display: flex; gap: 8px; justify-content: center; }
+    .door input {
+      flex: 1; min-width: 0; font: inherit; font-size: 18px; padding: 10px 12px;
+      background: #1d1914; color: #eee6d6; border: 2px solid #4a4136;
+    }
+    .door input:focus { outline: none; border-color: #eee6d6; }
+    .door input[hidden] { display: none; }
+    .door button { font-size: 18px; padding: 10px 18px; }
+    .shake { animation: shake 0.3s; }
+    @keyframes shake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+
     .debug-toggle { color: #5a5248; display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; cursor: pointer; }
     .debug-toggle input { accent-color: #7d7364; }
   </style>
 </head>
 <body>
+  <div class="door" id="door">
+    <main>
+      <h1>Aunt Donna's Wall</h1>
+      <div class="stage">
+        <canvas id="door-scene" width="120" height="90" aria-label="Donna and Murphy at her front door"></canvas>
+        <div class="bubble" id="door-bubble">Who's there?</div>
+      </div>
+      <form id="door-form">
+        <input id="pw" type="password" autocomplete="current-password" placeholder="password" aria-label="Password" hidden>
+        <button type="submit">Knock</button>
+      </form>
+    </main>
+  </div>
+
   <div class="wrap">
     <header>
       <div>
@@ -730,10 +773,6 @@ const QUESTIONS = {
     type: 'noul',
     instructions: "Donna says the painting is in the right spot and should be hung now ('perfect', 'right there', 'mark it', 'that's it').",
   },
-  summon: {
-    type: 'noul',
-    instructions: "Donna is calling Alan and Philip over or asking if they're free ('Alan, Philip, do you have a moment?', 'boys, come here a sec').",
-  },
   undo: {
     type: 'noul',
     instructions: "Donna wants it put back exactly where it was before the last move ('put it back', 'it was better before').",
@@ -774,7 +813,6 @@ function mockJev(text) {
     who: { choice: who, confidence: 0.9 },
     done: { noul: has(/perfect|right there|mark it|that's it/) ? 0.95 : 0.02 },
     undo: { noul: has(/put it back|was better/) ? 0.95 : 0.02 },
-    summon: { noul: has(/(have|got) a (moment|minute|sec)|come here/) ? 0.95 : 0.02 },
   });
 }
 
@@ -787,10 +825,9 @@ const OPPOSITE = {
 function act(a) {
   const d = a.direction, who = a.who.choice;
   const conf = n => (n == null ? '-' : n.toFixed(2));
-  log('jev', '', `jev → ${d.choice} (${conf(d.confidence)}) amount ${a.amount.score.toFixed(1)} who ${who} done ${conf(a.done.noul)} undo ${conf(a.undo.noul)} summon ${conf(a.summon && a.summon.noul)}`);
+  log('jev', '', `jev → ${d.choice} (${conf(d.confidence)}) amount ${a.amount.score.toFixed(1)} who ${who} done ${conf(a.done.noul)} undo ${conf(a.undo.noul)}`);
 
   const anyone = () => pick(['alan', 'philip']);
-  if (a.summon && a.summon.noul > 0.6) return summon();
   if (a.done.noul > 0.6) return hang();
   if (a.undo.noul > 0.6) {
     if (!history.length) return say(anyone(), "That's where it started, Donna.");
@@ -849,14 +886,14 @@ function act(a) {
   say(speaker, dir === 'level' ? 'Leveling it.' : `${DIR_WORD[dir]}, ${AMOUNT_WORD[level]}.${pick(ACK)}`);
 }
 
-// "Alan, Philip, do you have a moment?" Every time.
+// "Alan, Philip, do you have a moment?" Rings after Knock.
 const bell = new Audio('bell.mp3');
 bell.preload = 'auto';
 bell.volume = 0.7;
 
-// Browsers (Safari above all) only allow sound that starts from a tap or
-// click, and the bell starts after Jev answers. Playing it silently on the
-// first interaction unlocks it for later.
+// Browsers (Safari above all) only allow sound that starts from a click, and
+// the bell rings a moment after Knock. Playing it silently during the click
+// unlocks it for the intro.
 let bellUnlocked = false;
 function unlockBell() {
   if (bellUnlocked) return;
@@ -867,14 +904,19 @@ function unlockBell() {
     .catch(() => { bellUnlocked = false; })
     .finally(() => { bell.muted = false; });
 }
-for (const ev of ['pointerdown', 'keydown', 'touchend']) addEventListener(ev, unlockBell, { capture: true });
 
-function summon() {
-  bell.muted = false;
-  bell.currentTime = 0;
-  bell.play().catch(err => log('err', '', `bell: ${err.message || err}`));
-  say('alan', 'Yes?');
-  setTimeout(() => say('philip', 'Yes?'), 350);
+function intro() {
+  log('donna', 'DONNA', 'Alan, Philip, do you have a moment?');
+  showBubble('donna', 'Alan, Philip, do you have a moment?');
+  donnaPointUntil = Date.now() + 1800;
+  setTimeout(() => {
+    say('alan', 'Yes?');
+    bell.muted = false;
+    bell.currentTime = 0;
+    bell.play().catch(err => log('err', '', `bell: ${err.message || err}`));
+  }, 1500);
+  setTimeout(() => say('philip', 'Yes?'), 1900);
+  setTimeout(() => say('alan', 'Okay Donna, where do you want it?'), 5600);
 }
 
 function hang() {
@@ -1018,8 +1060,63 @@ try { debugBox.checked = !!localStorage.getItem('donna-debug'); } catch {}
 setDebug(debugBox.checked);
 debugBox.addEventListener('change', () => setDebug(debugBox.checked));
 
+// ---------- the front door ----------
+const doorEl = $('door'), doorForm = $('door-form'), pwEl = $('pw'), doorBubble = $('door-bubble');
+const doorCtx = $('door-scene').getContext('2d');
+doorCtx.imageSmoothingEnabled = false;
+const COOKIE = 'donna_key';
+const secure = location.protocol === 'https:' ? '; Secure' : '';
+
+function drawDoor(mood) {
+  const d = doorCtx, px = (x, y, w, h, c) => { d.fillStyle = c; d.fillRect(x, y, w, h); };
+  d.drawImage(room, 120, 10, 120, 90, 0, 0, 120, 90);   // a patch of the same wallpaper
+  px(0, 80, 120, 10, '#6e4a2c'); px(0, 84, 120, 1, '#5c3d24'); px(0, 75, 120, 5, '#f2ecdc');
+  px(66, 10, 44, 70, '#f2ecdc'); px(70, 14, 36, 66, '#2a2119'); px(70, 14, 36, 3, '#3a2e22');
+  const left = 72, top = 80 - SPRITE_H;
+  d.drawImage(SPRITES.donna, left, top, SPRITE_W, SPRITE_H);
+  d.drawImage(SPRITES.pug, 40, 83 - PUG.length * S, 16 * S, PUG.length * S);
+  const P = DONNA_PAL;
+  if (mood === 'happy') {
+    px(left + 13, top + 16, 6, 2, P.L); px(left + 11, top + 14, 2, 2, P.L); px(left + 19, top + 14, 2, 2, P.L);
+    px(left - 4, top + 12, 4, 14, P.K); px(left - 5, top + 9, 5, 5, P.S);
+  } else {
+    if (mood === 'cross') { px(left + 9, top + 9, 4, 1, P.A); px(left + 19, top + 9, 4, 1, P.A); }
+    px(left + 4, top + 33, 24, 6, P.K); px(left + 6, top + 33, 4, 4, P.S); px(left + 22, top + 35, 4, 4, P.S);
+  }
+}
+
+async function keyOk() {
+  if (MOCK) return true;
+  try { return (await fetch('api/check', { method: 'POST' })).ok; } catch { return false; }
+}
+
+drawDoor('neutral');
+keyOk().then(ok => { if (!ok) { pwEl.hidden = false; pwEl.focus(); } });
+
+doorForm.addEventListener('submit', async e => {
+  e.preventDefault();
+  unlockBell();   // must happen during the click
+  if (!pwEl.hidden) {
+    const pw = pwEl.value.trim();
+    if (!pw) {
+      doorForm.classList.remove('shake'); void doorForm.offsetWidth; doorForm.classList.add('shake');
+      return;
+    }
+    document.cookie = `${COOKIE}=${encodeURIComponent(pw)}; Path=/donna; Max-Age=31536000; SameSite=Lax${secure}`;
+  }
+  if (!(await keyOk())) {
+    document.cookie = `${COOKIE}=; Path=/donna; Max-Age=0${secure}`;
+    pwEl.hidden = false; pwEl.value = ''; pwEl.focus();
+    doorBubble.textContent = "That's not it, honey.";
+    drawDoor('cross');
+    return;
+  }
+  doorBubble.textContent = 'Come in, come in!';
+  drawDoor('happy');
+  setTimeout(() => { doorEl.hidden = true; intro(); }, 700);
+});
+
 requestAnimationFrame(loop);
-say('alan', 'Okay Donna, where do you want it?');
 if (MOCK) log('jev', '', 'mock mode: Jev is a keyword stand-in');
 </script>
 </body>
