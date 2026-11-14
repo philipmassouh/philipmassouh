@@ -1,6 +1,20 @@
+# Applies pending migrations as the tabs user, which can write only
+# /srv/tabs, then restarts the API. If a migration fails the restart is
+# skipped, so the old code keeps serving the old database.
 [Unit]
-Description=Restart the tabs API
+Description=Migrate the tabs database and restart the tabs API
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/systemctl restart tabs.service
+User=tabs
+Group=tabs
+# VACUUM needs about a database's worth of temp space; /tmp may be RAM.
+Environment=SQLITE_TMPDIR=/srv/tabs
+ExecStart=/usr/local/bin/tabs-migrate
+# "+" runs this one line as root, outside the sandbox below.
+ExecStart=+/usr/bin/systemctl restart tabs.service
+ProtectSystem=strict
+ReadWritePaths=/srv/tabs
+ProtectHome=yes
+PrivateTmp=yes
+NoNewPrivileges=yes

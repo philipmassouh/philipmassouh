@@ -1,10 +1,11 @@
-# Restarts the tabs API when a deploy pulls a new server.py, so the deploy
-# user needs no sudo.
+# Migrates the database and restarts the tabs API when a deploy pulls a new
+# server.py or migration, so the deploy user needs no sudo.
 [Unit]
-Description=Watch tabs/server.py for deploys
+Description=Watch tabs/server.py and tabs/migrations for deploys
 
 [Path]
 PathChanged=/srv/site/tabs/server.py
+PathChanged=/srv/site/tabs/migrations
 Unit=tabs-restart.service
 
 [Install]

@@ -6,14 +6,14 @@ PRAGMA user_version records the last one applied. Each runs in its own
 transaction, and the file is vacuumed afterwards if anything ran.
 
     python3 tabs/migrate.py ~/Downloads/tabs.db
+    python3 tabs/migrate.py --pending ~/Downloads/tabs.db
 
-On the server, migrate a copy and swap it in so the API never sees a
-half-migrated file:
+--pending lists what would run and exits 0 if anything is pending, 10 if
+the database is up to date.
 
-    sudo cp /srv/tabs/tabs.db /srv/tabs/tabs.db.new
-    sudo python3 /srv/site/tabs/migrate.py /srv/tabs/tabs.db.new
-    sudo mv /srv/tabs/tabs.db.new /srv/tabs/tabs.db
-    sudo systemctl restart tabs
+On the server deploys run this automatically: tabs-restart.path notices a
+change in tabs/migrations/ and deploy/tabs-migrate.sh migrates a copy of the
+database and swaps it in.
 """
 import re
 import sqlite3
@@ -22,16 +22,36 @@ import time
 from pathlib import Path
 
 MIGRATIONS = Path(__file__).resolve().parent / "migrations"
+UP_TO_DATE = 10
+
+
+def pending_migrations(db):
+    current = db.execute("PRAGMA user_version").fetchone()[0]
+    found = sorted(
+        (int(m.group(1)), f) for f in MIGRATIONS.glob("*.sql")
+        if (m := re.match(r"(\d+)_", f.name)))
+    return current, [(v, f) for v, f in found if v > current]
 
 
 def main():
-    if len(sys.argv) != 2:
+    args = sys.argv[1:]
+    check = args[:1] == ["--pending"]
+    if check:
+        args = args[1:]
+    if len(args) != 1:
         sys.exit(__doc__)
-    db = sqlite3.connect(sys.argv[1], isolation_level=None)
-    current = db.execute("PRAGMA user_version").fetchone()[0]
-    pending = sorted(
-        (int(m.group(1)), f) for f in MIGRATIONS.glob("*.sql")
-        if (m := re.match(r"(\d+)_", f.name)) and int(m.group(1)) > current)
+
+    if check:
+        db = sqlite3.connect(f"file:{args[0]}?mode=ro", uri=True)
+        current, pending = pending_migrations(db)
+        for _, path in pending:
+            print(f"pending {path.name}")
+        if not pending:
+            print(f"up to date at version {current}")
+        sys.exit(0 if pending else UP_TO_DATE)
+
+    db = sqlite3.connect(args[0], isolation_level=None)
+    current, pending = pending_migrations(db)
     if not pending:
         print(f"up to date at version {current}")
         return

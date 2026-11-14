@@ -70,20 +70,28 @@ chmod 600 /home/deploy/.ssh/authorized_keys
 echo "==> Setting up the tabs API"
 # The database is too big for git. Upload it once to pm's home and re-run:
 #   rsync -P ~/Downloads/tabs.db pm@<host>:
+# The tabs user owns the database and is the only one that writes it (see
+# tabs-restart.service); the API itself reads it as a throwaway user.
 TABS_DB=/srv/tabs/tabs.db
-install -d -m 755 /srv/tabs
+id tabs >/dev/null 2>&1 || useradd --system --no-create-home --shell /usr/sbin/nologin tabs
+install -d -m 755 -o tabs -g tabs /srv/tabs
 if [ ! -f "$TABS_DB" ] && [ -f /home/pm/tabs.db ]; then
   mv /home/pm/tabs.db "$TABS_DB"
-  chown root:root "$TABS_DB"
+fi
+if [ -f "$TABS_DB" ]; then
+  chown tabs:tabs "$TABS_DB"
   chmod 644 "$TABS_DB"
 fi
+install -m 755 "$SITE/deploy/tabs-migrate.sh" /usr/local/bin/tabs-migrate
 install -m 644 "$SITE/deploy/tabs.service" "$SITE/deploy/tabs-restart.service" \
   "$SITE/deploy/tabs-restart.path" /etc/systemd/system/
 systemctl daemon-reload
 systemctl enable --now tabs-restart.path
 if [ -f "$TABS_DB" ]; then
   systemctl enable tabs.service
-  systemctl restart tabs.service
+  # Applies any pending migrations, then restarts the API.
+  systemctl start tabs-restart.service \
+    || echo "tabs migration failed; see journalctl -u tabs-restart" >&2
 else
   echo "no $TABS_DB yet: upload it to pm's home and re-run provision.sh" >&2
 fi
