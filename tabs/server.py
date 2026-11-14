@@ -27,7 +27,7 @@ DB = os.path.expanduser(os.environ.get("TABS_DB", "~/Downloads/tabs.db"))
 HOST = os.environ.get("TABS_HOST", "127.0.0.1")
 PORT = int(os.environ.get("TABS_PORT", "8710"))
 ROOT = Path(__file__).resolve().parent.parent
-TYPES = ("Chords", "Tab", "Ukulele", "Bass", "Drums")
+TYPES = ("Chords", "Tab")
 
 SONG_COLS = "songs.id, songs.title, artists.name AS artist, artists.id AS artist_id"
 

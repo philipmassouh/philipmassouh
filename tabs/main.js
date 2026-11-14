@@ -1,7 +1,7 @@
 // Routes live in the hash: #/?q=&type=  #/artist/<id>?type=  #/tab/<id>
 // Tab text comes from the dataset, so it only ever reaches the page via textContent.
 
-const TYPES = ["Chords", "Tab", "Ukulele", "Bass", "Drums"];
+const TYPES = ["Chords", "Tab"];
 const SCROLL_SPEEDS = [8, 12, 18, 26, 36, 50, 70, 95]; // px per second
 const SHARPS = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 const FLATS = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
@@ -115,7 +115,7 @@ async function renderSearch(params) {
 
     const seq = ++searchSeq;
     if (!q.trim()) {
-        $("search-status").textContent = "1,086,068 tabs. Search by song or artist.";
+        $("search-status").textContent = "885,752 guitar tabs. Search by song or artist.";
         $("results").replaceChildren();
         return;
     }
