@@ -11,6 +11,10 @@ philipmassouh.com {
 	header @tabs X-Robots-Tag "noindex, nofollow"
 	reverse_proxy /tabs/api/* 127.0.0.1:8710
 
+	# SnakeNews is a family gag: keep it, and its rewrites, out of search.
+	@snakenews path /snakenews /snakenews/*
+	header @snakenews X-Robots-Tag "noindex, nofollow"
+
 	# Aunt Donna's Wall: family only. DONNA_PASSWORD and the API keys live in
 	# /etc/caddy/donna.env (see bootstrap.sh). The page's front door stores the
 	# password in a cookie, and every /donna API needs a matching cookie.
