@@ -13,4 +13,5 @@ rsync -a --delete --exclude '.*' "$SITE/donna/" "$WWW/donna/"
 rsync -a --delete --exclude '.*' --exclude src "$SITE/texture/" "$WWW/texture/"
 # The tabs API (server.py) runs from $SITE; tabs-restart.path restarts it on change.
 rsync -a --delete --exclude '.*' --exclude '*.py' "$SITE/tabs/" "$WWW/tabs/"
+rsync -a --delete --exclude '.*' --exclude '*.py' --exclude requirements.txt "$SITE/snakenews/" "$WWW/snakenews/"
 cp "$SITE/index.html" "$WWW/index.html"

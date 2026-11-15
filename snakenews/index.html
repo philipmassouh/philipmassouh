@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>SnakeNews</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #121110;
+      --panel: #1c1a18;
+      --line: #2e2a26;
+      --ink: #f1ece4;
+      --muted: #a39a8c;
+      --red: #e0312b;
+      --yellow: #f5c518;
+      --mono: "SF Mono", "Monaco", "Inconsolata", "Fira Mono", monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    a { color: inherit; }
+
+    /* Breaking ticker */
+    .ticker {
+      display: flex;
+      background: var(--red);
+      color: #fff;
+      font-family: var(--mono);
+      font-size: 13px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .ticker .label {
+      flex: none;
+      background: var(--yellow);
+      color: #000;
+      font-weight: 700;
+      padding: 6px 12px;
+      z-index: 1;
+    }
+    .ticker .track { overflow: hidden; flex: 1; padding: 6px 0; }
+    .ticker .run { display: inline-block; padding-left: 100%; animation: crawl 40s linear infinite; }
+    .ticker .run span { margin-right: 48px; }
+    @keyframes crawl { to { transform: translateX(-100%); } }
+    @media (prefers-reduced-motion: reduce) {
+      .ticker .run { animation: none; padding-left: 12px; }
+    }
+
+    .wrap { max-width: 720px; margin: 0 auto; padding: 0 16px 64px; }
+
+    /* Masthead */
+    .mast {
+      padding: 36px 0 20px;
+      border-bottom: 4px solid var(--ink);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 8px 24px;
+    }
+    .mast h1 {
+      font-family: "Anton", Impact, sans-serif;
+      font-weight: 400;
+      font-size: clamp(48px, 13vw, 84px);
+      line-height: 0.9;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .mast h1 a { text-decoration: none; }
+    .mast h1 em { font-style: normal; color: var(--red); }
+    .mast .tag { font-family: var(--mono); font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+
+    /* Threat level */
+    .threat {
+      margin: 24px 0 8px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-left: 6px solid var(--yellow);
+      padding: 16px 18px;
+      font-family: var(--mono);
+      font-size: 14px;
+    }
+    .threat .row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 16px; align-items: baseline; }
+    .threat .k { color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-size: 12px; }
+    .threat .v { font-family: "Anton", Impact, sans-serif; font-size: 28px; letter-spacing: 1px; color: var(--yellow); }
+    .meter { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin: 12px 0 10px; }
+    .meter i { height: 8px; background: var(--line); }
+    .meter i.on { background: var(--yellow); }
+    .threat .note { color: var(--muted); }
+
+    /* Story list */
+    .section-label {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 32px 0 4px;
+    }
+    .stories { list-style: none; }
+    .stories li { border-bottom: 1px solid var(--line); }
+    .stories a { display: block; padding: 20px 0; text-decoration: none; }
+    .stories a:hover h2, .stories a:focus-visible h2 { color: var(--red); }
+    .kicker {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--red);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .stories h2 {
+      font-family: "Anton", Impact, sans-serif;
+      font-weight: 400;
+      font-size: 30px;
+      line-height: 1.1;
+      letter-spacing: 0.3px;
+      margin: 4px 0 6px;
+    }
+    .stories p { color: var(--muted); }
+    .meta { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-top: 8px; }
+    .meta .listen { color: var(--yellow); }
+
+    /* Article */
+    .back { display: inline-block; margin-top: 24px; font-family: var(--mono); font-size: 13px; color: var(--muted); text-decoration: none; }
+    .back:hover { color: var(--ink); }
+    article { margin-top: 16px; }
+    article h2 {
+      font-family: "Anton", Impact, sans-serif;
+      font-weight: 400;
+      font-size: clamp(34px, 8vw, 52px);
+      line-height: 1.05;
+      margin: 8px 0 14px;
+    }
+    .standfirst { font-size: 21px; font-style: italic; color: #d8d0c3; margin-bottom: 20px; }
+    .player {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 12px 14px;
+      margin-bottom: 28px;
+    }
+    .player .k { font-family: var(--mono); font-size: 12px; color: var(--yellow); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    .player audio { width: 100%; display: block; }
+    .body p { margin-bottom: 1.1em; }
+    .source {
+      margin-top: 32px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .empty { color: var(--muted); padding: 24px 0; font-family: var(--mono); font-size: 14px; }
+
+    footer { margin-top: 48px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="ticker" aria-hidden="true">
+    <div class="label">Breaking</div>
+    <div class="track"><div class="run" id="ticker"><span>All snakes, all the time</span></div></div>
+  </div>
+
+  <div class="wrap">
+    <header class="mast">
+      <h1><a href="#">Snake<em>News</em></a></h1>
+      <div class="tag">Serpent coverage you can trust</div>
+    </header>
+
+    <main id="main"></main>
+
+    <footer>SnakeNews narration: Philip Massouh. Stories rewritten from reporting linked at the bottom of each one.</footer>
+  </div>
+
+  <script>
+    const main = document.getElementById("main");
+    let index = null;
+
+    const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+    const fmtDate = (d) => new Date(d + "T12:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+    const minutes = (words) => Math.max(1, Math.round(words / 230));
+
+    async function loadIndex() {
+      if (index) return index;
+      const r = await fetch("articles/index.json", { cache: "no-cache" });
+      index = r.ok ? await r.json() : [];
+      const ticker = document.getElementById("ticker");
+      if (index.length) {
+        ticker.innerHTML = index.slice(0, 8).map((a) => `<span>${esc(a.location)}: ${esc(a.headline)}</span>`).join("");
+      }
+      return index;
+    }
+
+    function threatPanel() {
+      return `
+        <section class="threat" aria-label="Santa Monica threat level">
+          <div class="row">
+            <span class="k">Santa Monica threat level</span>
+            <span class="v">LOW</span>
+          </div>
+          <div class="meter" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i><i></i></div>
+          <div class="note">Rattlesnakes do live in the Santa Monica Mountains. Philip lives on the flats. But they're out there.</div>
+        </section>`;
+    }
+
+    async function showList() {
+      document.title = "SnakeNews";
+      const items = await loadIndex();
+      const list = items.length
+        ? `<ul class="stories">${items.map((a) => `
+            <li><a href="#${encodeURIComponent(a.slug)}">
+              <div class="kicker">${esc(a.location)} · ${esc(fmtDate(a.date))}</div>
+              <h2>${esc(a.headline)}</h2>
+              <p>${esc(a.summary)}</p>
+              <div class="meta">${minutes(a.words)} min read${a.audio ? ' · <span class="listen">▶ Listen</span>' : ""}</div>
+            </a></li>`).join("")}</ul>`
+        : `<p class="empty">No snake news today. Suspicious.</p>`;
+      main.innerHTML = threatPanel() + `<div class="section-label">Latest dispatches</div>` + list;
+    }
+
+    async function showArticle(slug) {
+      const items = await loadIndex();
+      const entry = items.find((a) => a.slug === slug);
+      const r = entry && (await fetch(`articles/${encodeURIComponent(slug)}.json`, { cache: "no-cache" }));
+      if (!r || !r.ok) {
+        main.innerHTML = `<a class="back" href="#">← All stories</a><p class="empty">That story slithered away.</p>`;
+        return;
+      }
+      const a = await r.json();
+      document.title = `${a.headline} · SnakeNews`;
+      const paras = a.body.split(/\n\s*\n/).filter((p) => p.trim()).map((p) => `<p>${esc(p.trim())}</p>`).join("");
+      const player = entry.audio
+        ? `<div class="player"><div class="k">▶ Listen to this story</div><audio controls preload="none" src="audio/${encodeURIComponent(slug)}.mp3"></audio></div>`
+        : "";
+      const source = a.source && a.source.url
+        ? `<div class="source">Original reporting: <a href="${esc(a.source.url)}" rel="noopener noreferrer" target="_blank">${esc(a.source.name || a.source.url)}</a></div>`
+        : "";
+      main.innerHTML = `
+        <a class="back" href="#">← All stories</a>
+        <article>
+          <div class="kicker">${esc(a.location)} · ${esc(fmtDate(a.date))}</div>
+          <h2>${esc(a.headline)}</h2>
+          <p class="standfirst">${esc(a.summary)}</p>
+          ${player}
+          <div class="body">${paras}</div>
+          ${source}
+        </article>`;
+      window.scrollTo(0, 0);
+    }
+
+    function route() {
+      const slug = decodeURIComponent(location.hash.slice(1));
+      (slug ? showArticle(slug) : showList()).catch(() => {
+        main.innerHTML = `<p class="empty">The newsroom is down. Probably a snake in the wires.</p>`;
+      });
+    }
+
+    window.addEventListener("hashchange", route);
+    route();
+  </script>
+</body>
+</html>

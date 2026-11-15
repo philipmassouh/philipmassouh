@@ -1,0 +1,20 @@
+[
+ {
+  "slug": "welcome",
+  "headline": "SnakeNews Goes Live",
+  "summary": "SnakeNews is on the air, keeping watch so you don't have to.",
+  "date": "2026-11-15",
+  "location": "Santa Monica, CA",
+  "audio": true,
+  "words": 41
+ },
+ {
+  "slug": "2026-11-15-barefoot-walk-turns-into-pygmy-rattlesnake-nightmare-for",
+  "headline": "Barefoot Walk Turns Into Pygmy Rattlesnake Nightmare for 7-Year-Old in Keystone Heights",
+  "summary": "A 7-year-old girl is recovering after a pygmy rattlesnake bit her bare foot in a sandy Keystone Heights yard. Her message: wear shoes.",
+  "date": "2026-11-12",
+  "location": "Keystone Heights, FL",
+  "audio": true,
+  "words": 885
+ }
+]
